@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutForm" xml:space="preserve">
+    <value>About Port-Able</value>
+    <comment>Form</comment>
+  </data>
+  <data name="aboutInfoLabel" xml:space="preserve">
+    <value>Port-Able is developed and designed by {0}, founded
+and managed by Roy Schroedel.
+
+Would you like to support me? {1} or {2}!
+Suggestions are also very welcome!</value>
+    <comment>LinkLabel</comment>
+  </data>
+  <data name="aboutInfoLabelLinkLabel1" xml:space="preserve">
+    <value>Donate by Paypal</value>
+    <comment>LinkText</comment>
+  </data>
+  <data name="aboutInfoLabelLinkLabel2" xml:space="preserve">
+    <value>Report an Issue</value>
+    <comment>LinkText</comment>
+  </data>
+  <data name="addArgsLabel" xml:space="preserve">
+    <value>Add Arguments:</value>
+    <comment>Label</comment>
+  </data>
+  <data name="addArgsLabelTip" xml:space="preserve">
+    <value>Add to current command line arguments.</value>
+    <comment>ToolTip</comment>
+  </data>
+  <data name="addBtnTip" xml:space="preserve">
+    <value>Add more apps.</value>
+    <comment>ToolTip</comment>
+  </data>
+  <data name="addToShellBtn" xml:space="preserve">
+    <value>Integrate to Shell</value>
+    <comment>Button</comment>
+  </data>
+  <data name="App" xml:space="preserve">
+    <value>App</value>
+    <comment>Message-/Notification-/Status-Part|Singular</comment>
+  </data>
+  <data name="appDirsLabel" xml:space="preserve">
+    <value>App Directories:</value>
+    <comment>Label</comment>
+  </data>
+  <data name="appDirsTip" xml:space="preserve">
+    <value>Add more directories that contain portable apps:
+
+- Set full directories
+- One directory per line
+- Environment variables are accepted</value>
+    <comment>ToolTip</comment>
+  </data>
+  <data name="appMenuItem1" xml:space="preserve">
+    <value>Run</value>
+    <comment>ContextMenuItem</comment>
+  </data>
+  <data name="appMenuItem2" xml:space="preserve">
+    <value>Run as administrator</value>
+    <comment>ContextMenuItem</comment>
+  </data>
+  <data name="appMenuItem3" xml:space="preserve">
+    <value>Open app location</value>
+    <comment>ContextMenuItem</comment>
+  </data>
+  <data name="appMenuItem4" xml:space="preserve">
+    <value>Create desktop shortcut</value>
+    <comment>ContextMenuItem</comment>
+  </data>
+  <data name="appMenuItem4Msg0" xml:space="preserve">
+    <value>Shortcut successfully created.</value>
+    <comment>Message</comment>
+  </data>
+  <data name="appMenuItem4Msg1" xml:space="preserve">
+    <value>Shortcut could not be created.</value>
+    <comment>Message</comment>
+  </data>
+  <data name="appMenuItem5" xml:space="preserve">
+    <value>Pin to taskbar</value>
+    <comment>ContextMenuItem</comment>
+  </data>
+  <data name="appMenuItem6" xml:space="preserve">
+    <value>Rename</value>
+    <comment>ContextMenuItem</comment>
+  </data>
+  <data name="appMenuItem7" xml:space="preserve">
+    <value>Delete</value>
+    <comment>ContextMenuItem</comment>
+  </data>
+  <data name="appMenuItem7Msg" xml:space="preserve">
+    <value>Do you really want to delete '{0}'?</value>
+    <comment>Message</comment>
+  </data>
+  <data name="appMenuItem8" xml:space="preserve">
+    <value>Options</value>
+    <comment>ContextMenuItem</comment>
+  </data>
+  <data name="Apps" xml:space="preserve">
+    <value>Apps</value>
+    <comment>Message-/Notification-/Status-Part|Plural</comment>
+  </data>
+  <data name="appsBoxLabel" xml:space="preserve">
+    <value>Application:</value>
+    <comment>Label</comment>
+  </data>
+  <data name="appsCount" xml:space="preserve">
+    <value>{0} {1} found!</value>
+    <comment>Status</comment>
+  </data>
+  <data name="associateAppWayQuestion" xml:space="preserve">
+    <value>How are the file types to be assigned?</value>
+    <comment>Message</comment>
+  </data>
+  <data name="associateBtn" xml:space="preserve">
+    <value>Associate File Types</value>
+    <comment>Button</comment>
+  </data>
+  <data name="associateBtnMsg" xml:space="preserve">
+    <value>Please add some file types before you use this option.</value>
+    <comment>Message</comment>
+  </data>
+  <data name="associateConflictMsg" xml:space="preserve">
+    <value>The following file types are already defined for a different app:
+
+{0}
+
+Do you want to continue?</value>
+    <comment>Message</comment>
+  </data>
+  <data name="associateQuestionMsg0" xml:space="preserve">
+    <value>Do you always want to open this kind of file with this application?</value>
+    <comment>Message</comment>
+  </data>
+  <data name="associateQuestionMsg1" xml:space="preserve">
+    <value>Do you always want to open the following file types with this application?
+
+Types: {0}</value>
+    <comment>Message</comment>
+  </data>
+  <data name="BgImageSizeInfoMsg" xml:space="preserve">
+    <value>Please note that a large picture may negatively affect the start of this application.</value>
+    <comment>Message</comment>
+  </data>
+  <data name="bgLayoutLabel" xml:space="preserve">
+    <value>Layout:</value>
+    <comment>Label</comment>
+  </data>
+  <data name="bgLayoutOption0" xml:space="preserve">
+    <value>None</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="bgLayoutOption1" xml:space="preserve">
+    <value>Tile</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="bgLayoutOption2" xml:space="preserve">
+    <value>Center</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="bgLayoutOption3" xml:space="preserve">
+    <value>Stretch</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="bgLayoutOption4" xml:space="preserve">
+    <value>Zoom</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="btnColorPanelLabel" xml:space="preserve">
+    <value>Button Color:</value>
+    <comment>Label</comment>
+  </data>
+  <data name="btnHoverColorPanelLabel" xml:space="preserve">
+    <value>Button Hover Color:</value>
+    <comment>Label</comment>
+  </data>
+  <data name="btnTextColorPanelLabel" xml:space="preserve">
+    <value>Button Text Color:</value>
+    <comment>Label</comment>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+    <comment>Button</comment>
+  </data>
+  <data name="cmdLineUpdated" xml:space="preserve">
+    <value>Command-Line arguments has been updated.</value>
+    <comment>Message/Notification</comment>
+  </data>
+  <data name="controlColorPanelLabel" xml:space="preserve">
+    <value>Control Color:</value>
+    <comment>Label</comment>
+  </data>
+  <data name="controlTextColorPanelLabel" xml:space="preserve">
+    <value>Control Text Color:</value>
+    <comment>Label</comment>
+  </data>
+  <data name="defaultPosLabel" xml:space="preserve">
+    <value>Default Location</value>
+    <comment>Label</comment>
+  </data>
+  <data name="defaultPosOption0" xml:space="preserve">
+    <value>Align to Start Menu</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="defaultPosOption1" xml:space="preserve">
+    <value>Align to Mouse Cursor</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="defBgCheck" xml:space="preserve">
+    <value>Default Background</value>
+    <comment>CheckBox</comment>
+  </data>
+  <data name="downloadBtn" xml:space="preserve">
+    <value>Add More</value>
+    <comment>Button</comment>
+  </data>
+  <data name="exitBtn" xml:space="preserve">
+    <value>Exit</value>
+    <comment>Button</comment>
+  </data>
+  <data name="fadeInComboLabel" xml:space="preserve">
+    <value>Fade In Effect:</value>
+    <comment>Label</comment>
+  </data>
+  <data name="fadeInNumLabel" xml:space="preserve">
+    <value>Fade In Duration:</value>
+    <comment>Label</comment>
+  </data>
+  <data name="FileSystemAccessMsg" xml:space="preserve">
+    <value>File system is being accessed . . .</value>
+    <comment>Message</comment>
+  </data>
+  <data name="fileTypesLabel" xml:space="preserve">
+    <value>File Types:</value>
+    <comment>Label</comment>
+  </data>
+  <data name="fileTypesMenuItem1" xml:space="preserve">
+    <value>Copy</value>
+    <comment>ContextMenuItem</comment>
+  </data>
+  <data name="fileTypesMenuItem2" xml:space="preserve">
+    <value>Paste</value>
+    <comment>ContextMenuItem</comment>
+  </data>
+  <data name="fileTypesMenuItem3" xml:space="preserve">
+    <value>Load Default</value>
+    <comment>ContextMenuItem</comment>
+  </data>
+  <data name="fileTypesTip" xml:space="preserve">
+    <value>File types can be associated with an app. When you send
+a file to this application, the first associated app is
+selected by default.</value>
+    <comment>ToolTip</comment>
+  </data>
+  <data name="hScrollBarCheck" xml:space="preserve">
+    <value>Hide Horizontal Scrollbar</value>
+    <comment>CheckBox</comment>
+  </data>
+  <data name="mainColorPanelLabel" xml:space="preserve">
+    <value>Main Color:</value>
+    <comment>Label</comment>
+  </data>
+  <data name="noConfirmCheck" xml:space="preserve">
+    <value>Disable confirmation for this app</value>
+    <comment>CheckBox</comment>
+  </data>
+  <data name="noConfirmCheckTip" xml:space="preserve">
+    <value>Starts the file type associated app
+without confirmation.</value>
+    <comment>ToolTip</comment>
+  </data>
+  <data name="NoDefaultTypesFoundMsg" xml:space="preserve">
+    <value>No default types found for this application.</value>
+    <comment>Message</comment>
+  </data>
+  <data name="NotFound" xml:space="preserve">
+    <value>Not found...</value>
+    <comment>Message/Notification</comment>
+  </data>
+  <data name="noUpdatesCheck" xml:space="preserve">
+    <value>Never search updates for this app</value>
+    <comment>CheckBox</comment>
+  </data>
+  <data name="NoUpdatesFoundMsg" xml:space="preserve">
+    <value>No updates necessary!</value>
+    <comment>Message</comment>
+  </data>
+  <data name="opacityNumLabel" xml:space="preserve">
+    <value>Opacity:</value>
+    <comment>Label</comment>
+  </data>
+  <data name="OpenWithForm" xml:space="preserve">
+    <value>Open with:</value>
+    <comment>Form</comment>
+  </data>
+  <data name="OperationCanceledMsg" xml:space="preserve">
+    <value>Operation canceled.</value>
+    <comment>Message</comment>
+  </data>
+  <data name="OperationCompletedMsg" xml:space="preserve">
+    <value>Operation completed.</value>
+    <comment>Message</comment>
+  </data>
+  <data name="OperationFailedMsg" xml:space="preserve">
+    <value>Operation failed.</value>
+    <comment>Message</comment>
+  </data>
+  <data name="RequirementsErrorMsg" xml:space="preserve">
+    <value>This program is incomplete. Would you like to download it again?</value>
+    <comment>Message</comment>
+  </data>
+  <data name="RestartQuestionMsg" xml:space="preserve">
+    <value>Would you like to restart this application now?</value>
+    <comment>Message</comment>
+  </data>
+  <data name="restoreFileTypesBtnTip" xml:space="preserve">
+    <value>Restore file type association.</value>
+    <comment>ToolTip</comment>
+  </data>
+  <data name="RestorePointMsg0" xml:space="preserve">
+    <value>Do you want to save the current system settings before overwriting?
+
+This will allow you to go back in time and undo the following changes.</value>
+    <comment>Message</comment>
+  </data>
+  <data name="RestorePointMsg1" xml:space="preserve">
+    <value>Do you also want to create a system restore point?</value>
+    <comment>Message</comment>
+  </data>
+  <data name="RestorePointMsg2" xml:space="preserve">
+    <value>Do you want to restore the previous system settings?</value>
+    <comment>Message</comment>
+  </data>
+  <data name="RestorePointMsg3" xml:space="preserve">
+    <value>Do you also want to restore a previously created system restore point?</value>
+    <comment>Message</comment>
+  </data>
+  <data name="RestorePointMsg4" xml:space="preserve">
+    <value>The previous system settings were successfully restored.</value>
+    <comment>Message</comment>
+  </data>
+  <data name="rmFromShellBtn" xml:space="preserve">
+    <value>Remove from Shell</value>
+    <comment>Button</comment>
+  </data>
+  <data name="runAsAdminCheck" xml:space="preserve">
+    <value>Run this app always with administrator privileges</value>
+    <comment>CheckBox</comment>
+  </data>
+  <data name="saveBtn" xml:space="preserve">
+    <value>Save</value>
+    <comment>Button</comment>
+  </data>
+  <data name="SavedSettings" xml:space="preserve">
+    <value>Settings successfully saved.</value>
+    <comment>Message/Notification</comment>
+  </data>
+  <data name="searchBox" xml:space="preserve">
+    <value>Search</value>
+    <comment>TextBox</comment>
+  </data>
+  <data name="setBgBtn" xml:space="preserve">
+    <value>Change Background</value>
+    <comment>Button</comment>
+  </data>
+  <data name="setLangLabel" xml:space="preserve">
+    <value>Language</value>
+    <comment>Label</comment>
+  </data>
+  <data name="settingsBtn" xml:space="preserve">
+    <value>Settings</value>
+    <comment>Button</comment>
+  </data>
+  <data name="shellText" xml:space="preserve">
+    <value>Open with Portable App</value>
+    <comment>SystemContextMenuEntry</comment>
+  </data>
+  <data name="startArgsDefaultLabelTip" xml:space="preserve">
+    <value>Current command-line arguments.</value>
+    <comment>ToolTip</comment>
+  </data>
+  <data name="startArgsFirstTip" xml:space="preserve">
+    <value>Add before the current command line arguments.</value>
+    <comment>ToolTip</comment>
+  </data>
+  <data name="startArgsLastTip" xml:space="preserve">
+    <value>Add after the current command line arguments.</value>
+    <comment>ToolTip</comment>
+  </data>
+  <data name="startBtn" xml:space="preserve">
+    <value>Run</value>
+    <comment>Button</comment>
+  </data>
+  <data name="startMenuIntegrationLabel" xml:space="preserve">
+    <value>Start Menu integration:</value>
+    <comment>Label</comment>
+  </data>
+  <data name="startMenuIntegrationOption0" xml:space="preserve">
+    <value>Disabled</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="startMenuIntegrationOption1" xml:space="preserve">
+    <value>Enabled</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="tabPage1" xml:space="preserve">
+    <value>App Options</value>
+    <comment>TabPage</comment>
+  </data>
+  <data name="tabPage2" xml:space="preserve">
+    <value>Style</value>
+    <comment>TabPage</comment>
+  </data>
+  <data name="tabPage3" xml:space="preserve">
+    <value>Misc</value>
+    <comment>TabPage</comment>
+  </data>
+  <data name="updateBtn" xml:space="preserve">
+    <value>Check for updates</value>
+    <comment>Button</comment>
+  </data>
+  <data name="updateChannelLabel" xml:space="preserve">
+    <value>Update Channel</value>
+    <comment>Label</comment>
+  </data>
+  <data name="updateChannelOption0" xml:space="preserve">
+    <value>Release</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="updateChannelOption1" xml:space="preserve">
+    <value>Beta</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="updateCheckLabel" xml:space="preserve">
+    <value>Search for Updates:</value>
+    <comment>Label</comment>
+  </data>
+  <data name="updateCheckOption0" xml:space="preserve">
+    <value>Never</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="updateCheckOption1" xml:space="preserve">
+    <value>Hourly (full)</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="updateCheckOption2" xml:space="preserve">
+    <value>Hourly (only apps)</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="updateCheckOption3" xml:space="preserve">
+    <value>Hourly (only Port-Able)</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="updateCheckOption4" xml:space="preserve">
+    <value>Daily (full)</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="updateCheckOption5" xml:space="preserve">
+    <value>Daily (only apps)</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="updateCheckOption6" xml:space="preserve">
+    <value>Daily (only Port-Able)</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="updateCheckOption7" xml:space="preserve">
+    <value>Monthly (full)</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="updateCheckOption8" xml:space="preserve">
+    <value>Monthly (only apps)</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="updateCheckOption9" xml:space="preserve">
+    <value>Monthly (only Port-Able)</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+</root>
