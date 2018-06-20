@@ -58,9 +58,7 @@ namespace AppsDownloader.Windows
             statusAreaLeftPanel.SetDoubleBuffer();
             statusAreaRightPanel.SetDoubleBuffer();
 
-            showColorsCheck.Left = showGroupsCheck.Right + 4;
             showColorsCheck.Checked = Settings.ShowGroupColors;
-            highlightInstalledCheck.Left = showColorsCheck.Right + 4;
             highlightInstalledCheck.Checked = Settings.HighlightInstalled;
             searchBox.DrawSearchSymbol(searchBox.ForeColor);
 
@@ -116,6 +114,9 @@ namespace AppsDownloader.Windows
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            showColorsCheck.Left = showGroupsCheck.Right + 4;
+            highlightInstalledCheck.Left = showColorsCheck.Right + 4;
+
             MinimumSize = Settings.Window.Size.Minimum;
             MaximumSize = Settings.Window.Size.Maximum;
             if (Settings.Window.Size.Width > Settings.Window.Size.Minimum.Width)
