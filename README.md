@@ -8,8 +8,6 @@ A portable app is a software that will not take an effect to your running system
 
 But to be honest, my focus isn't only to get applications for my portable devices. It's also nice that it doesn't matter how many applications you have installed, it has absolutely no negative effect on your system performance. Your system is always fast and clean.
 
-Please visit [www.si13n7.com](http://apps.si13n7.com/) for more informations!
-***
 <h1 align="center">Over 400 Applications</h1>
 <h1 align="center"><img src="https://user-images.githubusercontent.com/6128966/41601009-9ac6bad6-73d7-11e8-9215-eea0bef6ffaf.png"></h1>
 
@@ -31,7 +29,7 @@ Please visit [www.si13n7.com](http://apps.si13n7.com/) for more informations!
 ### Requirements (Developer):
 - Microsoft Windows 7 or higher (64-bit)
 - [Microsoft Visual Studio 2017 + .NET Framework 4.6.1 SDK](https://www.visualstudio.com/downloads/)
-- [Si13n7 Dev. ® CSharp Library Binaries](https://github.com/Si13n7/SilDev.CSharpLib/)
+- [Si13n7 Dev. Â® CSharp Library Binaries](https://github.com/Si13n7/SilDev.CSharpLib/)
 
 ***
 
