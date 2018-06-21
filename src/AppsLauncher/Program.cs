@@ -1,6 +1,7 @@
 namespace AppsLauncher
 {
     using System;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading;
     using System.Windows.Forms;
@@ -87,13 +88,15 @@ namespace AppsLauncher
 
                 if (!Arguments.ValidPaths.Any())
                     return;
+
                 IntPtr hWnd;
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
                 do
-                {
                     hWnd = Reg.Read(Settings.RegistryPath, "Handle", IntPtr.Zero);
-                }
-                while (hWnd == IntPtr.Zero);
-                WinApi.NativeHelper.SendArgs(hWnd, Arguments.ValidPathsStr);
+                while (hWnd == IntPtr.Zero && stopwatch.Elapsed.TotalSeconds <= 10);
+                if (hWnd != IntPtr.Zero)
+                    WinApi.NativeHelper.SendArgs(hWnd, Arguments.ValidPathsStr);
             }
         }
     }
