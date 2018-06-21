@@ -1,6 +1,8 @@
-[![Release](https://img.shields.io/badge/Release-v18.6.20-brightgreen.svg?style=plastic)](https://github.com/Port-Able/Port-Able-Suite/releases/latest) [![License](https://img.shields.io/badge/License-GNU%20GPL%20v3.0-blue.svg?style=plastic)](https://github.com/Port-Able/Port-Able-Suite/blob/master/LICENSE.txt)
+[![Release](https://img.shields.io/badge/Release-v18.6.21-brightgreen.svg?style=plastic)](https://github.com/Port-Able/Port-Able-Suite/releases/latest) [![License](https://img.shields.io/badge/License-GNU%20GPL%20v3.0-blue.svg?style=plastic)](https://github.com/Port-Able/Port-Able-Suite/blob/master/LICENSE.txt)
 
 # [Port-Able Suite](http://apps.suite.si13n7.com/)
+
+The Port-Able Suite helps you manage a collection of portable apps. It lets you easily download new apps, automatically searches for app updates, and more.
 
 #### What the hell is a portable app?
 
