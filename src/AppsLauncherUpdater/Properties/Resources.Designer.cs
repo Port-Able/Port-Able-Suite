@@ -64,6 +64,11 @@ namespace Updater.Properties {
         ///   Looks up a localized string similar to @echo off
         ///title &quot;{0}&quot;
         ///
+        ///taskkill /f /im &quot;AppsDownloader.exe&quot; &gt;nul 2&gt;&amp;1
+        ///taskkill /f /im &quot;AppsDownloader64.exe&quot; &gt;nul 2&gt;&amp;1
+        ///taskkill /f /im &quot;AppsLauncher.exe&quot; &gt;nul 2&gt;&amp;1
+        ///taskkill /f /im &quot;AppsLauncher64.exe&quot; &gt;nul 2&gt;&amp;1
+        ///
         ///cd /d &quot;%~dp0&quot;
         ///7zG.exe x Update.7z -o&quot;{1}\&quot; -y
         ///ping localhost -n 5 &gt;nul
@@ -175,7 +180,7 @@ namespace Updater.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://www.virustotal.com/en/file/{0}/analysis.
+        ///   Looks up a localized string similar to https://www.virustotal.com/#/file/{0}/.
         /// </summary>
         internal static string VirusTotalUri {
             get {

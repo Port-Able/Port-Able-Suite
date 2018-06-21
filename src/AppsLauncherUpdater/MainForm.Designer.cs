@@ -279,12 +279,6 @@ namespace Updater
             this.TopMost = true;
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
-            this.changeLogPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.logoBox)).EndInit();
-            this.buttonPanel.ResumeLayout(false);
-            this.statusTableLayoutPanel.ResumeLayout(false);
-            this.statusBarPanel.ResumeLayout(false);
-            this.ResumeLayout(false);
 
         }
 

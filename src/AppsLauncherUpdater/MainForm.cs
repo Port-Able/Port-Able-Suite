@@ -2,28 +2,22 @@ namespace Updater
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Diagnostics;
     using System.Drawing;
     using System.Globalization;
     using System.IO;
-    using System.Linq;
     using System.Threading;
     using System.Windows.Forms;
     using LangResources;
     using Properties;
     using SilDev;
     using SilDev.Forms;
+    using SilDev.Investment;
     using Timer = System.Windows.Forms.Timer;
 
     public partial class MainForm : Form
     {
-        private static readonly List<string> DownloadMirrors = new List<string>();
-        private static readonly string HomeDir = PathEx.Combine(PathEx.LocalDir, "..");
-        private static readonly Guid UpdateGuid = Guid.NewGuid();
-        private static readonly string UpdateDir = PathEx.Combine(Path.GetTempPath(), $"Port-Able-{{{UpdateGuid}}}");
-        private readonly NetEx.AsyncTransfer _transfer = new NetEx.AsyncTransfer();
-        private readonly string _updatePath = Path.Combine(UpdateDir, "Update.7z");
-        private int _countdown = 100;
         private string _hashInfo, _lastFinalStamp, _lastStamp;
         private bool _ipv4, _ipv6;
 
@@ -32,14 +26,31 @@ namespace Updater
             InitializeComponent();
             Icon = Resources.Logo;
             logoBox.Image = Resources.Changelog;
+            Language.SetControlLang(this);
+            changeLogPanel.ResumeLayout(false);
+            ((ISupportInitialize)logoBox).EndInit();
+            buttonPanel.ResumeLayout(false);
+            statusTableLayoutPanel.ResumeLayout(false);
+            statusBarPanel.ResumeLayout(false);
+            ResumeLayout(false);
         }
+
+        private static List<string> DownloadMirrors { get; } = new List<string>();
+
+        private static string HomeDir { get; } = PathEx.Combine(PathEx.LocalDir, "..");
+
+        private static Guid UpdateGuid { get; } = Guid.NewGuid();
+
+        private static string UpdateDir { get; } = PathEx.Combine(Path.GetTempPath(), $"Port-Able-{{{UpdateGuid}}}");
+
+        private NetEx.AsyncTransfer Transferor { get; } = new NetEx.AsyncTransfer();
+
+        private string UpdatePath { get; } = Path.Combine(UpdateDir, "Update.7z");
+
+        private CounterInvestor<int> Counter { get; } = new CounterInvestor<int>();
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            FormEx.Dockable(this);
-
-            Language.SetControlLang(this);
-
             // Check internet connection
             if (!(_ipv4 = NetEx.InternetIsAvailable()) && !(_ipv6 = NetEx.InternetIsAvailable(true)))
             {
@@ -283,6 +294,7 @@ namespace Updater
                         changeLog.DeselectAll();
                     }
                     ShowInTaskbar = true;
+                    FormEx.Dockable(this);
                     return;
                 }
 
@@ -365,7 +377,7 @@ namespace Updater
             if (!string.IsNullOrWhiteSpace(downloadPath))
                 try
                 {
-                    if (_updatePath.ContainsEx(HomeDir))
+                    if (UpdatePath.ContainsEx(HomeDir))
                         throw new NotSupportedException();
                     var updDir = Path.GetDirectoryName(UpdateDir);
                     if (!string.IsNullOrEmpty(updDir))
@@ -373,7 +385,11 @@ namespace Updater
                             Directory.Delete(dir, true);
                     if (!Directory.Exists(UpdateDir))
                         Directory.CreateDirectory(UpdateDir);
-                    foreach (var file in new[] { "7z.dll", "7zG.exe" })
+                    foreach (var file in new[]
+                    {
+                        "7z.dll",
+                        "7zG.exe"
+                    })
                     {
                         var path = PathEx.Combine(PathEx.LocalDir, "Helper\\7z");
                         if (Environment.Is64BitOperatingSystem)
@@ -389,7 +405,7 @@ namespace Updater
                 }
             try
             {
-                _transfer.DownloadFile(downloadPath, _updatePath);
+                Transferor.DownloadFile(downloadPath, UpdatePath);
                 checkDownload.Enabled = true;
             }
             catch (Exception ex)
@@ -402,19 +418,19 @@ namespace Updater
         {
             if (!(sender is Timer owner))
                 return;
-            statusLabel.Text = _transfer.TransferSpeedAd + @" - " + _transfer.DataReceived;
-            statusBar.Value = _transfer.ProgressPercentage;
-            if (!_transfer.IsBusy)
-                _countdown--;
-            if (_countdown == 90)
+            statusLabel.Text = $@"{Transferor.TransferSpeedAd} - {Transferor.DataReceived}";
+            statusBar.Value = Transferor.ProgressPercentage;
+            if (Transferor.IsBusy)
+                return;
+            if (Counter.Increase(0) == 10)
                 statusBar.JumpToEnd();
-            if (_countdown > 0)
+            if (Counter.GetValue(0) < 100)
                 return;
             owner.Enabled = false;
             string helperPath = null;
             try
             {
-                helperPath = Path.GetDirectoryName(_updatePath);
+                helperPath = Path.GetDirectoryName(UpdatePath);
                 if (string.IsNullOrEmpty(helperPath))
                     return;
                 helperPath = Path.Combine(helperPath, "UpdateHelper.bat");
@@ -432,9 +448,8 @@ namespace Updater
                 var lastStamp = _lastFinalStamp;
                 if (string.IsNullOrWhiteSpace(lastStamp))
                     lastStamp = _lastStamp;
-                if (!Ini.Read("MD5", lastStamp, _hashInfo).EqualsEx(_updatePath.EncryptFile()))
+                if (!Ini.Read("MD5", lastStamp, _hashInfo).EqualsEx(UpdatePath.EncryptFile()))
                     throw new InvalidOperationException();
-                AppsSuite_CloseAll();
                 ProcessEx.Start(helperPath, true, ProcessWindowStyle.Hidden);
                 Application.Exit();
             }
@@ -451,8 +466,8 @@ namespace Updater
         {
             try
             {
-                if (_transfer.IsBusy)
-                    _transfer.CancelAsync();
+                if (Transferor.IsBusy)
+                    Transferor.CancelAsync();
                 DirectoryEx.Delete(UpdateDir);
             }
             catch (Exception ex)
@@ -496,15 +511,5 @@ namespace Updater
 
         private void WebBtn_Click(object sender, EventArgs e) =>
             Process.Start(Resources.DevUri);
-
-        private void AppsSuite_CloseAll()
-        {
-            var fileList = new List<string>();
-            fileList.AddRange(Directory.GetFiles(HomeDir, "*.exe", SearchOption.TopDirectoryOnly));
-            fileList.AddRange(Directory.GetFiles(PathEx.LocalDir, "*.exe", SearchOption.AllDirectories).Where(s => !PathEx.LocalPath.EqualsEx(s)));
-            var taskList = fileList.SelectMany(s => Process.GetProcessesByName(Path.GetFileNameWithoutExtension(s))).ToList();
-            if (!ProcessEx.Terminate(taskList))
-                MessageBoxEx.Show(this, Language.GetText(nameof(en_US.InstallErrorMsg)), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        }
     }
 }
