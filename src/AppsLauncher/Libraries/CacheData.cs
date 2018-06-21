@@ -105,6 +105,8 @@
                     _currentTypeData = FileEx.Deserialize<Dictionary<int, int>>(CachePaths.CurrentTypeData);
                 if (_currentTypeData == default(Dictionary<int, int>))
                     _currentTypeData = new Dictionary<int, int>();
+                if (_currentTypeData.Count >= short.MaxValue)
+                    _currentTypeData.Clear();
                 return _currentTypeData;
             }
         }
