@@ -152,16 +152,10 @@
     <None Include="Resources\diagonal_pattern.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\vertical_pattern.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\horizontal_pattern.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\add_13.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Logo16px.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Logo128px.png" />

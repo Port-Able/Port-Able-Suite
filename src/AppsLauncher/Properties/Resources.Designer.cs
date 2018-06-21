@@ -113,16 +113,6 @@ namespace AppsLauncher.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Logo16px {
-            get {
-                object obj = ResourceManager.GetObject("Logo16px", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap Logo256px {
             get {
                 object obj = ResourceManager.GetObject("Logo256px", resourceCulture);
@@ -136,16 +126,6 @@ namespace AppsLauncher.Properties {
         internal static System.Drawing.Bitmap Logo64px {
             get {
                 object obj = ResourceManager.GetObject("Logo64px", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap vertical_pattern {
-            get {
-                object obj = ResourceManager.GetObject("vertical_pattern", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

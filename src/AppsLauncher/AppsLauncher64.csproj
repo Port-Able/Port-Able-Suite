@@ -155,9 +155,6 @@
     <None Include="Resources\diagonal_pattern.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\vertical_pattern.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\horizontal_pattern.png" />
   </ItemGroup>
   <ItemGroup>
@@ -168,9 +165,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Logo.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Logo16px.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Logo64px.png" />
