@@ -164,7 +164,8 @@
                     var mirrors = new[]
                     {
                         "http://downloads.portableapps.com",
-                        "http://downloads2.portableapps.com"
+                        "http://downloads2.portableapps.com",
+                        "http://portableapps.com"
                     };
                     _mirrors[supplier].AddRange(mirrors);
                     break;
