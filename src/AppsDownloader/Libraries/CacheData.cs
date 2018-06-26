@@ -252,7 +252,9 @@
                 var name = Ini.Read(section, "Name", config);
                 if (string.IsNullOrWhiteSpace(name))
                     continue;
-                if (!name.StartsWithEx("jPortable", AppSupplierHosts.PortableApps))
+                if (name.StartsWithEx("jPortable"))
+                    name = name.Replace("jPortable", "Java");
+                if (!name.StartsWithEx(AppSupplierHosts.PortableApps))
                 {
                     var newName = new Regex(", Portable Edition|Portable64|Portable", RegexOptions.IgnoreCase).Replace(name, string.Empty);
                     if (!string.IsNullOrWhiteSpace(newName))
@@ -486,6 +488,8 @@
                 #region Misc
 
                 var requires = Ini.Read(section, "Requires", default(string), config);
+                if (string.IsNullOrEmpty(requires) && section.EqualsEx("jPortableBrowserSwitch"))
+                    requires = "Java|Java64";
                 var requiresList = new List<string>();
                 if (!string.IsNullOrEmpty(requires))
                 {
@@ -512,7 +516,9 @@
                 var requirements = new ReadOnlyCollection<string>(requiresList);
 
                 var advanced = Ini.Read(section, "Advanced", false, config);
-                if (!advanced && (displayVersion.EqualsEx("Discontinued") || displayVersion.ContainsEx("Nightly", "Alpha", "Beta")))
+                if (!advanced && (name.ContainsEx("Discontinued") ||
+                                  displayVersion.EqualsEx("Discontinued") ||
+                                  displayVersion.ContainsEx("Nightly", "Alpha", "Beta")))
                     advanced = true;
 
                 #endregion

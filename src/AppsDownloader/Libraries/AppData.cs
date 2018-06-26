@@ -154,6 +154,8 @@
                 var appDir = CorePaths.AppsDir;
                 switch (Key)
                 {
+                    case "Ghostscript":
+                    case "GPG":
                     case "Java":
                     case "Java64":
                         _installDir = Path.Combine(appDir, "CommonFiles", Key);

@@ -260,11 +260,19 @@ namespace AppsDownloader.Windows
 
         private void AppsList_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            var appData = CacheData.AppInfo?.FirstOrDefault(x => x.Key.EqualsEx(appsList.Items[e.Index].Name));
+            var appData = CacheData.AppInfo?.FirstOrDefault(x => x.Key.Equals(appsList.Items[e.Index].Name));
             if (appData?.Requirements?.Any() != true)
                 return;
+            var checkedNames = appsList.CheckedItems.Cast<ListViewItem>().Where(x => !x.Name.EqualsEx(appData.Key)).Select(x => x.Name).ToArray();
+            var requirements = appData.Requirements;
+            if (checkedNames.Any())
+            {
+                var equalReqsChecked = CacheData.AppInfo.Where(x => !requirements.Contains(x.Key) && requirements.SequenceEqual(x.Requirements) && checkedNames.Contains(x.Key));
+                if (equalReqsChecked.Any())
+                    return;
+            }
             var installedApps = AppSupply.FindInstalledApps();
-            foreach (var requirement in appData.Requirements)
+            foreach (var requirement in requirements)
             {
                 if (installedApps.Any(x => x.Requirements.Contains(requirement)))
                     continue;

@@ -23,6 +23,7 @@
 
     internal static class AppSupply
     {
+        private static List<AppData> _installedApps;
         private static Dictionary<AppSuppliers, List<string>> _mirrors;
 
         internal static bool AppIsInstalled(AppData appData)
@@ -33,6 +34,7 @@
             const string pattern = "*.exe";
             switch (appData.Key)
             {
+                case "Ghostscript":
                 case "Java":
                 case "Java64":
                     dir = Path.Combine(dir, "bin");
@@ -65,8 +67,12 @@
             return appInstaller;
         }
 
-        internal static List<AppData> FindInstalledApps() =>
-            CacheData.AppInfo.Where(AppIsInstalled).ToList();
+        internal static List<AppData> FindInstalledApps(bool force = false)
+        {
+            if (force || _installedApps == default(List<AppData>))
+                _installedApps = CacheData.AppInfo.Where(AppIsInstalled).ToList();
+            return _installedApps;
+        }
 
         internal static List<AppData> FindOutdatedApps()
         {
