@@ -90,6 +90,12 @@
     <Compile Include="Windows\LangSelectionForm.designer.cs">
       <DependentUpon>LangSelectionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\SettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Libraries\Settings.cs" />
     <Compile Include="Libraries\Recovery.cs" />
     <Compile Include="Windows\MainForm.cs">
@@ -113,6 +119,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\LangSelectionForm.resx">
       <DependentUpon>LangSelectionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -139,9 +148,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Logo.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Box.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

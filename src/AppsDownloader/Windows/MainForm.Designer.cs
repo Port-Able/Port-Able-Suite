@@ -47,11 +47,9 @@ namespace AppsDownloader.Windows
             this.appStatusLabel = new System.Windows.Forms.Label();
             this.fileStatusLabel = new System.Windows.Forms.Label();
             this.settingsAreaBorder = new System.Windows.Forms.Panel();
-            this.settingsArea = new System.Windows.Forms.Panel();
-            this.highlightInstalledCheck = new System.Windows.Forms.CheckBox();
+            this.settingsAreaPanel = new System.Windows.Forms.Panel();
+            this.settingsBtn = new System.Windows.Forms.Panel();
             this.searchBox = new System.Windows.Forms.TextBox();
-            this.showColorsCheck = new System.Windows.Forms.CheckBox();
-            this.showGroupsCheck = new System.Windows.Forms.CheckBox();
             this.buttonAreaBorder = new System.Windows.Forms.Panel();
             this.urlStatusLabel = new System.Windows.Forms.Label();
             this.timeStatusLabel = new System.Windows.Forms.Label();
@@ -85,9 +83,10 @@ namespace AppsDownloader.Windows
             this.appMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.appMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
-            this.imageList = new System.Windows.Forms.ImageList(this.components);
+            this.smallImageList = new System.Windows.Forms.ImageList(this.components);
             this.searchResultBlinker = new System.Windows.Forms.Timer(this.components);
-            this.settingsArea.SuspendLayout();
+            this.largeImageList = new System.Windows.Forms.ImageList(this.components);
+            this.settingsAreaPanel.SuspendLayout();
             this.buttonAreaPanel.SuspendLayout();
             this.statusAreaLayoutPanel.SuspendLayout();
             this.statusAreaRightPanel.SuspendLayout();
@@ -160,86 +159,57 @@ namespace AppsDownloader.Windows
             // 
             this.settingsAreaBorder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.settingsAreaBorder.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.settingsAreaBorder.Location = new System.Drawing.Point(0, 503);
+            this.settingsAreaBorder.Location = new System.Drawing.Point(0, 500);
             this.settingsAreaBorder.Name = "settingsAreaBorder";
             this.settingsAreaBorder.Size = new System.Drawing.Size(744, 1);
             this.settingsAreaBorder.TabIndex = 0;
             // 
-            // settingsArea
+            // settingsAreaPanel
             // 
-            this.settingsArea.BackColor = System.Drawing.Color.Transparent;
-            this.settingsArea.Controls.Add(this.highlightInstalledCheck);
-            this.settingsArea.Controls.Add(this.searchBox);
-            this.settingsArea.Controls.Add(this.showColorsCheck);
-            this.settingsArea.Controls.Add(this.showGroupsCheck);
-            this.settingsArea.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.settingsArea.Location = new System.Drawing.Point(0, 504);
-            this.settingsArea.Name = "settingsArea";
-            this.settingsArea.Size = new System.Drawing.Size(744, 32);
-            this.settingsArea.TabIndex = 0;
+            this.settingsAreaPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(84)))), ((int)(((byte)(84)))), ((int)(((byte)(86)))));
+            this.settingsAreaPanel.Controls.Add(this.settingsBtn);
+            this.settingsAreaPanel.Controls.Add(this.searchBox);
+            this.settingsAreaPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.settingsAreaPanel.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.settingsAreaPanel.Location = new System.Drawing.Point(0, 501);
+            this.settingsAreaPanel.Name = "settingsAreaPanel";
+            this.settingsAreaPanel.Padding = new System.Windows.Forms.Padding(5);
+            this.settingsAreaPanel.Size = new System.Drawing.Size(744, 32);
+            this.settingsAreaPanel.TabIndex = 0;
             // 
-            // highlightInstalledCheck
+            // settingsBtn
             // 
-            this.highlightInstalledCheck.AutoSize = true;
-            this.highlightInstalledCheck.Checked = true;
-            this.highlightInstalledCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.highlightInstalledCheck.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.highlightInstalledCheck.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.highlightInstalledCheck.Location = new System.Drawing.Point(313, 7);
-            this.highlightInstalledCheck.Name = "highlightInstalledCheck";
-            this.highlightInstalledCheck.Size = new System.Drawing.Size(127, 19);
-            this.highlightInstalledCheck.TabIndex = 3;
-            this.highlightInstalledCheck.Text = "Highlight Installed";
-            this.highlightInstalledCheck.UseVisualStyleBackColor = true;
-            this.highlightInstalledCheck.CheckedChanged += new System.EventHandler(this.HighlightInstalledCheck_CheckedChanged);
+            this.settingsBtn.BackColor = System.Drawing.Color.Transparent;
+            this.settingsBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.settingsBtn.Dock = System.Windows.Forms.DockStyle.Left;
+            this.settingsBtn.ForeColor = System.Drawing.Color.AliceBlue;
+            this.settingsBtn.Location = new System.Drawing.Point(5, 5);
+            this.settingsBtn.Name = "settingsBtn";
+            this.settingsBtn.Size = new System.Drawing.Size(22, 22);
+            this.settingsBtn.TabIndex = 6;
+            this.settingsBtn.Click += new System.EventHandler(this.SettingsBtn_Click);
+            this.settingsBtn.MouseEnter += new System.EventHandler(this.SettingBtn_MouseEnterLeave);
+            this.settingsBtn.MouseLeave += new System.EventHandler(this.SettingBtn_MouseEnterLeave);
             // 
             // searchBox
             // 
-            this.searchBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.searchBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.searchBox.Dock = System.Windows.Forms.DockStyle.Right;
             this.searchBox.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.searchBox.Location = new System.Drawing.Point(517, 5);
+            this.searchBox.Location = new System.Drawing.Point(521, 5);
             this.searchBox.Multiline = true;
             this.searchBox.Name = "searchBox";
             this.searchBox.Size = new System.Drawing.Size(218, 22);
-            this.searchBox.TabIndex = 4;
+            this.searchBox.TabIndex = 5;
             this.searchBox.TextChanged += new System.EventHandler(this.SearchBox_TextChanged);
             this.searchBox.Enter += new System.EventHandler(this.SearchBox_Enter);
             this.searchBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SearchBox_KeyDown);
-            // 
-            // showColorsCheck
-            // 
-            this.showColorsCheck.AutoSize = true;
-            this.showColorsCheck.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.showColorsCheck.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.showColorsCheck.Location = new System.Drawing.Point(150, 7);
-            this.showColorsCheck.Name = "showColorsCheck";
-            this.showColorsCheck.Size = new System.Drawing.Size(132, 19);
-            this.showColorsCheck.TabIndex = 2;
-            this.showColorsCheck.Text = "Show Group Colors";
-            this.showColorsCheck.UseVisualStyleBackColor = true;
-            this.showColorsCheck.CheckedChanged += new System.EventHandler(this.ShowColorsCheck_CheckedChanged);
-            // 
-            // showGroupsCheck
-            // 
-            this.showGroupsCheck.AutoSize = true;
-            this.showGroupsCheck.Checked = true;
-            this.showGroupsCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.showGroupsCheck.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.showGroupsCheck.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.showGroupsCheck.Location = new System.Drawing.Point(14, 7);
-            this.showGroupsCheck.Name = "showGroupsCheck";
-            this.showGroupsCheck.Size = new System.Drawing.Size(100, 19);
-            this.showGroupsCheck.TabIndex = 1;
-            this.showGroupsCheck.Text = "Show Groups";
-            this.showGroupsCheck.UseVisualStyleBackColor = true;
-            this.showGroupsCheck.CheckedChanged += new System.EventHandler(this.ShowGroupsCheck_CheckedChanged);
             // 
             // buttonAreaBorder
             // 
             this.buttonAreaBorder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.buttonAreaBorder.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonAreaBorder.Location = new System.Drawing.Point(0, 536);
+            this.buttonAreaBorder.Location = new System.Drawing.Point(0, 533);
             this.buttonAreaBorder.Name = "buttonAreaBorder";
             this.buttonAreaBorder.Size = new System.Drawing.Size(744, 1);
             this.buttonAreaBorder.TabIndex = 0;
@@ -270,11 +240,13 @@ namespace AppsDownloader.Windows
             // 
             // buttonAreaPanel
             // 
+            this.buttonAreaPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(84)))), ((int)(((byte)(84)))), ((int)(((byte)(86)))));
             this.buttonAreaPanel.BackgroundImage = global::AppsDownloader.Properties.Resources.diagonal_pattern;
             this.buttonAreaPanel.Controls.Add(this.cancelBtn);
             this.buttonAreaPanel.Controls.Add(this.startBtn);
             this.buttonAreaPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonAreaPanel.Location = new System.Drawing.Point(0, 537);
+            this.buttonAreaPanel.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.buttonAreaPanel.Location = new System.Drawing.Point(0, 534);
             this.buttonAreaPanel.Name = "buttonAreaPanel";
             this.buttonAreaPanel.Size = new System.Drawing.Size(744, 48);
             this.buttonAreaPanel.TabIndex = 0;
@@ -283,7 +255,8 @@ namespace AppsDownloader.Windows
             // 
             this.cancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelBtn.BackColor = System.Drawing.SystemColors.Control;
-            this.cancelBtn.Location = new System.Drawing.Point(651, 12);
+            this.cancelBtn.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.cancelBtn.Location = new System.Drawing.Point(653, 12);
             this.cancelBtn.Name = "cancelBtn";
             this.cancelBtn.Size = new System.Drawing.Size(75, 24);
             this.cancelBtn.TabIndex = 101;
@@ -296,11 +269,12 @@ namespace AppsDownloader.Windows
             this.startBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.startBtn.BackColor = System.Drawing.SystemColors.Control;
             this.startBtn.Enabled = false;
-            this.startBtn.Location = new System.Drawing.Point(559, 12);
+            this.startBtn.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.startBtn.Location = new System.Drawing.Point(561, 12);
             this.startBtn.Name = "startBtn";
             this.startBtn.Size = new System.Drawing.Size(75, 24);
             this.startBtn.TabIndex = 100;
-            this.startBtn.Text = "OK";
+            this.startBtn.Text = "Start";
             this.startBtn.UseVisualStyleBackColor = false;
             this.startBtn.Click += new System.EventHandler(this.StartBtn_Click);
             // 
@@ -325,7 +299,7 @@ namespace AppsDownloader.Windows
             this.statusAreaLayoutPanel.Controls.Add(this.statusAreaRightPanel, 1, 0);
             this.statusAreaLayoutPanel.Controls.Add(this.statusAreaLeftPanel, 0, 0);
             this.statusAreaLayoutPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.statusAreaLayoutPanel.Location = new System.Drawing.Point(0, 5);
+            this.statusAreaLayoutPanel.Location = new System.Drawing.Point(0, 8);
             this.statusAreaLayoutPanel.Name = "statusAreaLayoutPanel";
             this.statusAreaLayoutPanel.RowCount = 1;
             this.statusAreaLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -428,19 +402,20 @@ namespace AppsDownloader.Windows
             // 
             this.statusAreaBorder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.statusAreaBorder.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.statusAreaBorder.Location = new System.Drawing.Point(0, 585);
+            this.statusAreaBorder.Location = new System.Drawing.Point(0, 582);
             this.statusAreaBorder.Name = "statusAreaBorder";
             this.statusAreaBorder.Size = new System.Drawing.Size(744, 1);
             this.statusAreaBorder.TabIndex = 0;
             // 
             // downloadProgress
             // 
+            this.downloadProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.downloadProgress.BackColor = System.Drawing.Color.Gainsboro;
             this.downloadProgress.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.downloadProgress.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.downloadProgress.Location = new System.Drawing.Point(0, 0);
+            this.downloadProgress.Location = new System.Drawing.Point(-2, -1);
             this.downloadProgress.Name = "downloadProgress";
-            this.downloadProgress.Size = new System.Drawing.Size(744, 5);
+            this.downloadProgress.Size = new System.Drawing.Size(748, 10);
             this.downloadProgress.TabIndex = 0;
             // 
             // downloadHandler
@@ -458,9 +433,9 @@ namespace AppsDownloader.Windows
             this.statusAreaPanel.Controls.Add(this.downloadProgress);
             this.statusAreaPanel.Controls.Add(this.statusAreaLayoutPanel);
             this.statusAreaPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.statusAreaPanel.Location = new System.Drawing.Point(0, 586);
+            this.statusAreaPanel.Location = new System.Drawing.Point(0, 583);
             this.statusAreaPanel.Name = "statusAreaPanel";
-            this.statusAreaPanel.Size = new System.Drawing.Size(744, 75);
+            this.statusAreaPanel.Size = new System.Drawing.Size(744, 78);
             this.statusAreaPanel.TabIndex = 0;
             this.statusAreaPanel.Visible = false;
             // 
@@ -522,7 +497,7 @@ namespace AppsDownloader.Windows
             this.appsList.Location = new System.Drawing.Point(0, 0);
             this.appsList.MultiSelect = false;
             this.appsList.Name = "appsList";
-            this.appsList.Size = new System.Drawing.Size(744, 579);
+            this.appsList.Size = new System.Drawing.Size(744, 577);
             this.appsList.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.appsList.TabIndex = 0;
             this.appsList.TabStop = false;
@@ -621,34 +596,42 @@ namespace AppsDownloader.Windows
             this.appMenuItem4.Text = "Show advanced information";
             this.appMenuItem4.Click += new System.EventHandler(this.AppMenuItem_Click);
             // 
-            // imageList
+            // smallImageList
             // 
-            this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            this.imageList.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.smallImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.smallImageList.ImageSize = new System.Drawing.Size(16, 16);
+            this.smallImageList.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // searchResultBlinker
             // 
             this.searchResultBlinker.Interval = 300;
             this.searchResultBlinker.Tick += new System.EventHandler(this.SearchResultBlinker_Tick);
             // 
+            // largeImageList
+            // 
+            this.largeImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.largeImageList.ImageSize = new System.Drawing.Size(32, 32);
+            this.largeImageList.TransparentColor = System.Drawing.Color.Transparent;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(84)))), ((int)(((byte)(84)))), ((int)(((byte)(86)))));
+            this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(744, 661);
             this.Controls.Add(this.settingsAreaBorder);
-            this.Controls.Add(this.settingsArea);
+            this.Controls.Add(this.settingsAreaPanel);
             this.Controls.Add(this.buttonAreaBorder);
             this.Controls.Add(this.buttonAreaPanel);
             this.Controls.Add(this.statusAreaBorder);
             this.Controls.Add(this.statusAreaPanel);
             this.Controls.Add(this.appsList);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ForeColor = System.Drawing.SystemColors.WindowText;
             this.MinimumSize = new System.Drawing.Size(760, 125);
             this.Name = "MainForm";
             this.Opacity = 0D;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Apps Downloader";
             this.TopMost = true;
@@ -669,11 +652,8 @@ namespace AppsDownloader.Windows
         private System.Windows.Forms.Label appStatusLabel;
         private System.Windows.Forms.Label fileStatusLabel;
         private System.Windows.Forms.Panel settingsAreaBorder;
-        private System.Windows.Forms.Panel settingsArea;
-        private System.Windows.Forms.CheckBox highlightInstalledCheck;
+        private System.Windows.Forms.Panel settingsAreaPanel;
         private System.Windows.Forms.TextBox searchBox;
-        private System.Windows.Forms.CheckBox showColorsCheck;
-        private System.Windows.Forms.CheckBox showGroupsCheck;
         private System.Windows.Forms.Panel buttonAreaBorder;
         private System.Windows.Forms.Label urlStatusLabel;
         private System.Windows.Forms.Label timeStatusLabel;
@@ -705,10 +685,12 @@ namespace AppsDownloader.Windows
         private System.Windows.Forms.ToolStripMenuItem appMenuItem2;
         private System.Windows.Forms.ToolStripSeparator appMenuItemSeparator1;
         private System.Windows.Forms.ToolStripMenuItem appMenuItem3;
-        private System.Windows.Forms.ImageList imageList;
+        private System.Windows.Forms.ImageList smallImageList;
         private System.Windows.Forms.Timer searchResultBlinker;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem appMenuItem4;
+        private System.Windows.Forms.ImageList largeImageList;
+        private System.Windows.Forms.Panel settingsBtn;
     }
 }
 

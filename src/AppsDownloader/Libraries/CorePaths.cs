@@ -6,7 +6,7 @@
     internal static class CorePaths
     {
         private static string[] _appDirs;
-        private static string _appsDir, _appImages, _appsLauncher, _appsSuiteUpdater, _archiver, _homeDir, _redirectUrl, _tempDir;
+        private static string _appsDir, _appImages, _appImagesLarge, _appsLauncher, _appsSuiteUpdater, _archiver, _homeDir, _redirectUrl, _tempDir;
 
         internal static string AppsDir
         {
@@ -42,6 +42,16 @@
                 if (_appImages == default(string))
                     _appImages = Path.Combine(HomeDir, "Assets\\AppImages.dat");
                 return _appImages;
+            }
+        }
+
+        internal static string AppImagesLarge
+        {
+            get
+            {
+                if (_appImagesLarge == default(string))
+                    _appImagesLarge = Path.Combine(HomeDir, "Assets\\AppImagesLarge.dat");
+                return _appImagesLarge;
             }
         }
 

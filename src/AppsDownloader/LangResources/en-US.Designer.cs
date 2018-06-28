@@ -92,6 +92,15 @@ namespace AppsDownloader.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to App List.
+        /// </summary>
+        internal static string appListGroupBox {
+            get {
+                return ResourceManager.GetString("appListGroupBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Check.
         /// </summary>
         internal static string appMenuItem1 {
@@ -365,6 +374,15 @@ namespace AppsDownloader.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Group Colors.
+        /// </summary>
+        internal static string groupColorsGroupBox {
+            get {
+                return ResourceManager.GetString("groupColorsGroupBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Highlight Installed.
         /// </summary>
         internal static string highlightInstalledCheck {
@@ -460,6 +478,15 @@ namespace AppsDownloader.LangResources {
         internal static string listViewGroup11 {
             get {
                 return ResourceManager.GetString("listViewGroup11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to #Custom.
+        /// </summary>
+        internal static string listViewGroup12 {
+            get {
+                return ResourceManager.GetString("listViewGroup12", resourceCulture);
             }
         }
         
@@ -577,6 +604,15 @@ namespace AppsDownloader.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        internal static string SettingsForm {
+            get {
+                return ResourceManager.GetString("SettingsForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Group Colors.
         /// </summary>
         internal static string showColorsCheck {
@@ -591,6 +627,24 @@ namespace AppsDownloader.LangResources {
         internal static string showGroupsCheck {
             get {
                 return ResourceManager.GetString("showGroupsCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Large Images.
+        /// </summary>
+        internal static string showLargeImagesCheck {
+            get {
+                return ResourceManager.GetString("showLargeImagesCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        internal static string startBtn {
+            get {
+                return ResourceManager.GetString("startBtn", resourceCulture);
             }
         }
         

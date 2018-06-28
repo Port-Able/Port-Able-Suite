@@ -51,23 +51,72 @@ namespace AppsDownloader.Windows
 
             appsList.ListViewItemSorter = new ListViewEx.AlphanumericComparer();
             appsList.SetDoubleBuffer();
+
+            GroupColors = new Dictionary<string, Color>
+            {
+                {
+                    "listViewGroup1",
+                    Settings.Window.Colors.GroupColor1
+                },
+                {
+                    "listViewGroup2",
+                    Settings.Window.Colors.GroupColor2
+                },
+                {
+                    "listViewGroup3",
+                    Settings.Window.Colors.GroupColor3
+                },
+                {
+                    "listViewGroup4",
+                    Settings.Window.Colors.GroupColor4
+                },
+                {
+                    "listViewGroup5",
+                    Settings.Window.Colors.GroupColor5
+                },
+                {
+                    "listViewGroup6",
+                    Settings.Window.Colors.GroupColor6
+                },
+                {
+                    "listViewGroup7",
+                    Settings.Window.Colors.GroupColor7
+                },
+                {
+                    "listViewGroup8",
+                    Settings.Window.Colors.GroupColor8
+                },
+                {
+                    "listViewGroup9",
+                    Settings.Window.Colors.GroupColor9
+                },
+                {
+                    "listViewGroup11",
+                    Settings.Window.Colors.GroupColor11
+                },
+                {
+                    "listViewGroup12",
+                    Settings.Window.Colors.GroupColor12
+                }
+            };
+
             appMenuItem3.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Network);
             appMenuItem4.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Asterisk);
             appMenu.EnableAnimation();
             appMenu.SetFixedSingle();
+
             statusAreaLeftPanel.SetDoubleBuffer();
             statusAreaRightPanel.SetDoubleBuffer();
 
-            showColorsCheck.Checked = Settings.ShowGroupColors;
-            highlightInstalledCheck.Checked = Settings.HighlightInstalled;
+            settingsBtn.BackgroundImage = CacheData.GetSystemImage(ResourcesEx.IconIndex.SystemControl, true);
             searchBox.DrawSearchSymbol(searchBox.ForeColor);
 
-            settingsArea.ResumeLayout(false);
-            settingsArea.PerformLayout();
+            settingsAreaPanel.ResumeLayout(false);
+            settingsAreaPanel.PerformLayout();
             buttonAreaPanel.ResumeLayout(false);
             statusAreaLayoutPanel.ResumeLayout(false);
-            statusAreaRightPanel.ResumeLayout(false);
             statusAreaLeftPanel.ResumeLayout(false);
+            statusAreaRightPanel.ResumeLayout(false);
             statusAreaPanel.ResumeLayout(false);
             appMenu.ResumeLayout(false);
             ResumeLayout(false);
@@ -83,20 +132,7 @@ namespace AppsDownloader.Windows
 
         private ListView AppsListClone { get; } = new ListView();
 
-        private Dictionary<string, Color> GroupColors { get; } = new Dictionary<string, Color>
-        {
-            { "listViewGroup1", Color.FromArgb(0xff, 0xff, 0x99) },
-            { "listViewGroup2", Color.FromArgb(0xff, 0xff, 0xcc) },
-            { "listViewGroup3", Color.FromArgb(0xd5, 0xd5, 0xdf) },
-            { "listViewGroup4", Color.FromArgb(0xbb, 0xe9, 0xec) },
-            { "listViewGroup5", Color.FromArgb(0xee, 0xd9, 0xce) },
-            { "listViewGroup6", Color.FromArgb(0xff, 0xcc, 0xff) },
-            { "listViewGroup7", Color.FromArgb(0xcc, 0xcc, 0xff) },
-            { "listViewGroup8", Color.FromArgb(0xb5, 0xff, 0x99) },
-            { "listViewGroup9", Color.FromArgb(0xc5, 0xe2, 0xe2) },
-            { "listViewGroup11", Color.FromArgb(0xff, 0x95, 0x95) },
-            { nameof(appsList), Color.FromArgb(0xff, 0x14, 0x93) }
-        };
+        private Dictionary<string, Color> GroupColors { get; }
 
         private CounterInvestor<int> Counter { get; } = new CounterInvestor<int>();
 
@@ -114,9 +150,6 @@ namespace AppsDownloader.Windows
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            showColorsCheck.Left = showGroupsCheck.Right + 4;
-            highlightInstalledCheck.Left = showColorsCheck.Right + 4;
-
             MinimumSize = Settings.Window.Size.Minimum;
             MaximumSize = Settings.Window.Size.Maximum;
             if (Settings.Window.Size.Width > Settings.Window.Size.Minimum.Width)
@@ -147,7 +180,10 @@ namespace AppsDownloader.Windows
             try
             {
                 if (!CacheData.AppImages.Any())
-                    throw new InvalidOperationException("No app image found.");
+                    throw new InvalidOperationException("No small app image found.");
+
+                if (!CacheData.AppImagesLarge.Any())
+                    throw new InvalidOperationException("No large app image found.");
 
                 if (!CacheData.AppInfo.Any())
                     throw new InvalidOperationException("No app data found.");
@@ -335,13 +371,8 @@ namespace AppsDownloader.Windows
             if (searchResultBlinker.Enabled)
                 searchResultBlinker.Enabled = false;
             var appInfo = new List<AppData>();
-            highlightInstalledCheck.Text = Language.GetText(highlightInstalledCheck);
-            if (highlightInstalledCheck.Checked)
-            {
+            if (Settings.Window.HighlightInstalled)
                 appInfo = AppSupply.FindInstalledApps();
-                if (appInfo.Count > 0)
-                    highlightInstalledCheck.Text = $@"{highlightInstalledCheck.Text} ({appInfo.Count})";
-            }
             appsList.SetDoubleBuffer(false);
             appsList.BeginUpdate();
             try
@@ -357,15 +388,15 @@ namespace AppsDownloader.Windows
                         item.ForeColor = SystemColors.HighlightText;
                         continue;
                     }
-                    if (highlightInstalledCheck.Checked && appInfo.Any(x => x.Key.EqualsEx(item.Name)))
+                    if (Settings.Window.HighlightInstalled && appInfo.Any(x => x.Key.EqualsEx(item.Name)))
                     {
                         item.Font = new Font(appsList.Font, FontStyle.Italic);
-                        item.BackColor = !showColorsCheck.Checked && appsList.BackColor.IsDarkDark() ? darkGreen : lightGreen;
-                        item.ForeColor = !showColorsCheck.Checked && appsList.BackColor.IsDarkDark() ? lightGreen : darkGreen;
+                        item.BackColor = !Settings.Window.ShowGroupColors && appsList.BackColor.IsDarkDark() ? darkGreen : lightGreen;
+                        item.ForeColor = !Settings.Window.ShowGroupColors && appsList.BackColor.IsDarkDark() ? lightGreen : darkGreen;
                         continue;
                     }
                     item.Font = appsList.Font;
-                    if (!showColorsCheck.Checked)
+                    if (!Settings.Window.ShowGroupColors)
                     {
                         item.BackColor = appsList.BackColor;
                         item.ForeColor = appsList.ForeColor;
@@ -380,10 +411,10 @@ namespace AppsDownloader.Windows
                             break;
                         default:
                             if (GroupColors.TryGetValue(groupName, out var color) ||
-                                GroupColors.TryGetValue(nameof(appsList), out color))
+                                GroupColors.TryGetValue("listViewGroup12", out color))
                             {
                                 item.BackColor = color;
-                                item.ForeColor = color.IsLightLight() ? Color.Black : Color.White;
+                                item.ForeColor = color.IsDarkDark() ? Color.White : Color.Black;
                                 break;
                             }
                             color = ColorEx.GetRandomColor(0).EnsureDark();
@@ -395,7 +426,7 @@ namespace AppsDownloader.Windows
                     if (item.BackColor == appsList.BackColor)
                         continue;
 
-                    if (highlightInstalledCheck.Checked && appInfo.Any(x => x.Key.EqualsEx(item.Name)))
+                    if (Settings.Window.HighlightInstalled && appInfo.Any(x => x.Key.EqualsEx(item.Name)))
                         item.BackColor = ControlPaint.LightLight(item.BackColor);
                 }
             }
@@ -410,26 +441,35 @@ namespace AppsDownloader.Windows
         {
             var index = 0;
             var appImages = CacheData.AppImages ?? new Dictionary<string, Image>();
+            var appImagesLarge = CacheData.AppImagesLarge ?? new Dictionary<string, Image>();
             if (Shareware.Enabled)
             {
-                var appImagesName = Path.GetFileName(CorePaths.AppImages);
+                var names = new[]
+                {
+                    Path.GetFileName(CorePaths.AppImages),
+                    Path.GetFileName(CorePaths.AppImagesLarge)
+                };
                 foreach (var srv in Shareware.GetAddresses())
                 {
                     var usr = Shareware.GetUser(srv);
                     var pwd = Shareware.GetPassword(srv);
-                    var url = PathEx.AltCombine(srv, appImagesName);
-                    if (Log.DebugMode > 0)
-                        Log.Write($"Shareware: Looking for '{{{Shareware.FindAddressKey(srv).Encode()}}}/{appImagesName}'.");
-                    if (!NetEx.FileIsAvailable(url, usr, pwd, 60000))
-                        continue;
-                    var swAppImages = NetEx.Transfer.DownloadData(url, usr, pwd)?.DeserializeObject<Dictionary<string, Image>>();
-                    if (swAppImages == null)
-                        continue;
-                    foreach (var pair in swAppImages)
+                    for (var i = 0; i < names.Length; i++)
                     {
-                        if (appImages.ContainsKey(pair.Key))
+                        var name = names[i];
+                        var url = PathEx.AltCombine(srv, name);
+                        if (Log.DebugMode > 0)
+                            Log.Write($"Shareware: Looking for '{{{Shareware.FindAddressKey(srv).Encode()}}}/{name}'.");
+                        if (!NetEx.FileIsAvailable(url, usr, pwd, 60000))
                             continue;
-                        appImages.Add(pair.Key, pair.Value);
+                        var swAppImages = NetEx.Transfer.DownloadData(url, usr, pwd)?.DeserializeObject<Dictionary<string, Image>>();
+                        if (swAppImages == null)
+                            continue;
+                        foreach (var pair in swAppImages)
+                        {
+                            if ((i == 0 ? appImages : appImagesLarge).ContainsKey(pair.Key))
+                                continue;
+                            (i == 0 ? appImages : appImagesLarge).Add(pair.Key, pair.Value);
+                        }
                     }
                 }
             }
@@ -471,16 +511,33 @@ namespace AppsDownloader.Windows
                 {
                     var img = appImages[appData.Key];
                     if (img != null)
-                        imageList.Images.Add(appData.Key, img);
+                        smallImageList.Images.Add(appData.Key, img);
                 }
 
-                if (!imageList.Images.ContainsKey(appData.Key))
+                if (appImagesLarge?.ContainsKey(appData.Key) == true)
+                {
+                    var img = appImagesLarge[appData.Key];
+                    if (img != null)
+                        largeImageList.Images.Add(appData.Key, img);
+                }
+
+                var smallImageAdded = smallImageList.Images.ContainsKey(appData.Key);
+                var largeImageAdded = largeImageList.Images.ContainsKey(appData.Key);
+                if (!smallImageAdded || !largeImageAdded)
                 {
                     if (Log.DebugMode == 0)
                         continue;
-                    Log.Write($"Cache: Could not find target '{CachePaths.AppImages}:{appData.Key}'.");
                     appData.Advanced = true;
-                    imageList.Images.Add(appData.Key, Resources.Box);
+                    if (!smallImageAdded)
+                    {
+                        Log.Write($"Cache: Could not find target '{CachePaths.AppImages}:{appData.Key}'.");
+                        smallImageList.Images.Add(appData.Key, CacheData.GetSystemImage(ResourcesEx.IconIndex.Stop));
+                    }
+                    if (!largeImageAdded)
+                    {
+                        Log.Write($"Cache: Could not find target '{CachePaths.AppImagesLarge}:{appData.Key}'.");
+                        largeImageList.Images.Add(appData.Key, CacheData.GetSystemImage(ResourcesEx.IconIndex.Stop, true));
+                    }
                 }
 
                 if (appData.ServerKey != null)
@@ -531,10 +588,9 @@ namespace AppsDownloader.Windows
             if (Log.DebugMode > 0)
                 Log.Write($"Interface: {appsList.Items.Count} {(appsList.Items.Count == 1 ? "App" : "Apps")} has been added!");
 
-            appsList.SmallImageList = imageList;
+            appsList.ShowGroups = Settings.Window.ShowGroups;
+            appsList.SmallImageList = Settings.Window.LargeImages ? largeImageList : smallImageList;
             appsList.EndUpdate();
-
-            showGroupsCheck.Checked = Settings.ShowGroups;
             AppsListShowColors();
 
             AppsListClone.Groups.Clear();
@@ -578,7 +634,7 @@ namespace AppsDownloader.Windows
                     var isChecked = !selectedItem.Checked;
                     for (var i = 0; i < appsList.Items.Count; i++)
                     {
-                        if (showGroupsCheck.Checked && selectedItem.Group != appsList.Items[i].Group)
+                        if (Settings.Window.ShowGroups && selectedItem.Group != appsList.Items[i].Group)
                             continue;
                         appsList.Items[i].Checked = isChecked;
                     }
@@ -602,22 +658,47 @@ namespace AppsDownloader.Windows
             }
         }
 
-        private void ShowGroupsCheck_CheckedChanged(object sender, EventArgs e)
+        private void SettingBtn_MouseEnterLeave(object sender, EventArgs e)
         {
-            Settings.ShowGroups = (sender as CheckBox)?.Checked == true;
-            appsList.ShowGroups = Settings.ShowGroups;
+            if (!(sender is Panel owner))
+                return;
+            owner.BackgroundImage = owner.BackgroundImage.SwitchGrayScale(owner);
         }
 
-        private void ShowColorsCheck_CheckedChanged(object sender, EventArgs e)
+        private void SettingsBtn_Click(object sender, EventArgs e)
         {
-            Settings.ShowGroupColors = (sender as CheckBox)?.Checked == true;
+            var result = DialogResult.None;
+            try
+            {
+                using (Form dialog = new SettingsForm())
+                {
+                    dialog.TopMost = true;
+                    dialog.Plus();
+                    result = dialog.ShowDialog();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+            if (result != DialogResult.Yes)
+                return;
+            appsList.SuspendLayout();
+            GroupColors["listViewGroup1"] = Settings.Window.Colors.GroupColor1;
+            GroupColors["listViewGroup2"] = Settings.Window.Colors.GroupColor2;
+            GroupColors["listViewGroup3"] = Settings.Window.Colors.GroupColor3;
+            GroupColors["listViewGroup4"] = Settings.Window.Colors.GroupColor4;
+            GroupColors["listViewGroup5"] = Settings.Window.Colors.GroupColor5;
+            GroupColors["listViewGroup6"] = Settings.Window.Colors.GroupColor6;
+            GroupColors["listViewGroup7"] = Settings.Window.Colors.GroupColor7;
+            GroupColors["listViewGroup8"] = Settings.Window.Colors.GroupColor8;
+            GroupColors["listViewGroup9"] = Settings.Window.Colors.GroupColor9;
+            GroupColors["listViewGroup11"] = Settings.Window.Colors.GroupColor11;
+            GroupColors["listViewGroup12"] = Settings.Window.Colors.GroupColor12;
+            appsList.ShowGroups = Settings.Window.ShowGroups;
             AppsListShowColors();
-        }
-
-        private void HighlightInstalledCheck_CheckedChanged(object sender, EventArgs e)
-        {
-            Settings.HighlightInstalled = (sender as CheckBox)?.Checked == true;
-            AppsListShowColors();
+            appsList.SmallImageList = Settings.Window.LargeImages ? largeImageList : smallImageList;
+            appsList.ResumeLayout(true);
         }
 
         private void SearchBox_Enter(object sender, EventArgs e)
@@ -732,8 +813,8 @@ namespace AppsDownloader.Windows
 
         private void SearchReset()
         {
-            if (!showGroupsCheck.Checked)
-                showGroupsCheck.Checked = true;
+            if (!Settings.Window.ShowGroups)
+                Settings.Window.ShowGroups = true;
             AppsListReset();
             AppsListShowColors(false);
             appsList.Sort();
@@ -758,9 +839,13 @@ namespace AppsDownloader.Windows
             if (!owner.Enabled || appsList.Items.Count == 0 || transferIsBusy)
                 return;
 
-            Settings.SkipWriteValue = true;
+            SuspendLayout();
 
             owner.Enabled = false;
+            owner.Visible = owner.Enabled;
+            cancelBtn.Visible = owner.Enabled;
+            searchBox.Parent.Visible = owner.Enabled;
+            settingsBtn.Visible = owner.Enabled;
             searchBox.Text = string.Empty;
 
             appsList.BeginUpdate();
@@ -780,14 +865,16 @@ namespace AppsDownloader.Windows
             appsList.Sort();
 
             appMenu.Enabled = owner.Enabled;
-            showGroupsCheck.Checked = owner.Enabled;
-            showGroupsCheck.Enabled = owner.Enabled;
-            showColorsCheck.Checked = owner.Enabled;
-            showColorsCheck.Enabled = owner.Enabled;
-            highlightInstalledCheck.Checked = owner.Enabled;
-            highlightInstalledCheck.Enabled = owner.Enabled;
+            settingsBtn.Enabled = owner.Enabled;
             searchBox.Enabled = owner.Enabled;
             cancelBtn.Enabled = owner.Enabled;
+
+            Settings.SkipWriteValue = true;
+            Settings.Window.ShowGroups = owner.Enabled;
+            appsList.ShowGroups = Settings.Window.ShowGroups;
+            Settings.Window.HighlightInstalled = owner.Enabled;
+            Settings.Window.ShowGroupColors = owner.Enabled;
+            AppsListShowColors();
 
             TransferManager.Clear();
             var totalSize = 0L;
@@ -849,6 +936,12 @@ namespace AppsDownloader.Windows
                         return;
                 }
             }
+
+            buttonAreaBorder.Visible = owner.Enabled;
+            buttonAreaPanel.Visible = owner.Enabled;
+            settingsAreaBorder.Visible = owner.Enabled;
+            settingsAreaPanel.Visible = owner.Enabled;
+            ResumeLayout();
 
             Icon = CacheData.GetSystemIcon(ResourcesEx.IconIndex.Network, true);
             downloadStarter.Enabled = !owner.Enabled;
@@ -990,6 +1083,7 @@ namespace AppsDownloader.Windows
                             TransferFails.Clear();
 
                             SuspendLayout();
+
                             appsList.Enabled = true;
                             appsList.HideSelection = !appsList.Enabled;
 
@@ -997,17 +1091,25 @@ namespace AppsDownloader.Windows
                             DownloadProgressUpdate(0);
                             downloadReceived.Text = string.Empty;
 
-                            showGroupsCheck.Enabled = appsList.Enabled;
-                            showColorsCheck.Enabled = appsList.Enabled;
-                            highlightInstalledCheck.Enabled = appsList.Enabled;
-
+                            settingsBtn.Enabled = appsList.Enabled;
                             searchBox.Enabled = appsList.Enabled;
 
                             startBtn.Enabled = appsList.Enabled;
                             cancelBtn.Enabled = appsList.Enabled;
 
+                            startBtn.Visible = appsList.Enabled;
+                            cancelBtn.Visible = appsList.Enabled;
+                            searchBox.Parent.Visible = appsList.Enabled;
+                            settingsBtn.Visible = appsList.Enabled;
+
                             statusAreaBorder.Visible = !appsList.Enabled;
                             statusAreaPanel.Visible = !appsList.Enabled;
+
+                            buttonAreaBorder.Visible = appsList.Enabled;
+                            buttonAreaPanel.Visible = appsList.Enabled;
+                            settingsAreaBorder.Visible = appsList.Enabled;
+                            settingsAreaPanel.Visible = appsList.Enabled;
+
                             ResumeLayout();
 
                             StartBtn_Click(startBtn, EventArgs.Empty);

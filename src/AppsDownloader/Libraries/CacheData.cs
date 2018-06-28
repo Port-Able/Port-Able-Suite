@@ -14,7 +14,7 @@
 
     internal static class CacheData
     {
-        private static Dictionary<string, Image> _appImages;
+        private static Dictionary<string, Image> _appImages, _appImagesLarge;
         private static List<AppData> _appInfo;
         private static List<string> _settingsMerges;
         private static readonly List<Tuple<ResourcesEx.IconIndex, bool, Icon>> Icons = new List<Tuple<ResourcesEx.IconIndex, bool, Icon>>();
@@ -26,13 +26,29 @@
             {
                 if (_appImages != default(Dictionary<string, Image>))
                     return _appImages;
-                UpdateAppImagesFile();
+                UpdateAppImagesFile(false);
                 _appImages = FileEx.Deserialize<Dictionary<string, Image>>(CachePaths.AppImages);
                 if (_appImages == default(Dictionary<string, Image>))
                     _appImages = FileEx.Deserialize<Dictionary<string, Image>>(CorePaths.AppImages);
                 if (_appImages == default(Dictionary<string, Image>))
                     _appImages = new Dictionary<string, Image>();
                 return _appImages;
+            }
+        }
+
+        internal static Dictionary<string, Image> AppImagesLarge
+        {
+            get
+            {
+                if (_appImagesLarge != default(Dictionary<string, Image>))
+                    return _appImagesLarge;
+                UpdateAppImagesFile(true);
+                _appImagesLarge = FileEx.Deserialize<Dictionary<string, Image>>(CachePaths.AppImagesLarge);
+                if (_appImagesLarge == default(Dictionary<string, Image>))
+                    _appImagesLarge = FileEx.Deserialize<Dictionary<string, Image>>(CorePaths.AppImagesLarge);
+                if (_appImagesLarge == default(Dictionary<string, Image>))
+                    _appImagesLarge = new Dictionary<string, Image>();
+                return _appImagesLarge;
             }
         }
 
@@ -96,24 +112,28 @@
             return image;
         }
 
-        private static void UpdateAppImagesFile()
+        private static void UpdateAppImagesFile(bool large)
         {
-            var fileDate = File.Exists(CachePaths.AppImages) ? File.GetLastWriteTime(CachePaths.AppImages) : DateTime.MinValue;
+            var filePath = large ? CachePaths.AppImagesLarge : CachePaths.AppImages;
+            var fileName = Path.GetFileName(filePath);
+            if (string.IsNullOrEmpty(fileName))
+                return;
+            var fileDate = File.Exists(filePath) ? File.GetLastWriteTime(filePath) : DateTime.MinValue;
             foreach (var mirror in AppSupply.GetMirrors(AppSuppliers.Internal))
             {
-                var link = PathEx.AltCombine(mirror, "Downloads", "Port-Able%20Suite", ".free", "AppImages.dat");
+                var link = PathEx.AltCombine(mirror, "Downloads", "Port-Able%20Suite", ".free", fileName);
                 if (Log.DebugMode > 0)
                     Log.Write($"Cache: Looking for '{link}'.");
                 if (!NetEx.FileIsAvailable(link, 30000))
                     continue;
                 if (!((NetEx.GetFileDate(link) - fileDate).TotalSeconds > 0d))
                     break;
-                NetEx.Transfer.DownloadFile(link, CachePaths.AppImages, 60000, null, false);
-                if (!File.Exists(CachePaths.AppImages))
+                NetEx.Transfer.DownloadFile(link, filePath, 60000, null, false);
+                if (!File.Exists(filePath))
                     continue;
-                File.SetLastWriteTime(CachePaths.AppImages, DateTime.Now);
+                File.SetLastWriteTime(filePath, DateTime.Now);
                 if (Log.DebugMode > 0)
-                    Log.Write($"Cache: '{CachePaths.AppImages}' has been updated.");
+                    Log.Write($"Cache: '{filePath}' has been updated.");
                 break;
             }
         }
@@ -297,11 +317,12 @@
                 var category = Ini.Read(section, "Category", config);
                 if (serverKey != null)
                 {
-                    category = category.Trim('*');
+                    var custom = Language.GetText(nameof(en_US.listViewGroup12));
+                    category = category.Trim('*', '#');
                     if (string.IsNullOrWhiteSpace(category))
-                        category = "*Shareware";
-                    if (!category.StartsWith("*Shareware"))
-                        category = $"*Shareware: {category}";
+                        category = custom;
+                    if (!category.StartsWith(custom))
+                        category = $"{custom}: {category}";
                 }
 
                 if (string.IsNullOrWhiteSpace(category) || AppInfo.Any(x => x.Key.EqualsEx(section) && x.Category.EqualsEx(category)))

@@ -1,6 +1,7 @@
 namespace AppsDownloader.Windows
 {
     using System;
+    using System.Drawing;
     using System.Linq;
     using System.Media;
     using System.Windows.Forms;
@@ -23,7 +24,9 @@ namespace AppsDownloader.Windows
 
             Text = Language.GetText(Name);
 
-            if (CacheData.AppImages.TryGetValue(_appData.Key, out var image))
+            if (!CacheData.AppImagesLarge.TryGetValue(appData.Key, out var image))
+                CacheData.AppImages.TryGetValue(appData.Key, out image);
+            if (image != default(Image))
                 Icon = image.ToIcon();
 
             appNameLabel.Text = _appData.Name;

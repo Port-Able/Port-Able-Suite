@@ -24,7 +24,9 @@
             if (text == default(string))
                 return;
 
-            if (CacheData.AppImages.TryGetValue(appData.Key, out var image))
+            if (!CacheData.AppImagesLarge.TryGetValue(appData.Key, out var image))
+                CacheData.AppImages.TryGetValue(appData.Key, out image);
+            if (image != default(Image))
                 Icon = image.ToIcon();
 
             infoBox.AppendText(Environment.NewLine);

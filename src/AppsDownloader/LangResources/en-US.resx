@@ -133,6 +133,10 @@ This could be due an incomplete download or other network issue.</value>
     <value>Please note that an IPv4 connection is required to download resources from '{0}'.</value>
     <comment>Message</comment>
   </data>
+  <data name="appListGroupBox" xml:space="preserve">
+    <value>App List</value>
+    <comment>GroupBox</comment>
+  </data>
   <data name="appMenuItem1" xml:space="preserve">
     <value>Check</value>
     <comment>ContextMenuItem</comment>
@@ -261,6 +265,10 @@ Please make sure your settings are saved before confirming this message!</value>
     <value>File:</value>
     <comment>StatusLabel</comment>
   </data>
+  <data name="groupColorsGroupBox" xml:space="preserve">
+    <value>Group Colors</value>
+    <comment>GroupBox</comment>
+  </data>
   <data name="highlightInstalledCheck" xml:space="preserve">
     <value>Highlight Installed</value>
     <comment>CheckBox</comment>
@@ -295,7 +303,7 @@ Please make sure your settings are saved before confirming this message!</value>
   </data>
   <data name="listViewGroup1" xml:space="preserve">
     <value>Accessibility</value>
-    <comment>ListViewGroup</comment>
+    <comment>ListViewGroup/Label</comment>
   </data>
   <data name="listViewGroup10" xml:space="preserve">
     <value>Games</value>
@@ -303,39 +311,43 @@ Please make sure your settings are saved before confirming this message!</value>
   </data>
   <data name="listViewGroup11" xml:space="preserve">
     <value>*Advanced</value>
-    <comment>ListViewGroup</comment>
+    <comment>ListViewGroup/Label</comment>
+  </data>
+  <data name="listViewGroup12" xml:space="preserve">
+    <value>#Custom</value>
+    <comment>ListViewGroup/Label</comment>
   </data>
   <data name="listViewGroup2" xml:space="preserve">
     <value>Education</value>
-    <comment>ListViewGroup</comment>
+    <comment>ListViewGroup/Label</comment>
   </data>
   <data name="listViewGroup3" xml:space="preserve">
     <value>Development</value>
-    <comment>ListViewGroup</comment>
+    <comment>ListViewGroup/Label</comment>
   </data>
   <data name="listViewGroup4" xml:space="preserve">
     <value>Office</value>
-    <comment>ListViewGroup</comment>
+    <comment>ListViewGroup/Label</comment>
   </data>
   <data name="listViewGroup5" xml:space="preserve">
     <value>Internet</value>
-    <comment>ListViewGroup</comment>
+    <comment>ListViewGroup/Label</comment>
   </data>
   <data name="listViewGroup6" xml:space="preserve">
     <value>Graphics and Pictures</value>
-    <comment>ListViewGroup</comment>
+    <comment>ListViewGroup/Label</comment>
   </data>
   <data name="listViewGroup7" xml:space="preserve">
     <value>Music and Video</value>
-    <comment>ListViewGroup</comment>
+    <comment>ListViewGroup/Label</comment>
   </data>
   <data name="listViewGroup8" xml:space="preserve">
     <value>Security</value>
-    <comment>ListViewGroup</comment>
+    <comment>ListViewGroup/Label</comment>
   </data>
   <data name="listViewGroup9" xml:space="preserve">
     <value>Utilities</value>
-    <comment>ListViewGroup</comment>
+    <comment>ListViewGroup/Label</comment>
   </data>
   <data name="NoServerAvailableMsg" xml:space="preserve">
     <value>Sorry, there are currently no download servers available.
@@ -358,6 +370,10 @@ Available: {1}</value>
     <value>This program is incomplete. Would you like to download it again?</value>
     <comment>Message</comment>
   </data>
+  <data name="SettingsForm" xml:space="preserve">
+    <value>Settings</value>
+    <comment>Form</comment>
+  </data>
   <data name="showColorsCheck" xml:space="preserve">
     <value>Show Group Colors</value>
     <comment>CheckBox</comment>
@@ -365,6 +381,14 @@ Available: {1}</value>
   <data name="showGroupsCheck" xml:space="preserve">
     <value>Show Groups</value>
     <comment>CheckBox</comment>
+  </data>
+  <data name="showLargeImagesCheck" xml:space="preserve">
+    <value>Show Large Images</value>
+    <comment>CheckBox</comment>
+  </data>
+  <data name="startBtn" xml:space="preserve">
+    <value>Start</value>
+    <comment>Button</comment>
   </data>
   <data name="timeStatusLabel" xml:space="preserve">
     <value>Time Elapsed:</value>

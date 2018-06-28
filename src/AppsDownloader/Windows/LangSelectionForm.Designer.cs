@@ -115,12 +115,11 @@ namespace AppsDownloader.Windows
             this.MinimumSize = new System.Drawing.Size(264, 175);
             this.Name = "LangSelectionForm";
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Language Selection:";
             this.TopMost = true;
             this.Load += new System.EventHandler(this.LangSelectionForm_Load);
             this.Shown += new System.EventHandler(this.SetArchiveLangForm_Shown);
-            this.ResumeLayout(false);
 
         }
 

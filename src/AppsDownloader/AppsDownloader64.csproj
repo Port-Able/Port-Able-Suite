@@ -57,9 +57,8 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Messaging" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
   </ItemGroup>
@@ -106,6 +105,12 @@
     <Compile Include="Windows\LangSelectionForm.Designer.cs">
       <DependentUpon>LangSelectionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\SettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="LangResources\de-DE.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>de-DE.Designer.cs</LastGenOutput>
@@ -133,6 +138,9 @@
     <EmbeddedResource Include="Windows\LangSelectionForm.resx">
       <DependentUpon>LangSelectionForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Windows\SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app64.manifest" />
   </ItemGroup>
   <ItemGroup>
@@ -143,9 +151,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Logo.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Box.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
