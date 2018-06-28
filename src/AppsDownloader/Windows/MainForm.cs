@@ -1069,11 +1069,12 @@ namespace AppsDownloader.Windows
                 if (TransferFails.Any())
                 {
                     TaskBar.Progress.SetState(Handle, TaskBar.Progress.Flags.Error);
-                    var warning = string.Format(Language.GetText(TransferFails.Count == 1 ? nameof(en_US.AppDownloadErrorMsg) : nameof(en_US.AppsDownloadErrorMsg)), TransferFails.Select(x => x.Name).Join(Environment.NewLine));
+                    var fails = TransferFails.Select(x => x.Name).Distinct().ToArray();
+                    var warning = string.Format(Language.GetText(fails.Length == 1 ? nameof(en_US.AppDownloadErrorMsg) : nameof(en_US.AppsDownloadErrorMsg)), fails.Join(Environment.NewLine));
                     switch (MessageBoxEx.Show(this, warning, Settings.Title, MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning))
                     {
                         case DialogResult.Retry:
-                            foreach (var appData in TransferFails)
+                            foreach (var appData in TransferFails.Distinct())
                             {
                                 var item = appsList.Items.Cast<ListViewItem>().FirstOrDefault(x => x.Name.EqualsEx(appData.Key));
                                 if (item == default(ListViewItem))
