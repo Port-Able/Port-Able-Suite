@@ -231,7 +231,8 @@ namespace AppsLauncher.Windows
                 if (!appsListView.Scrollable)
                     appsListView.Scrollable = true;
 
-                imgList.Images.Clear();
+                var largeImages = Settings.Window.LargeImages;
+                imageList.Images.Clear();
                 foreach (var appData in CacheData.CurrentAppInfo)
                 {
                     var key = appData.Key;
@@ -259,25 +260,50 @@ namespace AppsLauncher.Windows
                         continue;
                     try
                     {
-                        var imgPath = Path.ChangeExtension(exePath, ".png");
+                        var imgPath = Path.ChangeExtension(exePath, ".ico");
+                        var indicator = largeImages ? 32 : 16;
+                        if (File.Exists(imgPath))
+                        {
+                            exePath = imgPath;
+                            goto FromFile;
+                        }
+                        imgPath = Path.ChangeExtension(exePath, ".png");
                         if (!File.Exists(imgPath))
                         {
                             var appDir = Path.GetDirectoryName(exePath);
-                            imgPath = Path.Combine(appDir, "App\\AppInfo\\appicon_16.png");
+                            var imgDir = Path.Combine(appDir, "App\\AppInfo");
+                            if (largeImages)
+                            {
+                                var sizes = new[] { 32, 40, 48, 64, 96, 128, 256 };
+                                foreach(var size in sizes)
+                                {
+                                    imgPath = Path.Combine(imgDir, $"appicon_{size}.png");
+                                    if (File.Exists(imgPath))
+                                        break;
+                                }
+                            }
+                            else
+                                imgPath = Path.Combine(imgDir, "appicon_16.png");
                         }
                         if (File.Exists(imgPath))
                         {
                             image = Image.FromFile(imgPath);
                             if (image != default(Image))
                             {
-                                if (image.Width != image.Height || image.Width != 16)
-                                    image = image.Redraw(16, 16);
+                                if (image.Width != image.Height || image.Width != indicator)
+                                    image = image.Redraw(indicator, indicator);
                                 goto UpdateCache;
                             }
                         }
-                        using (var ico = ResourcesEx.GetIconFromFile(exePath))
+                        if (exePath.EndsWithEx(".bat", ".cmd", ".jse", ".vbe", ".vbs"))
                         {
-                            image = ico?.ToBitmap()?.Redraw(16, 16);
+                            image = CacheData.GetSystemImage(ResourcesEx.IconIndex.CommandPrompt, largeImages);
+                            goto UpdateCache;
+                        }
+                        FromFile:
+                        using (var ico = ResourcesEx.GetIconFromFile(exePath, 0, largeImages))
+                        {
+                            image = ico?.ToBitmap()?.Redraw(indicator, indicator);
                             if (image != default(Image))
                                 goto UpdateCache;
                         }
@@ -287,7 +313,7 @@ namespace AppsLauncher.Windows
                         Log.Write(ex);
                     }
 
-                    image = CacheData.GetSystemImage(ResourcesEx.IconIndex.ExeFile);
+                    image = CacheData.GetSystemImage(ResourcesEx.IconIndex.ExeFile, largeImages);
                     if (image == default(Image))
                         continue;
 
@@ -296,11 +322,13 @@ namespace AppsLauncher.Windows
                         CacheData.CurrentImages.Add(key, image);
 
                     Finalize:
-                    imgList.Images.Add(image);
-                    appsListView.Items.Add(name, imgList.Images.Count - 1);
+                    imageList.Images.Add(image);
+                    appsListView.Items.Add(name, imageList.Images.Count - 1);
                 }
 
-                appsListView.SmallImageList = imgList;
+                if (largeImages)
+                    imageList.ImageSize = new Size(32, 32);
+                appsListView.SmallImageList = imageList;
                 CacheData.UpdateCurrentImagesFile();
 
                 if (!setWindowLocation)
@@ -335,9 +363,12 @@ namespace AppsLauncher.Windows
                 }
                 else
                 {
-                    var newLocation = GetWindowStartPos(new Point(Width, Height));
-                    Left = newLocation.X;
-                    Top = newLocation.Y;
+                    Left = Cursor.Position.X - Width / 2;
+                    Top = Cursor.Position.Y - Height / 2;
+                    if (!WinApi.NativeHelper.WindowIsOutOfScreenArea(Handle, out var newRect))
+                        return;
+                    Left = newRect.X;
+                    Top = newRect.Y;
                 }
             }
             finally
@@ -687,52 +718,6 @@ namespace AppsLauncher.Windows
             Application.Exit();
         }
 
-        private Point GetWindowStartPos(Point point)
-        {
-            var pos = new Point();
-            var screen = SystemInformation.VirtualScreen;
-            var tbLoc = TaskBar.GetLocation(Handle);
-            var tbSize = TaskBar.GetSize(Handle);
-            if (Settings.Window.DefaultPosition == 0)
-            {
-                switch (tbLoc)
-                {
-                    case TaskBarLocation.Left:
-                        pos.X = Cursor.Position.X - point.X / 2;
-                        pos.Y = Cursor.Position.Y;
-                        break;
-                    case TaskBarLocation.Top:
-                        pos.X = Cursor.Position.X - point.X / 2;
-                        pos.Y = Cursor.Position.Y;
-                        break;
-                    case TaskBarLocation.Right:
-                        pos.X = screen.Width - point.X;
-                        pos.Y = Cursor.Position.Y;
-                        break;
-                    default:
-                        pos.X = Cursor.Position.X - point.X / 2;
-                        pos.Y = Cursor.Position.Y - point.Y;
-                        break;
-                }
-                if (pos.X + point.X > screen.Width)
-                    pos.X = screen.Width - point.X;
-                if (pos.Y + point.Y > screen.Height)
-                    pos.Y = screen.Height - point.Y;
-            }
-            else
-            {
-                var max = new Point(screen.Width - point.X, screen.Height - point.Y);
-                pos.X = Cursor.Position.X > point.X / 2 && Cursor.Position.X < max.X ? Cursor.Position.X - point.X / 2 : Cursor.Position.X > max.X ? max.X : Cursor.Position.X;
-                pos.Y = Cursor.Position.Y > point.Y / 2 && Cursor.Position.Y < max.Y ? Cursor.Position.Y - point.Y / 2 : Cursor.Position.Y > max.Y ? max.Y : Cursor.Position.Y;
-            }
-            var min = new Point(tbLoc == TaskBarLocation.Left ? tbSize : 0, tbLoc == TaskBarLocation.Top ? tbSize : 0);
-            if (pos.X < min.X)
-                pos.X = min.X;
-            if (pos.Y < min.Y)
-                pos.Y = min.Y;
-            return pos;
-        }
-
         private bool OpenForm(Form form)
         {
             PreventClosure = true;
@@ -742,13 +727,6 @@ namespace AppsLauncher.Windows
             {
                 using (var dialog = form)
                 {
-                    var point = GetWindowStartPos(new Point(dialog.Width, dialog.Height));
-                    if (point != new Point(0, 0))
-                    {
-                        dialog.StartPosition = FormStartPosition.Manual;
-                        dialog.Left = point.X;
-                        dialog.Top = point.Y;
-                    }
                     dialog.TopMost = true;
                     dialog.Plus();
                     result = dialog.ShowDialog() == DialogResult.Yes;

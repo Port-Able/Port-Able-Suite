@@ -889,6 +889,15 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Verwende große Bilder.
+        /// </summary>
+        internal static string showLargeImagesCheck {
+            get {
+                return ResourceManager.GetString("showLargeImagesCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Derzeitige Befehlszeilenargumente..
         /// </summary>
         internal static string startArgsDefaultLabelTip {

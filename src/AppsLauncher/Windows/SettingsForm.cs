@@ -64,12 +64,20 @@ namespace AppsLauncher.Windows
                 previewLogoBox.BackColor = Color.Transparent;
             }
             previewLogoBox.Image = Resources.Logo128px.Redraw(previewLogoBox.Height, previewLogoBox.Height);
-            var exeIco = ResourcesEx.GetSystemIcon(ResourcesEx.IconIndex.ExeFile, Settings.IconResourcePath);
-            if (exeIco != null)
+            var exeImage = CacheData.GetSystemImage(ResourcesEx.IconIndex.ExeFile);
+            if (exeImage != null)
             {
-                previewImgList.Images.Add(exeIco.ToBitmap());
-                previewImgList.Images.Add(exeIco.ToBitmap());
+                previewSmallImgList.Images.Add(exeImage);
+                previewSmallImgList.Images.Add(exeImage);
             }
+            exeImage = CacheData.GetSystemImage(ResourcesEx.IconIndex.ExeFile, true);
+            if (exeImage != null)
+            {
+                previewLargeImgList.Images.Add(exeImage);
+                previewLargeImgList.Images.Add(exeImage);
+            }
+            previewAppList.StateImageList = Settings.Window.LargeImages ? previewLargeImgList : previewSmallImgList;
+            previewAppList.View = Settings.Window.LargeImages ? View.Tile : View.List;
 
             foreach (var btn in new[] { saveBtn, exitBtn })
             {
@@ -202,6 +210,7 @@ namespace AppsLauncher.Windows
             btnTextColorPanel.BackColor = Settings.Window.Colors.ButtonText;
 
             hScrollBarCheck.Checked = Settings.Window.HideHScrollBar;
+            showLargeImagesCheck.Checked = Settings.Window.LargeImages;
 
             StylePreviewUpdate();
 
@@ -476,7 +485,7 @@ namespace AppsLauncher.Windows
 
         private void BgLayout_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Result == DialogResult.No)
+            if (Result != DialogResult.Yes)
                 Result = DialogResult.Yes;
             StylePreviewUpdate();
         }
@@ -526,7 +535,7 @@ namespace AppsLauncher.Windows
                         Settings.Window.CustomColors = dialog.CustomColors;
                 }
             }
-            if (Result == DialogResult.No)
+            if (Result != DialogResult.Yes)
                 Result = DialogResult.Yes;
             StylePreviewUpdate();
         }
@@ -540,7 +549,8 @@ namespace AppsLauncher.Windows
             btnColorPanel.BackColor = SystemColors.ButtonFace;
             btnHoverColorPanel.BackColor = ProfessionalColors.ButtonSelectedHighlight;
             btnTextColorPanel.BackColor = SystemColors.ControlText;
-            Result = DialogResult.Yes;
+            if (Result != DialogResult.Yes)
+                Result = DialogResult.Yes;
             StylePreviewUpdate();
         }
 
@@ -558,9 +568,10 @@ namespace AppsLauncher.Windows
             }
         }
 
-        private void ScrollBarCheck_CheckedChanged(object sender, EventArgs e)
+        private void StyleCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Result = DialogResult.Yes;
+            if (Result != DialogResult.Yes)
+                Result = DialogResult.Yes;
             StylePreviewUpdate();
         }
 
@@ -570,6 +581,9 @@ namespace AppsLauncher.Windows
             previewMainColor.BackColor = mainColorPanel.BackColor;
             previewAppList.ForeColor = controlTextColorPanel.BackColor;
             previewAppList.BackColor = controlColorPanel.BackColor;
+            previewAppList.StateImageList = showLargeImagesCheck.Checked ? previewLargeImgList : previewSmallImgList;
+            previewAppList.Scrollable = !showLargeImagesCheck.Checked;
+            previewAppList.View = showLargeImagesCheck.Checked ? View.Tile : View.List;
             previewAppListPanel.BackColor = controlColorPanel.BackColor;
             foreach (var b in new[] { previewBtn1, previewBtn2 })
             {
@@ -645,7 +659,8 @@ namespace AppsLauncher.Windows
                 if (CacheData.CurrentImageBg != default(Image))
                 {
                     CacheData.CurrentImageBg = default(Image);
-                    Result = DialogResult.Yes;
+                    if (Result != DialogResult.Yes)
+                        Result = DialogResult.Yes;
                 }
                 bgLayout.SelectedIndex = 1;
             }
@@ -664,6 +679,7 @@ namespace AppsLauncher.Windows
             Settings.Window.Colors.ButtonText = btnTextColorPanel.BackColor;
 
             Settings.Window.HideHScrollBar = hScrollBarCheck.Checked;
+            Settings.Window.LargeImages = showLargeImagesCheck.Checked;
 
             var dirList = new List<string>();
             if (!string.IsNullOrWhiteSpace(appDirs.Text))
@@ -728,7 +744,8 @@ namespace AppsLauncher.Windows
             var lang = setLang.SelectedItem.ToString();
             if (!Settings.Language.EqualsEx(lang))
             {
-                Result = DialogResult.Yes;
+                if (Result != DialogResult.Yes)
+                    Result = DialogResult.Yes;
                 Settings.Language = lang;
                 LoadSettings();
             }

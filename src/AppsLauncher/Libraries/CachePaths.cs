@@ -11,7 +11,7 @@
             get
             {
                 if (_appImages == default(string))
-                    _appImages = Path.Combine(CorePaths.TempDir, "AppImages.dat");
+                    _appImages = Path.Combine(CorePaths.TempDir, Settings.Window.LargeImages ? "AppImagesLarge.dat" : "AppImages.dat");
                 if (!File.Exists(_appImages))
                     _appImages = CorePaths.AppImages;
                 return _appImages;

@@ -41,7 +41,7 @@ namespace AppsLauncher.Windows
             this.appMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
             this.appMenuItemSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.appMenuItem8 = new System.Windows.Forms.ToolStripMenuItem();
-            this.imgList = new System.Windows.Forms.ImageList(this.components);
+            this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.appsListView = new System.Windows.Forms.ListView();
             this.appsListViewPanel = new System.Windows.Forms.Panel();
             this.searchBox = new System.Windows.Forms.TextBox();
@@ -154,11 +154,11 @@ namespace AppsLauncher.Windows
             this.appMenuItem8.Text = "Options";
             this.appMenuItem8.Click += new System.EventHandler(this.AppMenuItem_Click);
             // 
-            // imgList
+            // imageList
             // 
-            this.imgList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            this.imgList.ImageSize = new System.Drawing.Size(16, 16);
-            this.imgList.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.imageList.ImageSize = new System.Drawing.Size(16, 16);
+            this.imageList.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // appsListView
             // 
@@ -170,6 +170,7 @@ namespace AppsLauncher.Windows
             this.appsListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.appsListView.Font = new System.Drawing.Font("Calibri", 9F);
             this.appsListView.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.appsListView.FullRowSelect = true;
             this.appsListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.appsListView.HideSelection = false;
             this.appsListView.LabelWrap = false;
@@ -403,7 +404,7 @@ namespace AppsLauncher.Windows
         private System.Windows.Forms.ToolStripMenuItem appMenuItem7;
         private System.Windows.Forms.ToolStripSeparator appMenuItemSeparator3;
         private System.Windows.Forms.ToolStripMenuItem appMenuItem8;
-        private System.Windows.Forms.ImageList imgList;
+        private System.Windows.Forms.ImageList imageList;
         private System.Windows.Forms.ListView appsListView;
         private System.Windows.Forms.Panel appsListViewPanel;
         private System.Windows.Forms.TextBox searchBox;
@@ -416,6 +417,5 @@ namespace AppsLauncher.Windows
         private System.Windows.Forms.Panel downloadBtnPanel;
         private System.Windows.Forms.Button settingsBtn;
         private System.Windows.Forms.Panel settingsBtnPanel;
-
     }
 }

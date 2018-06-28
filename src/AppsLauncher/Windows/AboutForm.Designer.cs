@@ -240,7 +240,7 @@ namespace AppsLauncher.Windows
             this.MinimumSize = new System.Drawing.Size(592, 220);
             this.Name = "AboutForm";
             this.Opacity = 0D;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "About Portable Apps Launcher";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AboutForm_FormClosing);
             this.Load += new System.EventHandler(this.AboutForm_Load);

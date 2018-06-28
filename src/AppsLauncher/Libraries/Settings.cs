@@ -431,7 +431,7 @@
             private static int? _backgroundImageLayout, _fadeInEffect;
             private static int[] _customColors;
             private static int _defaultPosition, _fadeInDuration;
-            private static bool? _hideHScrollBar;
+            private static bool? _hideHScrollBar, _largeImages;
             private static double _opacity;
 
             internal static WinApi.AnimateWindowFlags Animation
@@ -587,6 +587,26 @@
                     var key = GetConfigKey(nameof(Window), nameof(HideHScrollBar));
                     _hideHScrollBar = value;
                     WriteValue(Section, key, _hideHScrollBar, true);
+                }
+            }
+
+            internal static bool LargeImages
+            {
+                get
+                {
+                    if (_largeImages.HasValue)
+                        return (bool)_largeImages;
+                    var key = GetConfigKey(nameof(Window), nameof(LargeImages));
+                    _largeImages = Ini.Read(Section, key, false);
+                    return (bool)_largeImages;
+                }
+                set
+                {
+                    var key = GetConfigKey(nameof(Window), nameof(LargeImages));
+                    if (_largeImages != value)
+                        FileEx.TryDelete(CachePaths.CurrentImages);
+                    _largeImages = value;
+                    WriteValue(Section, key, _largeImages, false);
                 }
             }
 

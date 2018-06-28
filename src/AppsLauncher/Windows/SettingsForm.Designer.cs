@@ -29,8 +29,8 @@ namespace AppsLauncher.Windows
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("Item 1");
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("Item 2");
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Item 1");
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Item 2");
             this.panel2 = new System.Windows.Forms.Panel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tabCtrl = new System.Windows.Forms.TabControl();
@@ -58,6 +58,7 @@ namespace AppsLauncher.Windows
             this.addArgsLabel = new System.Windows.Forms.Label();
             this.noConfirmCheck = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.showLargeImagesCheck = new System.Windows.Forms.CheckBox();
             this.fadeInCombo = new System.Windows.Forms.ComboBox();
             this.fadeInComboLabel = new System.Windows.Forms.Label();
             this.hScrollBarCheck = new System.Windows.Forms.CheckBox();
@@ -75,7 +76,6 @@ namespace AppsLauncher.Windows
             this.previewAppListPanel = new System.Windows.Forms.Panel();
             this.previewHScrollBar = new System.Windows.Forms.HScrollBar();
             this.previewAppList = new System.Windows.Forms.ListView();
-            this.previewImgList = new System.Windows.Forms.ImageList(this.components);
             this.controlTextColorPanelLabel = new System.Windows.Forms.Label();
             this.defBgCheck = new System.Windows.Forms.CheckBox();
             this.btnColorPanel = new System.Windows.Forms.Panel();
@@ -108,6 +108,8 @@ namespace AppsLauncher.Windows
             this.updateCheck = new System.Windows.Forms.ComboBox();
             this.updateCheckLabel = new System.Windows.Forms.Label();
             this.appDirsLabel = new System.Windows.Forms.Label();
+            this.previewSmallImgList = new System.Windows.Forms.ImageList(this.components);
+            this.previewLargeImgList = new System.Windows.Forms.ImageList(this.components);
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.exitBtnPanel = new System.Windows.Forms.Panel();
@@ -462,6 +464,7 @@ namespace AppsLauncher.Windows
             // 
             this.tabPage2.BackColor = System.Drawing.Color.SlateGray;
             this.tabPage2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tabPage2.Controls.Add(this.showLargeImagesCheck);
             this.tabPage2.Controls.Add(this.fadeInCombo);
             this.tabPage2.Controls.Add(this.fadeInComboLabel);
             this.tabPage2.Controls.Add(this.hScrollBarCheck);
@@ -493,6 +496,21 @@ namespace AppsLauncher.Windows
             this.tabPage2.Size = new System.Drawing.Size(486, 356);
             this.tabPage2.TabIndex = 2;
             this.tabPage2.Text = "Style";
+            // 
+            // showLargeImagesCheck
+            // 
+            this.showLargeImagesCheck.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.showLargeImagesCheck.AutoSize = true;
+            this.showLargeImagesCheck.BackColor = System.Drawing.Color.Transparent;
+            this.showLargeImagesCheck.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
+            this.showLargeImagesCheck.ForeColor = System.Drawing.Color.Silver;
+            this.showLargeImagesCheck.Location = new System.Drawing.Point(259, 290);
+            this.showLargeImagesCheck.Name = "showLargeImagesCheck";
+            this.showLargeImagesCheck.Size = new System.Drawing.Size(137, 17);
+            this.showLargeImagesCheck.TabIndex = 24;
+            this.showLargeImagesCheck.Text = "Show Large Images";
+            this.showLargeImagesCheck.UseVisualStyleBackColor = false;
+            this.showLargeImagesCheck.CheckedChanged += new System.EventHandler(this.StyleCheckBox_CheckedChanged);
             // 
             // fadeInCombo
             // 
@@ -529,13 +547,13 @@ namespace AppsLauncher.Windows
             this.hScrollBarCheck.BackColor = System.Drawing.Color.Transparent;
             this.hScrollBarCheck.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.hScrollBarCheck.ForeColor = System.Drawing.Color.Silver;
-            this.hScrollBarCheck.Location = new System.Drawing.Point(259, 280);
+            this.hScrollBarCheck.Location = new System.Drawing.Point(259, 267);
             this.hScrollBarCheck.Name = "hScrollBarCheck";
             this.hScrollBarCheck.Size = new System.Drawing.Size(165, 17);
             this.hScrollBarCheck.TabIndex = 23;
             this.hScrollBarCheck.Text = "Hide Horizontal Scrollbar";
             this.hScrollBarCheck.UseVisualStyleBackColor = false;
-            this.hScrollBarCheck.CheckedChanged += new System.EventHandler(this.ScrollBarCheck_CheckedChanged);
+            this.hScrollBarCheck.CheckedChanged += new System.EventHandler(this.StyleCheckBox_CheckedChanged);
             // 
             // bgLayout
             // 
@@ -620,7 +638,7 @@ namespace AppsLauncher.Windows
             this.previewMainColor.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.previewMainColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.previewMainColor.Controls.Add(this.previewBg);
-            this.previewMainColor.Location = new System.Drawing.Point(251, 56);
+            this.previewMainColor.Location = new System.Drawing.Point(251, 43);
             this.previewMainColor.Name = "previewMainColor";
             this.previewMainColor.Size = new System.Drawing.Size(198, 213);
             this.previewMainColor.TabIndex = 50;
@@ -695,6 +713,7 @@ namespace AppsLauncher.Windows
             this.previewAppListPanel.Controls.Add(this.previewAppList);
             this.previewAppListPanel.Location = new System.Drawing.Point(4, 4);
             this.previewAppListPanel.Name = "previewAppListPanel";
+            this.previewAppListPanel.Padding = new System.Windows.Forms.Padding(3);
             this.previewAppListPanel.Size = new System.Drawing.Size(126, 201);
             this.previewAppListPanel.TabIndex = 50;
             this.previewAppListPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.PreviewAppList_Paint);
@@ -702,37 +721,34 @@ namespace AppsLauncher.Windows
             // previewHScrollBar
             // 
             this.previewHScrollBar.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.previewHScrollBar.Location = new System.Drawing.Point(0, 186);
+            this.previewHScrollBar.Location = new System.Drawing.Point(3, 183);
             this.previewHScrollBar.Name = "previewHScrollBar";
-            this.previewHScrollBar.Size = new System.Drawing.Size(126, 15);
+            this.previewHScrollBar.Size = new System.Drawing.Size(120, 15);
             this.previewHScrollBar.TabIndex = 51;
             // 
             // previewAppList
             // 
+            this.previewAppList.BackColor = System.Drawing.SystemColors.Control;
             this.previewAppList.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.previewAppList.Dock = System.Windows.Forms.DockStyle.Top;
             this.previewAppList.Font = new System.Drawing.Font("Tahoma", 6F);
+            this.previewAppList.ForeColor = System.Drawing.SystemColors.ControlText;
             this.previewAppList.HideSelection = false;
             this.previewAppList.HoverSelection = true;
-            listViewItem3.StateImageIndex = 0;
-            listViewItem4.StateImageIndex = 0;
+            listViewItem1.StateImageIndex = 0;
+            listViewItem2.StateImageIndex = 0;
             this.previewAppList.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem3,
-            listViewItem4});
-            this.previewAppList.Location = new System.Drawing.Point(2, 0);
+            listViewItem1,
+            listViewItem2});
+            this.previewAppList.Location = new System.Drawing.Point(3, 3);
             this.previewAppList.Name = "previewAppList";
             this.previewAppList.Scrollable = false;
             this.previewAppList.ShowGroups = false;
-            this.previewAppList.Size = new System.Drawing.Size(124, 55);
-            this.previewAppList.StateImageList = this.previewImgList;
+            this.previewAppList.Size = new System.Drawing.Size(120, 55);
             this.previewAppList.TabIndex = 50;
+            this.previewAppList.TabStop = false;
             this.previewAppList.UseCompatibleStateImageBehavior = false;
             this.previewAppList.View = System.Windows.Forms.View.List;
-            // 
-            // previewImgList
-            // 
-            this.previewImgList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            this.previewImgList.ImageSize = new System.Drawing.Size(16, 16);
-            this.previewImgList.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // controlTextColorPanelLabel
             // 
@@ -1200,6 +1216,18 @@ namespace AppsLauncher.Windows
             this.appDirsLabel.Text = "App Directories:";
             this.appDirsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // previewSmallImgList
+            // 
+            this.previewSmallImgList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.previewSmallImgList.ImageSize = new System.Drawing.Size(12, 12);
+            this.previewSmallImgList.TransparentColor = System.Drawing.Color.Transparent;
+            // 
+            // previewLargeImgList
+            // 
+            this.previewLargeImgList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.previewLargeImgList.ImageSize = new System.Drawing.Size(24, 24);
+            this.previewLargeImgList.TransparentColor = System.Drawing.Color.Transparent;
+            // 
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
@@ -1291,7 +1319,7 @@ namespace AppsLauncher.Windows
             this.MinimumSize = new System.Drawing.Size(510, 490);
             this.Name = "SettingsForm";
             this.Opacity = 0D;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SettingsForm_FormClosed);
             this.Load += new System.EventHandler(this.SettingsForm_Load);
@@ -1361,7 +1389,8 @@ namespace AppsLauncher.Windows
         private System.Windows.Forms.Panel previewAppListPanel;
         private System.Windows.Forms.ListView previewAppList;
         private System.Windows.Forms.Label controlTextColorPanelLabel;
-        private System.Windows.Forms.ImageList previewImgList;
+        private System.Windows.Forms.ImageList previewSmallImgList;
+        private System.Windows.Forms.ImageList previewLargeImgList;
         private System.Windows.Forms.ComboBox updateChannel;
         private System.Windows.Forms.Label updateChannelLabel;
         private System.Windows.Forms.ComboBox bgLayout;
@@ -1384,5 +1413,6 @@ namespace AppsLauncher.Windows
         private System.Windows.Forms.FlowLayoutPanel fileTypesButtonFlowLayout;
         private System.Windows.Forms.TableLayoutPanel topControlTableLayout;
         private System.Windows.Forms.FlowLayoutPanel buttonFlowLayout;
+        private System.Windows.Forms.CheckBox showLargeImagesCheck;
     }
 }

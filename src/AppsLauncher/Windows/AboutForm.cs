@@ -225,9 +225,11 @@ namespace AppsLauncher.Windows
                     continue;
                 var free = drive.TotalFreeSpace;
                 owner.ReportProgress(0, free);
+                owner.ReportProgress(25, drive.TotalSize - free);
                 var apps = DirectoryEx.GetSize(PathEx.LocalDir);
-                owner.ReportProgress(50, apps);
                 var other = drive.TotalSize - free - apps;
+                owner.ReportProgress(0, free);
+                owner.ReportProgress(50, apps);
                 owner.ReportProgress(100, other);
                 break;
             }
@@ -246,7 +248,12 @@ namespace AppsLauncher.Windows
                 switch (e.ProgressPercentage)
                 {
                     case 0:
+                        series.Points.Clear();
                         series.Points.AddXY($"{length.FormatSize(SizeOptions.Round)} Free", length);
+                        break;
+                    case 25:
+                        series.Points.AddXY($"{length.FormatSize(SizeOptions.Round)} Used", length);
+                        series.Points.Last().Color = Color.Firebrick;
                         break;
                     case 50:
                         series.Points.AddXY($"{length.FormatSize(SizeOptions.Round)} Used (Apps)", length);

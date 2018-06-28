@@ -43,7 +43,7 @@
             get
             {
                 if (_appImages == default(string))
-                    _appImages = Path.Combine(HomeDir, "Assets\\AppImages.dat");
+                    _appImages = Path.Combine(HomeDir, "Assets", Settings.Window.LargeImages ? "AppImagesLarge.dat" : "AppImages.dat");
                 return _appImages;
             }
         }

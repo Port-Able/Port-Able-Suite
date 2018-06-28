@@ -499,6 +499,9 @@ Dadurch können Sie die folgenden Änderungen jederzeit wieder rückgängig mach
     <value>An Portable App weiterleiten</value>
     <comment>SystemContextMenuEntry</comment>
   </data>
+  <data name="showLargeImagesCheck" xml:space="preserve">
+    <value>Verwende große Bilder</value>
+  </data>
   <data name="startArgsDefaultLabelTip" xml:space="preserve">
     <value>Derzeitige Befehlszeilenargumente.</value>
     <comment>ToolTip</comment>
