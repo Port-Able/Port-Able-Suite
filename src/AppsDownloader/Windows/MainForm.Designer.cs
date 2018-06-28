@@ -411,7 +411,6 @@ namespace AppsDownloader.Windows
             // 
             this.downloadProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.downloadProgress.BackColor = System.Drawing.Color.Gainsboro;
             this.downloadProgress.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.downloadProgress.Location = new System.Drawing.Point(-2, -1);
             this.downloadProgress.Name = "downloadProgress";
