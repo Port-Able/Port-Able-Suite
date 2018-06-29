@@ -1,4 +1,4 @@
-[![Release](https://img.shields.io/badge/Release-v18.6.21-brightgreen.svg?style=plastic)](https://github.com/Port-Able/Port-Able-Suite/releases/latest) [![License](https://img.shields.io/badge/License-GNU%20GPL%20v3.0-blue.svg?style=plastic)](https://github.com/Port-Able/Port-Able-Suite/blob/master/LICENSE.txt)
+[![Release](https://img.shields.io/badge/Release-v18.6.29-brightgreen.svg?style=plastic)](https://github.com/Port-Able/Port-Able-Suite/releases/latest) [![License](https://img.shields.io/badge/License-GNU%20GPL%20v3.0-blue.svg?style=plastic)](https://github.com/Port-Able/Port-Able-Suite/blob/master/LICENSE.txt)
 
 # [Port-Able Suite](http://apps.suite.si13n7.com/)
 
