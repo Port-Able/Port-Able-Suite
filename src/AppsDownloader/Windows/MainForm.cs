@@ -1064,6 +1064,7 @@ namespace AppsDownloader.Windows
                 CurrentTransfer = default(KeyValuePair<ListViewItem, AppTransferor>);
 
                 Icon = Resources.Logo;
+                TopMost = true;
                 WindowState = windowState;
 
                 if (TransferFails.Any())
@@ -1085,6 +1086,7 @@ namespace AppsDownloader.Windows
 
                             SuspendLayout();
 
+                            TopMost = false;
                             appsList.Enabled = true;
                             appsList.HideSelection = !appsList.Enabled;
 
