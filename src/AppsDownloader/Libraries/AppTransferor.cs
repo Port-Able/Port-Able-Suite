@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading;
@@ -9,6 +10,7 @@
     using LangResources;
     using SilDev;
     using SilDev.Forms;
+    using SilDev.Investment;
 
     public class AppTransferor
     {
@@ -215,22 +217,73 @@
                 {
                     var appsDir = CorePaths.AppsDir;
                     using (var process = ProcessEx.Start(DestPath, appsDir, $"/DESTINATION=\"{appsDir}\\\"", Elevation.IsAdministrator, false))
-                    {
                         if (process?.HasExited == false)
                         {
                             process.WaitForInputIdle(0x1000);
                             try
                             {
-                                WinApi.NativeHelper.SetForegroundWindow(process.MainWindowHandle);
+                                var buttons = Settings.NsisButtons;
+                                if (buttons == null)
+                                    throw new NotSupportedException();
+                                var okButton = buttons.Take(2).ToArray();
+                                var langId = WinApi.NativeHelper.GetUserDefaultUILanguage();
+                                var wndState = langId == 1031 || langId == 1033 || langId == 2057 ? WinApi.ShowWindowFlags.ShowMinNoActive : WinApi.ShowWindowFlags.ShowNa;
+                                var stopwatch = Stopwatch.StartNew();
+                                var minimized = new List<IntPtr>();
+                                var counter = new CounterInvestor<int>();
+                                while (stopwatch.Elapsed.TotalMinutes < 5d)
+                                {
+                                    if (process.HasExited)
+                                        break;
+                                    string title;
+                                    using (var proc = Process.GetProcessById(process.Id))
+                                        title = proc.MainWindowTitle;
+                                    if (string.IsNullOrEmpty(title))
+                                        continue;
+                                    var parent = WinApi.NativeHelper.FindWindow(null, title);
+                                    if (parent == IntPtr.Zero)
+                                        continue;
+                                    if (!minimized.Contains(parent) && WinApi.NativeHelper.ShowWindowAsync(parent, wndState))
+                                        minimized.Add(parent);
+                                    foreach (var button in buttons)
+                                    {
+                                        var child = WinApi.NativeHelper.FindWindowEx(parent, IntPtr.Zero, "Button", button);
+                                        if (child == IntPtr.Zero)
+                                            continue;
+                                        if (counter.Increase(button.GetHashCode()) > 10)
+                                        {
+                                            if (button.EqualsEx(okButton))
+                                                goto Manually;
+                                            continue;
+                                        }
+                                        WinApi.NativeHelper.SendMessage(child, 0xf5u, IntPtr.Zero, IntPtr.Zero);
+                                    }
+                                }
                             }
                             catch (Exception ex)
                             {
                                 Log.Write(ex);
                             }
+                            Manually:
+                            if (!process.HasExited)
+                            {
+                                try
+                                {
+                                    using (var proc = Process.GetProcessById(process.Id))
+                                    {
+                                        var hWnd = WinApi.NativeHelper.FindWindow(null, proc.MainWindowTitle);
+                                        WinApi.NativeHelper.ShowWindowAsync(hWnd, WinApi.ShowWindowFlags.ShowNormal);
+                                        WinApi.NativeHelper.SetForegroundWindow(hWnd);
+                                        WinApi.NativeHelper.SetWindowPos(hWnd, new IntPtr(-1), 0, 0, 0, 0, WinApi.SetWindowPosFlags.NoMove | WinApi.SetWindowPosFlags.NoSize);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Log.Write(ex);
+                                }
+                                process.WaitForExit();
+                            }
                         }
-                        if (process?.HasExited == false)
-                            process.WaitForExit();
-                    }
 
                     // fix for messy app installer
                     var retries = 0;

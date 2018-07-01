@@ -141,7 +141,10 @@
     <EmbeddedResource Include="Windows\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="app64.manifest" />
+    <None Include="app64.manifest">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\NsisData.dat" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

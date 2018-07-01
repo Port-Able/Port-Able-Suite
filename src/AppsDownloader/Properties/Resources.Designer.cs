@@ -79,5 +79,15 @@ namespace AppsDownloader.Properties {
                 return ((System.Drawing.Icon)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] NsisData {
+            get {
+                object obj = ResourceManager.GetObject("NsisData", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

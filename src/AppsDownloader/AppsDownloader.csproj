@@ -139,6 +139,7 @@
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Resources\NsisData.dat" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

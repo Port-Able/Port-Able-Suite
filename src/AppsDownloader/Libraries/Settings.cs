@@ -1,11 +1,13 @@
 ﻿namespace AppsDownloader.Libraries
 {
     using System;
+    using System.Collections.Generic;
     using System.Drawing;
     using System.IO;
     using System.Linq;
     using System.Text;
     using System.Windows.Forms;
+    using Properties;
     using SilDev;
     using SilDev.Drawing;
 
@@ -18,9 +20,7 @@
         internal const string Title = "Apps Downloader (64-bit)";
 #endif
         private static string _machineId;
-
-        internal static bool DeveloperVersion =>
-            Ini.Read("Launcher", nameof(DeveloperVersion), false);
+        private static string[] _nsisButtons;
 
         internal static string MachineId
         {
@@ -29,6 +29,25 @@
                 if (_machineId == default(string))
                     _machineId = EnvironmentEx.MachineId.ToString().Encrypt().Substring(24);
                 return _machineId;
+            }
+        }
+
+        internal static string[] NsisButtons
+        {
+            get
+            {
+                if (_nsisButtons != default(string[]))
+                    return _nsisButtons;
+                var buttonData = Resources.NsisData.Unzip().DeserializeObject<Dictionary<int, List<string>>>();
+                if (buttonData == default(Dictionary<int, List<string>>))
+                    return default(string[]);
+                var langId = WinApi.NativeHelper.GetUserDefaultUILanguage();
+                if (!buttonData.TryGetValue(langId, out var btnData))
+                    return default(string[]);
+                _nsisButtons = btnData.ToArray();
+                if (langId != 1033 && langId != 2057 && buttonData.TryGetValue(1033, out btnData))
+                    _nsisButtons = _nsisButtons.Concat(btnData).ToArray();
+                return _nsisButtons;
             }
         }
 
