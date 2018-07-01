@@ -34,7 +34,7 @@
 
             foreach (var pair in downloadCollection)
             {
-                if (!pair.Key.EqualsEx(AppData.Settings.ArchiveLang) && !string.IsNullOrEmpty(packageVersion) && !pair.Key.EqualsEx(packageVersion))
+                if (!pair.Key.EqualsEx(AppData.Settings.ArchiveLang) && (string.IsNullOrEmpty(packageVersion) || !pair.Key.EqualsEx(packageVersion)))
                     continue;
 
                 foreach (var tuple in pair.Value)
