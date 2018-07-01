@@ -188,12 +188,12 @@
 
         internal bool RemoveApplication(IWin32Window owner = default(IWin32Window))
         {
+            CacheData.ResetCurrent();
             Retry:
             if (GlobalSettings.AppDirs.Any(x => FileDir.StartsWithEx(x)) && Directory.Exists(FileDir))
             {
                 if (!DirectoryEx.TryDelete(FileDir) && !PathEx.ForceDelete(FileDir) && !PathEx.ForceDelete(FileDir, true))
                     goto Failed;
-                CacheData.ResetCurrent();
                 if (Ini.GetSections().ContainsEx(Key))
                 {
                     Ini.RemoveSection(Key);
