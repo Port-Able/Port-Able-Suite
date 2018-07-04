@@ -1,5 +1,6 @@
 ﻿namespace AppsLauncher.Libraries
 {
+    using System;
     using System.ComponentModel;
     using System.Linq;
     using System.Windows.Forms;
@@ -23,7 +24,7 @@
                 {
                     owner.TopMost = false;
                     owner.Enabled = false;
-                    TaskBar.Progress.SetState(owner.Handle, TaskBar.Progress.Flags.Indeterminate);
+                    TaskBarProgress.SetState(owner.Handle, TaskBarProgressFlags.Indeterminate);
                 }
                 var bw = new BackgroundWorker();
                 bw.DoWork += (sender, args) =>
@@ -36,7 +37,7 @@
                 {
                     if (owner == default(Form))
                         return;
-                    TaskBar.Progress.SetState(owner.Handle, TaskBar.Progress.Flags.NoProgress);
+                    TaskBarProgress.SetState(owner.Handle, TaskBarProgressFlags.NoProgress);
                     if (WinApi.NativeHelper.GetForegroundWindow() != owner.Handle)
                         WinApi.NativeHelper.SetForegroundWindow(owner.Handle);
                     owner.Enabled = true;
@@ -52,16 +53,17 @@
                 InstallId = Settings.SystemInstallId
             };
 
-            using (Form dialog = new ResourcesEx.IconBrowserDialog(Settings.IconResourcePath, Settings.Window.Colors.BaseDark, Settings.Window.Colors.ControlText, Settings.Window.Colors.Button, Settings.Window.Colors.ButtonText, Settings.Window.Colors.ButtonHover))
+            using (var dialog = new ResourcesEx.IconBrowserDialog(Settings.IconResourcePath, Settings.Window.Colors.BaseDark, Settings.Window.Colors.ControlText, Settings.Window.Colors.Button, Settings.Window.Colors.ButtonText, Settings.Window.Colors.ButtonHover))
             {
                 dialog.TopMost = true;
                 dialog.Plus();
                 dialog.ShowDialog();
-                if (dialog.Text.Count(c => c == ',') == 1)
+                if (!string.IsNullOrEmpty(dialog.IconPath))
                 {
-                    var iconData = dialog.Text.Split(',');
-                    assocData.IconPath = EnvironmentEx.GetVariablePathFull(iconData.First(), false, false);
-                    assocData.IconId = iconData.Last();
+                    assocData.IconPath = dialog.IconPath;
+                    assocData.IconId = dialog.IconId.ToString();
+                    MessageBox.Show(dialog.IconPath + @"," + dialog.IconId);
+                    Environment.Exit(0);
                 }
             }
 
@@ -115,14 +117,14 @@
             {
                 owner.TopMost = false;
                 owner.Enabled = false;
-                TaskBar.Progress.SetState(owner.Handle, TaskBar.Progress.Flags.Indeterminate);
+                TaskBarProgress.SetState(owner.Handle, TaskBarProgressFlags.Indeterminate);
                 Settings.WriteToFile(true);
             }
             var assocData = appData.Settings.FileTypeAssoc;
             assocData?.SystemRegistryAccess?.LoadRestorePoint(quiet);
             if (owner == default(Form))
                 return;
-            TaskBar.Progress.SetState(owner.Handle, TaskBar.Progress.Flags.NoProgress);
+            TaskBarProgress.SetState(owner.Handle, TaskBarProgressFlags.NoProgress);
             if (WinApi.NativeHelper.GetForegroundWindow() != owner.Handle)
                 WinApi.NativeHelper.SetForegroundWindow(owner.Handle);
             owner.Enabled = true;

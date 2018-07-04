@@ -31,7 +31,7 @@
                 if (enabled)
                 {
                     Reg.Write(Registry.LocalMachine, varKey, Settings.EnvironmentVariable, curDir);
-                    FileEx.CreateShortcut(curPath, sendToPath);
+                    FileEx.CreateShellLink(curPath, sendToPath);
                 }
                 else
                 {
@@ -68,11 +68,11 @@
                             var pinnedDir = PathEx.Combine(Environment.SpecialFolder.ApplicationData, "Microsoft", "Internet Explorer", "Quick Launch", "User Pinned", "TaskBar");
                             foreach (var file in Directory.GetFiles(pinnedDir, "*.lnk", SearchOption.TopDirectoryOnly))
                             {
-                                if (!string.Equals(FileEx.GetShortcutTarget(file), PathEx.LocalPath, StringComparison.CurrentCultureIgnoreCase))
+                                if (!string.Equals(FileEx.GetShellLinkTarget(file), PathEx.LocalPath, StringComparison.CurrentCultureIgnoreCase))
                                     continue;
                                 ProcessEx.SendHelper.Delete(file);
                                 Environment.SetEnvironmentVariable(Settings.EnvironmentVariable, curDir, EnvironmentVariableTarget.Process);
-                                FileEx.CreateShortcut(curPath, file);
+                                FileEx.CreateShellLink(curPath, file);
                                 break;
                             }
                         }
@@ -116,7 +116,7 @@
                 }
                 if (!Directory.Exists(startMenuDir))
                     Directory.CreateDirectory(startMenuDir);
-                FileEx.CreateShortcut(EnvironmentEx.GetVariablePathFull(PathEx.LocalPath, false), shortcutPath);
+                FileEx.CreateShellLink(EnvironmentEx.GetVariablePathFull(PathEx.LocalPath, false), shortcutPath);
                 startMenuDir = Path.Combine(startMenuDir, "Portable Apps");
                 if (Directory.Exists(startMenuDir))
                 {
@@ -127,7 +127,7 @@
                 }
                 if (!Directory.Exists(startMenuDir))
                     Directory.CreateDirectory(startMenuDir);
-                Parallel.ForEach(appNames, x => FileEx.CreateShortcut(EnvironmentEx.GetVariablePathFull(CacheData.FindAppData(x)?.FilePath, false, false), Path.Combine(startMenuDir, x)));
+                Parallel.ForEach(appNames, x => FileEx.CreateShellLink(EnvironmentEx.GetVariablePathFull(CacheData.FindAppData(x)?.FilePath, false, false), Path.Combine(startMenuDir, x)));
             }
             catch (Exception ex)
             {

@@ -1049,7 +1049,7 @@ namespace AppsDownloader.Windows
 
                 Text = Settings.Title;
                 TransferStopwatch.Stop();
-                TaskBar.Progress.SetState(Handle, TaskBar.Progress.Flags.Indeterminate);
+                TaskBarProgress.SetState(Handle, TaskBarProgressFlags.Indeterminate);
 
                 Icon = CacheData.GetSystemIcon(ResourcesEx.IconIndex.Install, true);
                 var installed = new List<ListViewItem>();
@@ -1069,7 +1069,7 @@ namespace AppsDownloader.Windows
 
                 if (TransferFails.Any())
                 {
-                    TaskBar.Progress.SetState(Handle, TaskBar.Progress.Flags.Error);
+                    TaskBarProgress.SetState(Handle, TaskBarProgressFlags.Error);
                     var fails = TransferFails.Select(x => x.Name).Distinct().ToArray();
                     var warning = string.Format(Language.GetText(fails.Length == 1 ? nameof(en_US.AppDownloadErrorMsg) : nameof(en_US.AppsDownloadErrorMsg)), fails.Join(Environment.NewLine));
                     switch (MessageBoxEx.Show(this, warning, Settings.Title, MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning))
@@ -1128,7 +1128,7 @@ namespace AppsDownloader.Windows
                     }
                 }
 
-                TaskBar.Progress.SetValue(Handle, 100, 100);
+                TaskBarProgress.SetValue(Handle, 100, 100);
                 var information = Language.GetText(ActionGuid.IsUpdateInstance ? installed.Count == 1 ? nameof(en_US.AppUpdatedMsg) : nameof(en_US.AppsUpdatedMsg) : installed.Count == 1 ? nameof(en_US.AppDownloadedMsg) : nameof(en_US.AppsDownloadedMsg));
                 MessageBoxEx.Show(this, information, Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ApplicationExit();

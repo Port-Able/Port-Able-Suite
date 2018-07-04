@@ -500,7 +500,7 @@ Dadurch können Sie die folgenden Änderungen jederzeit wieder rückgängig mach
     <comment>SystemContextMenuEntry</comment>
   </data>
   <data name="showLargeImagesCheck" xml:space="preserve">
-    <value>Verwende große Bilder</value>
+    <value>Große Bilder anzeigen</value>
   </data>
   <data name="startArgsDefaultLabelTip" xml:space="preserve">
     <value>Derzeitige Befehlszeilenargumente.</value>

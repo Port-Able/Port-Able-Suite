@@ -270,7 +270,7 @@ Bitte stellen Sie sicher dass Ihre Einstellungen gespeichert sind, bevor Sie die
     <comment>GroupBox</comment>
   </data>
   <data name="highlightInstalledCheck" xml:space="preserve">
-    <value>Installierte Hervorheben</value>
+    <value>Installierte hervorheben</value>
     <comment>CheckBox</comment>
   </data>
   <data name="InitializingMsg" xml:space="preserve">
@@ -375,15 +375,15 @@ Verfügbar: {1}</value>
     <comment>Form</comment>
   </data>
   <data name="showColorsCheck" xml:space="preserve">
-    <value>Gruppenfarben Anzeigen</value>
+    <value>Gruppenfarben anzeigen</value>
     <comment>CheckBox</comment>
   </data>
   <data name="showGroupsCheck" xml:space="preserve">
-    <value>Gruppen Anzeigen</value>
+    <value>Gruppen anzeigen</value>
     <comment>CheckBox</comment>
   </data>
   <data name="showLargeImagesCheck" xml:space="preserve">
-    <value>Verwende große Bilder</value>
+    <value>Große Bilder anzeigen</value>
     <comment>CheckBox</comment>
   </data>
   <data name="startBtn" xml:space="preserve">

@@ -889,7 +889,7 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Verwende große Bilder.
+        ///   Looks up a localized string similar to Große Bilder anzeigen.
         /// </summary>
         internal static string showLargeImagesCheck {
             get {

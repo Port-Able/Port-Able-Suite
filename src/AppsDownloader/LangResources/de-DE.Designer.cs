@@ -383,7 +383,7 @@ namespace AppsDownloader.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Installierte Hervorheben.
+        ///   Looks up a localized string similar to Installierte hervorheben.
         /// </summary>
         internal static string highlightInstalledCheck {
             get {
@@ -613,7 +613,7 @@ namespace AppsDownloader.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gruppenfarben Anzeigen.
+        ///   Looks up a localized string similar to Gruppenfarben anzeigen.
         /// </summary>
         internal static string showColorsCheck {
             get {
@@ -622,7 +622,7 @@ namespace AppsDownloader.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gruppen Anzeigen.
+        ///   Looks up a localized string similar to Gruppen anzeigen.
         /// </summary>
         internal static string showGroupsCheck {
             get {
@@ -631,7 +631,7 @@ namespace AppsDownloader.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Verwende große Bilder.
+        ///   Looks up a localized string similar to Große Bilder anzeigen.
         /// </summary>
         internal static string showLargeImagesCheck {
             get {

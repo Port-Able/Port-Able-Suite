@@ -340,7 +340,7 @@ namespace AppsLauncher.Windows
                     break;
                 case nameof(appMenuItem4):
                     var linkPath = PathEx.Combine(Environment.SpecialFolder.Desktop, selectedItem);
-                    var created = FileEx.CreateShortcut(appData.FilePath, linkPath);
+                    var created = FileEx.CreateShellLink(appData.FilePath, linkPath);
                     MessageBoxEx.CenterMousePointer = !ClientRectangle.Contains(PointToClient(MousePosition));
                     MessageBoxEx.Show(this, Language.GetText(created ? nameof(en_US.appMenuItem4Msg0) : nameof(en_US.appMenuItem4Msg1)), Settings.Title, MessageBoxButtons.OK, created ? MessageBoxIcon.Asterisk : MessageBoxIcon.Warning);
                     break;
