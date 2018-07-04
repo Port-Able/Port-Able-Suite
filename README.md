@@ -26,11 +26,11 @@ But to be honest, my focus isn't only to get applications for my portable device
 
 ### Requirements:
 - Microsoft Windows 7 or higher
-- [Microsoft .NET Framework Version 4.6+](https://www.microsoft.com/download/details.aspx?id=48130)
+- [Microsoft .NET Framework Version 4.7+](https://www.microsoft.com/download/details.aspx?id=48130)
 
 ### Requirements (Developer):
 - Microsoft Windows 7 or higher (64-bit)
-- [Microsoft Visual Studio 2017 + .NET Framework 4.6.1 SDK](https://www.visualstudio.com/downloads/)
+- [Microsoft Visual Studio 2017 + .NET Framework 4.7 SDK](https://www.visualstudio.com/downloads/)
 - [Si13n7 Dev. ® CSharp Library Binaries](https://github.com/Si13n7/SilDev.CSharpLib/)
 
 ***
