@@ -1,6 +1,6 @@
-[![Release](https://img.shields.io/badge/Release-v18.6.29-brightgreen.svg?style=plastic)](https://github.com/Port-Able/Port-Able-Suite/releases/latest) [![License](https://img.shields.io/badge/License-GNU%20GPL%20v3.0-blue.svg?style=plastic)](https://github.com/Port-Able/Port-Able-Suite/blob/master/LICENSE.txt)
+[![Release](http://si13n7.com/.shields/releases/port-able-suite.svg)](https://github.com/Port-Able/Port-Able-Suite/releases/latest) [![License](http://si13n7.com/.shields/licenses/gnu_gpl_v3.0.svg)](https://github.com/Port-Able/Port-Able-Suite/blob/master/LICENSE.txt)
 
-# [Port-Able Suite](http://apps.suite.si13n7.com/)
+# [Port-Able Suite](http://port-able.si13n7.com)
 
 The Port-Able Suite helps you manage a collection of portable apps. It lets you easily download new apps, automatically searches for app updates, and more.
 
@@ -11,7 +11,7 @@ A portable app is a software that will not take an effect to your running system
 But to be honest, my focus isn't only to get applications for my portable devices. It's also nice that it doesn't matter how many applications you have installed, it has absolutely no negative effect on your system performance. Your system is always fast and clean.
 
 <h1 align="center">Over 400 Applications</h1>
-<h1 align="center"><img src="https://user-images.githubusercontent.com/6128966/41601009-9ac6bad6-73d7-11e8-9215-eea0bef6ffaf.png"></h1>
+<h1 align="center"><img src="https://user-images.githubusercontent.com/6128966/42115936-608a9970-7bf5-11e8-9eb8-7f985680b1c9.png"></h1>
 
 <h1 align="center">Native Theme Style</h1>
 <h1 align="center"><img  src="https://user-images.githubusercontent.com/6128966/41601026-a95a8956-73d7-11e8-9569-666d64f51ae7.png"> <img src="https://user-images.githubusercontent.com/6128966/41601061-c0e758ec-73d7-11e8-89f9-5d46ed468e49.png">
