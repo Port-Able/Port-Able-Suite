@@ -6,7 +6,7 @@
     internal static class CorePaths
     {
         private static string[] _appDirs;
-        private static string _appsDir, _appImages, _appImagesLarge, _appsLauncher, _appsSuiteUpdater, _archiver, _homeDir, _redirectUrl, _tempDir;
+        private static string _appsDir, _appImages, _appImagesLarge, _appsLauncher, _appsSuiteUpdater, _archiver, _homeDir, _redirectUrl, _tempDir, _transferDir;
 
         internal static string AppsDir
         {
@@ -86,9 +86,9 @@
                 if (_archiver != default(string))
                     return _archiver;
 #if x86
-                Compaction.SevenZipHelper.Location = Path.Combine(PathEx.LocalDir, "Helper\\7z");
+                Compaction.SevenZipHelper.Location = PathEx.Combine(PathEx.LocalDir, "Helper\\7z");
 #else
-                Compaction.SevenZipHelper.Location = Path.Combine(PathEx.LocalDir, "Helper\\7z\\x64");
+                Compaction.SevenZipHelper.Location = PathEx.Combine(PathEx.LocalDir, "Helper\\7z\\x64");
 #endif
                 _archiver = Compaction.SevenZipHelper.FilePath;
                 return _archiver;
@@ -131,8 +131,19 @@
                             process.WaitForExit();
                     return _tempDir;
                 }
-                _tempDir = EnvironmentEx.GetVariableValue("TEMP");
+                _tempDir = Path.Combine(Path.GetTempPath(), "Port-Able");
+                DirectoryEx.Create(_tempDir);
                 return _tempDir;
+            }
+        }
+
+        internal static string TransferDir
+        {
+            get
+            {
+                if (_transferDir == default(string))
+                    _transferDir = Path.Combine(TempDir, "Transfer");
+                return _transferDir;
             }
         }
     }

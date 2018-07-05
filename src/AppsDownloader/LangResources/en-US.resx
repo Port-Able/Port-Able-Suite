@@ -134,7 +134,7 @@ This could be due an incomplete download or other network issue.</value>
     <comment>Message</comment>
   </data>
   <data name="appListGroupBox" xml:space="preserve">
-    <value>App List</value>
+    <value>Application List</value>
     <comment>GroupBox</comment>
   </data>
   <data name="appMenuItem1" xml:space="preserve">
@@ -354,12 +354,22 @@ Please make sure your settings are saved before confirming this message!</value>
 Please try again later.</value>
     <comment>Message</comment>
   </data>
-  <data name="NotEnoughDiskSpaceMsg" xml:space="preserve">
-    <value>Not enough disk space!
+  <data name="NotEnoughSpaceMsg" xml:space="preserve">
+    <value>There is not enough free space on the storage device ({0}:\).
 
-Required: {0}
-
-Available: {1}</value>
+You must free up at least {1} more space.</value>
+    <comment>Message</comment>
+  </data>
+  <data name="OperationCanceledMsg" xml:space="preserve">
+    <value>Operation canceled.</value>
+    <comment>Message</comment>
+  </data>
+  <data name="OperationCompletedMsg" xml:space="preserve">
+    <value>Operation completed.</value>
+    <comment>Message</comment>
+  </data>
+  <data name="OperationFailedMsg" xml:space="preserve">
+    <value>Operation failed.</value>
     <comment>Message</comment>
   </data>
   <data name="rememberLangCheck" xml:space="preserve">
@@ -397,6 +407,12 @@ Available: {1}</value>
   <data name="titleStatus" xml:space="preserve">
     <value>File: {0}/{1}</value>
     <comment>Status</comment>
+  </data>
+  <data name="TransferDirMsg" xml:space="preserve">
+    <value>The custom transfer directory can not be on the same storage device as the suite.</value>
+  </data>
+  <data name="transferGroupBox" xml:space="preserve">
+    <value>Transfer Path</value>
   </data>
   <data name="urlStatusLabel" xml:space="preserve">
     <value>Source:</value>

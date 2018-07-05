@@ -286,9 +286,7 @@ namespace AppsDownloader.Windows
             foreach (var appTransferor in TransferManager.Values)
                 appTransferor.Transfer.CancelAsync();
 
-            var appInstaller = AppSupply.FindAppInstaller();
-            if (appInstaller.Any())
-                appInstaller.ForEach(file => ProcessEx.SendHelper.WaitThenDelete(file));
+            ProcessEx.SendHelper.WaitThenDelete(Settings.TransferDir);
         }
 
         private void AppsList_Enter(object sender, EventArgs e) =>
@@ -877,7 +875,8 @@ namespace AppsDownloader.Windows
             AppsListShowColors();
 
             TransferManager.Clear();
-            var totalSize = 0L;
+            var totalDownloadSize = 0L;
+            var totalInstallSize = 0L;
             foreach (var item in appsList.CheckedItems.Cast<ListViewItem>())
             {
                 var appData = CacheData.AppInfo.FirstOrDefault(x => x.Key.EqualsEx(item.Name));
@@ -912,23 +911,42 @@ namespace AppsDownloader.Windows
 
                 unchecked
                 {
-                    totalSize += appData.DownloadSize;
-                    totalSize += appData.InstallSize;
+                    totalDownloadSize += appData.DownloadSize;
+                    totalInstallSize += appData.InstallSize;
                 }
             }
 
-            var freeSpace = DirectoryEx.GetFreeSpace(CorePaths.AppsDir);
-            if (totalSize > freeSpace)
+            (char, long, long)[] spaceData;
+            if (Settings.TransferDir.StartsWithEx(CorePaths.HomeDir))
+                spaceData = new[]
+                {
+                    (CorePaths.HomeDir.First(), unchecked(totalDownloadSize + totalInstallSize), DirectoryEx.GetFreeSpace(CorePaths.HomeDir))
+                };
+            else
+                spaceData = new[]
+                {
+                    (Settings.TransferDir.First(), totalDownloadSize, DirectoryEx.GetFreeSpace(Settings.TransferDir)),
+                    (CorePaths.HomeDir.First(), totalInstallSize, DirectoryEx.GetFreeSpace(CorePaths.HomeDir))
+                };
+            foreach (var tuple in spaceData)
             {
-                var warning = string.Format(Language.GetText(nameof(en_US.NotEnoughDiskSpaceMsg)), totalSize.FormatSize(), freeSpace.FormatSize());
+                if (tuple.Item2 < tuple.Item3)
+                    continue;
+                var warning = string.Format(Language.GetText(nameof(en_US.NotEnoughSpaceMsg)), tuple.Item1, (tuple.Item2 - tuple.Item3).FormatSize());
                 switch (MessageBoxEx.Show(this, warning, Settings.Title, MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Warning))
                 {
                     case DialogResult.Abort:
                         TransferManager.Clear();
                         ApplicationExit();
-                        break;
+                        return;
                     case DialogResult.Retry:
                         owner.Enabled = !owner.Enabled;
+
+                        owner.Visible = owner.Enabled;
+                        cancelBtn.Visible = owner.Enabled;
+                        searchBox.Parent.Visible = owner.Enabled;
+                        settingsBtn.Visible = owner.Enabled;
+
                         appsList.HideSelection = !owner.Enabled;
                         appsList.Enabled = owner.Enabled;
                         appMenu.Enabled = owner.Enabled;

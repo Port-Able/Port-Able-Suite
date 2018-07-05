@@ -1,11 +1,15 @@
 ﻿namespace AppsDownloader.Windows
 {
     using System;
+    using System.ComponentModel;
     using System.Drawing;
+    using System.IO;
     using System.Linq;
     using System.Windows.Forms;
+    using LangResources;
     using Libraries;
     using SilDev;
+    using SilDev.Drawing;
     using SilDev.Forms;
 
     public partial class SettingsForm : Form
@@ -24,9 +28,21 @@
 
             Icon = CacheData.GetSystemIcon(ResourcesEx.IconIndex.SystemControl);
 
+            transferPathBox.Text = EnvironmentEx.GetVariablePathFull(Settings.TransferDir, false, false);
+            transferPathBtn.BackgroundImage = CacheData.GetSystemImage(ResourcesEx.IconIndex.Directory);
+            transferPathUndoBtn.BackgroundImage = CacheData.GetSystemImage(ResourcesEx.IconIndex.Undo);
+            if (Settings.TransferDir.EqualsEx(CorePaths.TransferDir))
+            {
+                transferPathUndoBtn.Enabled = false;
+                transferPathUndoBtn.BackgroundImage = transferPathUndoBtn.BackgroundImage.SwitchGrayScale(transferPathUndoBtn);
+            }
+
             appListGroupBox.ResumeLayout(false);
             appListGroupBox.PerformLayout();
             groupColorsGroupBox.ResumeLayout(false);
+            transferGroupBox.ResumeLayout(false);
+            ((ISupportInitialize)logoBox).EndInit();
+            transferGroupBox.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -176,6 +192,57 @@
             group12ColorPanel.BackColor = Settings.Window.Colors.GetDefColor(nameof(Settings.Window.Colors.GroupColor12));
             if (Result != DialogResult.Yes)
                 Result = DialogResult.Yes;
+        }
+
+        private void TransferPathBtn_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                dialog.SelectedPath = Path.GetTempPath();
+                if (dialog.ShowDialog() != DialogResult.OK)
+                {
+                    MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationCanceledMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    return;
+                }
+                var transferDir = dialog.SelectedPath;
+                if (transferDir.EqualsEx(Settings.TransferDir))
+                {
+                    MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationFailedMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                var currentDrive = PathEx.LocalPath.ToUpper().First();
+                var transferDrive = transferDir.ToUpper().First();
+                if (currentDrive.Equals(transferDrive))
+                {
+                    MessageBoxEx.Show(this, Language.GetText(nameof(en_US.TransferDirMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                var currentDir = Settings.TransferDir;
+                Settings.TransferDir = transferDir;
+                var dirChanged = !Settings.TransferDir.EqualsEx(currentDir);
+                if (dirChanged)
+                {
+                    transferPathBox.Text = EnvironmentEx.GetVariablePathFull(Settings.TransferDir, false, false);
+                    if (!transferPathUndoBtn.Enabled)
+                    {
+                        transferPathUndoBtn.Enabled = true;
+                        transferPathUndoBtn.BackgroundImage = transferPathUndoBtn.BackgroundImage.SwitchGrayScale(transferPathUndoBtn);
+                    }
+                }
+                MessageBoxEx.Show(this, Language.GetText(dirChanged ? nameof(en_US.OperationCompletedMsg) : nameof(en_US.OperationFailedMsg)), Settings.Title, MessageBoxButtons.OK, dirChanged ? MessageBoxIcon.Asterisk : MessageBoxIcon.Warning);
+            }
+        }
+
+        private void TransferPathUndoBtn_Click(object sender, EventArgs e)
+        {
+            Settings.TransferDir = CorePaths.TransferDir;
+            transferPathBox.Text = EnvironmentEx.GetVariablePathFull(Settings.TransferDir, false, false);
+            if (transferPathUndoBtn.Enabled)
+            {
+                transferPathUndoBtn.Enabled = false;
+                transferPathUndoBtn.BackgroundImage = transferPathUndoBtn.BackgroundImage.SwitchGrayScale(transferPathUndoBtn);
+            }
+            MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationCompletedMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
     }
 }

@@ -19,7 +19,7 @@
 #else
         internal const string Title = "Apps Downloader (64-bit)";
 #endif
-        private static string _machineId;
+        private static string _machineId, _transferDir;
         private static string[] _nsisButtons;
 
         internal static string MachineId
@@ -48,6 +48,40 @@
                 if (langId != 1033 && langId != 2057 && buttonData.TryGetValue(1033, out btnData))
                     _nsisButtons = _nsisButtons.Concat(btnData).ToArray();
                 return _nsisButtons;
+            }
+        }
+
+        internal static string TransferDir
+        {
+            get
+            {
+                if (_transferDir != default(string))
+                    return _transferDir;
+                _transferDir = Ini.Read<string>(Section, nameof(TransferDir), CorePaths.TransferDir);
+                if (DirectoryEx.Create(_transferDir))
+                    return _transferDir;
+                if (!_transferDir.EqualsEx(CorePaths.TransferDir))
+                {
+                    _transferDir = CorePaths.TransferDir;
+                    if (DirectoryEx.Create(_transferDir))
+                        return _transferDir;
+                }
+                _transferDir = Path.Combine(Path.GetTempPath(), "Port-Able Transfer");
+                DirectoryEx.Create(_transferDir);
+                return _transferDir;
+            }
+            set
+            {
+                var transferDir = value;
+                if (!PathEx.IsValidPath(transferDir) || !Elevation.WritableLocation(transferDir))
+                    return;
+                if (!transferDir.EqualsEx(CorePaths.TransferDir))
+                    transferDir = Path.Combine(transferDir, "Port-Able Transfer");
+                if (!DirectoryEx.Create(transferDir))
+                    return;
+                DirectoryEx.TryDelete(_transferDir);
+                _transferDir = transferDir;
+                WriteValue(Section, nameof(TransferDir), _transferDir, CorePaths.TransferDir);
             }
         }
 

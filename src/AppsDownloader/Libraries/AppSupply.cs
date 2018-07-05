@@ -63,7 +63,8 @@
                 "*.zip",
                 "*.paf.exe"
             };
-            appInstaller.AddRange(CorePaths.AppDirs.SelectMany(x => searchPattern.SelectMany(y => DirectoryEx.EnumerateFiles(x, y))));
+            if (Directory.Exists(Settings.TransferDir))
+                appInstaller.AddRange(searchPattern.SelectMany(x => DirectoryEx.EnumerateFiles(Settings.TransferDir, x)));
             return appInstaller;
         }
 

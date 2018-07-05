@@ -134,7 +134,7 @@ Dies könnte mit einem unvollständigen Download, oder einem anderen Netzwerkpro
     <comment>Message</comment>
   </data>
   <data name="appListGroupBox" xml:space="preserve">
-    <value>App-Liste</value>
+    <value>Anwendungsliste</value>
     <comment>GroupBox</comment>
   </data>
   <data name="appMenuItem1" xml:space="preserve">
@@ -354,12 +354,22 @@ Bitte stellen Sie sicher dass Ihre Einstellungen gespeichert sind, bevor Sie die
 Bitte versuchen Sie es später noch einmal.</value>
     <comment>Message</comment>
   </data>
-  <data name="NotEnoughDiskSpaceMsg" xml:space="preserve">
-    <value>Nicht genügend Speicherplatz!
+  <data name="NotEnoughSpaceMsg" xml:space="preserve">
+    <value>Auf dem Speichergerät ({0}:\) ist nicht genügend freier Speicherplatz vorhanden.
 
-Notwendig: {0}
-
-Verfügbar: {1}</value>
+Es muss mindestens {1} mehr Speicherplatz freigeben werden.</value>
+    <comment>Message</comment>
+  </data>
+  <data name="OperationCanceledMsg" xml:space="preserve">
+    <value>Der Vorgang wurde abgebrochen.</value>
+    <comment>Message</comment>
+  </data>
+  <data name="OperationCompletedMsg" xml:space="preserve">
+    <value>Der Vorgang wurde abgeschlossen.</value>
+    <comment>Message</comment>
+  </data>
+  <data name="OperationFailedMsg" xml:space="preserve">
+    <value>Der Vorgang ist fehlgeschlagen.</value>
     <comment>Message</comment>
   </data>
   <data name="rememberLangCheck" xml:space="preserve">
@@ -397,6 +407,12 @@ Verfügbar: {1}</value>
   <data name="titleStatus" xml:space="preserve">
     <value>Datei: {0}/{1}</value>
     <comment>Status</comment>
+  </data>
+  <data name="TransferDirDriveMsg" xml:space="preserve">
+    <value>Das benutzerdefinierte Übertragungsverzeichnis kann sich nicht auf demselben Speichergerät wie die Suite befinden.</value>
+  </data>
+  <data name="transferGroupBox" xml:space="preserve">
+    <value>Übertragungsverzeichnis</value>
   </data>
   <data name="urlStatusLabel" xml:space="preserve">
     <value>Quelle:</value>

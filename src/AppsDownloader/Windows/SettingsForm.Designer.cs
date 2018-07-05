@@ -62,8 +62,15 @@
             this.RightToolStripPanel = new System.Windows.Forms.ToolStripPanel();
             this.LeftToolStripPanel = new System.Windows.Forms.ToolStripPanel();
             this.ContentPanel = new System.Windows.Forms.ToolStripContentPanel();
+            this.transferGroupBox = new System.Windows.Forms.GroupBox();
+            this.transferPathUndoBtn = new System.Windows.Forms.Button();
+            this.transferPathBox = new System.Windows.Forms.TextBox();
+            this.transferPathBtn = new System.Windows.Forms.Button();
+            this.logoBox = new System.Windows.Forms.PictureBox();
             this.appListGroupBox.SuspendLayout();
             this.groupColorsGroupBox.SuspendLayout();
+            this.transferGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.logoBox)).BeginInit();
             this.SuspendLayout();
             // 
             // highlightInstalledCheck
@@ -111,18 +118,17 @@
             // 
             // appListGroupBox
             // 
-            this.appListGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.appListGroupBox.Controls.Add(this.showLargeImagesCheck);
             this.appListGroupBox.Controls.Add(this.showGroupsCheck);
             this.appListGroupBox.Controls.Add(this.highlightInstalledCheck);
             this.appListGroupBox.Controls.Add(this.showColorsCheck);
             this.appListGroupBox.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.appListGroupBox.Location = new System.Drawing.Point(12, 7);
+            this.appListGroupBox.Location = new System.Drawing.Point(11, 12);
             this.appListGroupBox.Name = "appListGroupBox";
             this.appListGroupBox.Size = new System.Drawing.Size(220, 157);
             this.appListGroupBox.TabIndex = 0;
             this.appListGroupBox.TabStop = false;
-            this.appListGroupBox.Text = "App List";
+            this.appListGroupBox.Text = "Application List";
             // 
             // showLargeImagesCheck
             // 
@@ -139,7 +145,7 @@
             // 
             // groupColorsGroupBox
             // 
-            this.groupColorsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupColorsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupColorsGroupBox.Controls.Add(this.listViewGroup1);
             this.groupColorsGroupBox.Controls.Add(this.group1ColorPanel);
             this.groupColorsGroupBox.Controls.Add(this.listViewGroup12);
@@ -164,7 +170,7 @@
             this.groupColorsGroupBox.Controls.Add(this.listViewGroup2);
             this.groupColorsGroupBox.Controls.Add(this.group2ColorPanel);
             this.groupColorsGroupBox.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.groupColorsGroupBox.Location = new System.Drawing.Point(12, 170);
+            this.groupColorsGroupBox.Location = new System.Drawing.Point(237, 12);
             this.groupColorsGroupBox.Name = "groupColorsGroupBox";
             this.groupColorsGroupBox.Size = new System.Drawing.Size(220, 320);
             this.groupColorsGroupBox.TabIndex = 9;
@@ -516,12 +522,71 @@
             // 
             this.ContentPanel.Size = new System.Drawing.Size(150, 150);
             // 
+            // transferGroupBox
+            // 
+            this.transferGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.transferGroupBox.Controls.Add(this.transferPathUndoBtn);
+            this.transferGroupBox.Controls.Add(this.transferPathBox);
+            this.transferGroupBox.Controls.Add(this.transferPathBtn);
+            this.transferGroupBox.Location = new System.Drawing.Point(12, 335);
+            this.transferGroupBox.Name = "transferGroupBox";
+            this.transferGroupBox.Size = new System.Drawing.Size(446, 70);
+            this.transferGroupBox.TabIndex = 11;
+            this.transferGroupBox.TabStop = false;
+            this.transferGroupBox.Text = "Transfer Path";
+            // 
+            // transferPathUndoBtn
+            // 
+            this.transferPathUndoBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.transferPathUndoBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.transferPathUndoBtn.Location = new System.Drawing.Point(401, 29);
+            this.transferPathUndoBtn.Name = "transferPathUndoBtn";
+            this.transferPathUndoBtn.Size = new System.Drawing.Size(25, 25);
+            this.transferPathUndoBtn.TabIndex = 4;
+            this.transferPathUndoBtn.UseVisualStyleBackColor = true;
+            this.transferPathUndoBtn.Click += new System.EventHandler(this.TransferPathUndoBtn_Click);
+            // 
+            // transferPathBox
+            // 
+            this.transferPathBox.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.transferPathBox.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.transferPathBox.Location = new System.Drawing.Point(21, 30);
+            this.transferPathBox.Name = "transferPathBox";
+            this.transferPathBox.ReadOnly = true;
+            this.transferPathBox.Size = new System.Drawing.Size(346, 23);
+            this.transferPathBox.TabIndex = 0;
+            this.transferPathBox.Text = "C:\\Portable\\.cache\\Transfer";
+            // 
+            // transferPathBtn
+            // 
+            this.transferPathBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.transferPathBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.transferPathBtn.Location = new System.Drawing.Point(372, 29);
+            this.transferPathBtn.Name = "transferPathBtn";
+            this.transferPathBtn.Size = new System.Drawing.Size(25, 25);
+            this.transferPathBtn.TabIndex = 3;
+            this.transferPathBtn.UseVisualStyleBackColor = true;
+            this.transferPathBtn.Click += new System.EventHandler(this.TransferPathBtn_Click);
+            // 
+            // logoBox
+            // 
+            this.logoBox.BackgroundImage = global::AppsDownloader.Properties.Resources.Logo164px;
+            this.logoBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.logoBox.Location = new System.Drawing.Point(11, 171);
+            this.logoBox.Name = "logoBox";
+            this.logoBox.Size = new System.Drawing.Size(196, 161);
+            this.logoBox.TabIndex = 12;
+            this.logoBox.TabStop = false;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(244, 501);
+            this.ClientSize = new System.Drawing.Size(469, 416);
+            this.Controls.Add(this.logoBox);
+            this.Controls.Add(this.transferGroupBox);
             this.Controls.Add(this.groupColorsGroupBox);
             this.Controls.Add(this.appListGroupBox);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
@@ -529,6 +594,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(485, 455);
             this.Name = "SettingsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
@@ -575,5 +641,10 @@
         private System.Windows.Forms.ToolStripPanel RightToolStripPanel;
         private System.Windows.Forms.ToolStripPanel LeftToolStripPanel;
         private System.Windows.Forms.ToolStripContentPanel ContentPanel;
+        private System.Windows.Forms.GroupBox transferGroupBox;
+        private System.Windows.Forms.TextBox transferPathBox;
+        private System.Windows.Forms.Button transferPathBtn;
+        private System.Windows.Forms.PictureBox logoBox;
+        private System.Windows.Forms.Button transferPathUndoBtn;
     }
 }

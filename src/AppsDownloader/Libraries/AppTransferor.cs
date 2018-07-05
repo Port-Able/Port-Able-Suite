@@ -43,13 +43,12 @@
                 {
                     if (DestPath == default(string))
                     {
+                        if (!DirectoryEx.Create(Settings.TransferDir))
+                            continue;
                         var fileName = Path.GetFileName(tuple.Item1);
                         if (string.IsNullOrEmpty(fileName))
                             continue;
-                        DestPath = PathEx.Combine(AppData.InstallDir, "..");
-                        if (DestPath.EndsWithEx("CommonFiles"))
-                            DestPath = PathEx.Combine(DestPath, "..");
-                        DestPath = PathEx.Combine(DestPath, fileName);
+                        DestPath = PathEx.Combine(Settings.TransferDir, fileName);
                     }
 
                     var shortHost = tuple.Item1.GetShortHost();

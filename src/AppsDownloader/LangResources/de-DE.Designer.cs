@@ -92,7 +92,7 @@ namespace AppsDownloader.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to App-Liste.
+        ///   Looks up a localized string similar to Anwendungsliste.
         /// </summary>
         internal static string appListGroupBox {
             get {
@@ -573,15 +573,40 @@ namespace AppsDownloader.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Nicht genügend Speicherplatz!
+        ///   Looks up a localized string similar to Auf dem Speichergerät ({0}:\) ist nicht genügend freier Speicherplatz vorhanden.
         ///
-        ///Notwendig: {0}
-        ///
-        ///Verfügbar: {1}.
+        ///Es muss mindestens {1} mehr Speicherplatz freigeben werden..
         /// </summary>
-        internal static string NotEnoughDiskSpaceMsg {
+        internal static string NotEnoughSpaceMsg {
             get {
-                return ResourceManager.GetString("NotEnoughDiskSpaceMsg", resourceCulture);
+                return ResourceManager.GetString("NotEnoughSpaceMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der Vorgang wurde abgebrochen..
+        /// </summary>
+        internal static string OperationCanceledMsg {
+            get {
+                return ResourceManager.GetString("OperationCanceledMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der Vorgang wurde abgeschlossen..
+        /// </summary>
+        internal static string OperationCompletedMsg {
+            get {
+                return ResourceManager.GetString("OperationCompletedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der Vorgang ist fehlgeschlagen..
+        /// </summary>
+        internal static string OperationFailedMsg {
+            get {
+                return ResourceManager.GetString("OperationFailedMsg", resourceCulture);
             }
         }
         
@@ -663,6 +688,24 @@ namespace AppsDownloader.LangResources {
         internal static string titleStatus {
             get {
                 return ResourceManager.GetString("titleStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Das benutzerdefinierte Übertragungsverzeichnis kann sich nicht auf demselben Speichergerät wie die Suite befinden..
+        /// </summary>
+        internal static string TransferDirDriveMsg {
+            get {
+                return ResourceManager.GetString("TransferDirDriveMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Übertragungsverzeichnis.
+        /// </summary>
+        internal static string transferGroupBox {
+            get {
+                return ResourceManager.GetString("transferGroupBox", resourceCulture);
             }
         }
         
