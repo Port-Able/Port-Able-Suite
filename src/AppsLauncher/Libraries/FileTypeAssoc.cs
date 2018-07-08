@@ -1,6 +1,5 @@
 ﻿namespace AppsLauncher.Libraries
 {
-    using System;
     using System.ComponentModel;
     using System.Linq;
     using System.Windows.Forms;
@@ -62,8 +61,6 @@
                 {
                     assocData.IconPath = dialog.IconPath;
                     assocData.IconId = dialog.IconId.ToString();
-                    MessageBox.Show(dialog.IconPath + @"," + dialog.IconId);
-                    Environment.Exit(0);
                 }
             }
 
