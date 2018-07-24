@@ -71,6 +71,93 @@ namespace AppsDownloader.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [LongName]
+        ///Default=*Default
+        ///English=*English
+        ///EnglishGB=English (British)
+        ///Multilingual=*Multilingual
+        ///Portuguese=Portuguese (Portugal)
+        ///PortugueseBR=Portuguese (Brazilian)
+        ///SerbianLatin=Serbian (Latin)
+        ///SimpChinese=Chinese (Simplified)
+        ///Spanish=Spanish (Spain)
+        ///SpanishInternational=Spanish (International)
+        ///TradChinese=Chinese (Traditional)
+        ///[ShortName]
+        ///*Default=Default
+        ///*English=English
+        ///*Multilingual=Multilingual
+        ///Chinese (Simplified)=SimpChinese
+        ///Chinese (Traditional)=TradChinese
+        ///English (British)=En [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string LangNames {
+            get {
+                return ResourceManager.GetString("LangNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Afrikaans
+        ///Albanian
+        ///Arabic
+        ///Armenian
+        ///Basque
+        ///Belarusian
+        ///Bulgarian
+        ///Catalan
+        ///Croatian
+        ///Czech
+        ///Danish
+        ///Dutch
+        ///EnglishGB
+        ///Estonian
+        ///Farsi
+        ///Filipino
+        ///Finnish
+        ///French
+        ///Galician
+        ///German
+        ///Greek
+        ///Hebrew
+        ///Hungarian
+        ///Indonesian
+        ///Irish
+        ///Italian
+        ///Japanese
+        ///Korean
+        ///Latvian
+        ///Lithuanian
+        ///Luxembourgish
+        ///Macedonian
+        ///Malay
+        ///Norwegian
+        ///Polish
+        ///Portuguese
+        ///PortugueseBR
+        ///Romanian
+        ///Russian
+        ///Serbian
+        ///SerbianLatin
+        ///SimpChinese
+        ///Slovak
+        ///Slovenian
+        ///Spanish
+        ///SpanishInternational
+        ///Sundanese
+        ///Swedish
+        ///Thai
+        ///TradChinese
+        ///Turkish
+        ///Ukr [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Languages {
+            get {
+                return ResourceManager.GetString("Languages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon Logo {

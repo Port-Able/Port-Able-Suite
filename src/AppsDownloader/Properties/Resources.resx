@@ -130,4 +130,85 @@
   <data name="Logo164px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Logo164px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="LangNames" xml:space="preserve">
+    <value>[LongName]
+Default=*Default
+English=*English
+EnglishGB=English (British)
+Multilingual=*Multilingual
+Portuguese=Portuguese (Portugal)
+PortugueseBR=Portuguese (Brazilian)
+SerbianLatin=Serbian (Latin)
+SimpChinese=Chinese (Simplified)
+Spanish=Spanish (Spain)
+SpanishInternational=Spanish (International)
+TradChinese=Chinese (Traditional)
+[ShortName]
+*Default=Default
+*English=English
+*Multilingual=Multilingual
+Chinese (Simplified)=SimpChinese
+Chinese (Traditional)=TradChinese
+English (British)=EnglishGB
+Portuguese (Brazilian)=PortugueseBR
+Portuguese (Portugal)=Portuguese
+Serbian (Latin)=SerbianLatin
+Spanish (International)=SpanishInternational
+Spanish (Spain)=Spanish</value>
+  </data>
+  <data name="Languages" xml:space="preserve">
+    <value>Afrikaans
+Albanian
+Arabic
+Armenian
+Basque
+Belarusian
+Bulgarian
+Catalan
+Croatian
+Czech
+Danish
+Dutch
+EnglishGB
+Estonian
+Farsi
+Filipino
+Finnish
+French
+Galician
+German
+Greek
+Hebrew
+Hungarian
+Indonesian
+Irish
+Italian
+Japanese
+Korean
+Latvian
+Lithuanian
+Luxembourgish
+Macedonian
+Malay
+Norwegian
+Polish
+Portuguese
+PortugueseBR
+Romanian
+Russian
+Serbian
+SerbianLatin
+SimpChinese
+Slovak
+Slovenian
+Spanish
+SpanishInternational
+Sundanese
+Swedish
+Thai
+TradChinese
+Turkish
+Ukrainian
+Vietnamese</value>
+  </data>
 </root>

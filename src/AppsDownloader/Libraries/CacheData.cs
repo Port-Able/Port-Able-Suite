@@ -10,6 +10,7 @@
     using System.Text;
     using System.Text.RegularExpressions;
     using LangResources;
+    using Properties;
     using SilDev;
 
     internal static class CacheData
@@ -429,7 +430,7 @@
                 if (path2.StartsWithEx("http") && !path2.EqualsEx(path1))
                     downloadDict[defLanguage].Add(Tuple.Create(path2, hash));
 
-                foreach (var lang in Language.GetText(nameof(en_US.availableLangs)).Split(',').Where(Comparison.IsNotEmpty))
+                foreach (var lang in Resources.Languages.SplitNewLine(true))
                 {
                     var langFile = Ini.Read(section, $"DownloadFile_{lang}", config);
                     if (!langFile.EndsWithEx(".paf.exe"))

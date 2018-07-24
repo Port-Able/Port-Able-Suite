@@ -6,6 +6,8 @@ namespace AppsDownloader.Windows
     using System.Media;
     using System.Windows.Forms;
     using Libraries;
+    using Properties;
+    using SilDev;
     using SilDev.Drawing;
     using SilDev.Forms;
 
@@ -31,7 +33,19 @@ namespace AppsDownloader.Windows
 
             appNameLabel.Text = _appData.Name;
 
-            langBox.Items.AddRange(_appData.Languages.Cast<object>().ToArray());
+            LangNames = Resources.LangNames;
+            var languages = _appData.Languages.ToArray();
+            for (var i = 0; i < languages.Length; i++)
+            {
+                var shortName = languages[i];
+                var longName = Ini.Read("LongName", shortName, shortName, LangNames);
+                if (longName.EqualsEx(shortName))
+                    continue;
+                languages[i] = longName;
+            }
+            languages = languages.Sort();
+
+            langBox.Items.AddRange(languages.Cast<object>().ToArray());
             langBox.SelectedItem = _appData.Settings.ArchiveLang;
             if (langBox.SelectedIndex < 0)
                 langBox.SelectedIndex = 0;
@@ -40,6 +54,8 @@ namespace AppsDownloader.Windows
 
             ResumeLayout(false);
         }
+
+        private string LangNames { get; }
 
         public sealed override string Text
         {
@@ -58,7 +74,9 @@ namespace AppsDownloader.Windows
 
         private void OKBtn_Click(object sender, EventArgs e)
         {
-            _appData.Settings.ArchiveLang = langBox.GetItemText(langBox.SelectedItem);
+            var selected = langBox.GetItemText(langBox.SelectedItem);
+            var langKey = Ini.Read("ShortName", selected, selected, LangNames);
+            _appData.Settings.ArchiveLang = langKey;
             _appData.Settings.ArchiveLangConfirmed = rememberLangCheck.Checked;
             DialogResult = DialogResult.OK;
         }
