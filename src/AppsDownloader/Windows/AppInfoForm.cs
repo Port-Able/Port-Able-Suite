@@ -46,6 +46,7 @@
                         "Website:",
                         "DisplayVersion:",
                         "PackageVersion:",
+                        "VersionData:",
                         "DefaultLanguage:",
                         "Languages:",
                         "DownloadCollection:",
