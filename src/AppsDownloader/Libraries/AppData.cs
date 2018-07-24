@@ -158,6 +158,7 @@
                     case "GPG":
                     case "Java":
                     case "Java64":
+                    case "JDK":
                         _installDir = Path.Combine(appDir, "CommonFiles", Key);
                         return _installDir;
                 }

@@ -37,6 +37,7 @@
                 case "Ghostscript":
                 case "Java":
                 case "Java64":
+                case "JDK":
                     dir = Path.Combine(dir, "bin");
                     if (DirectoryEx.EnumerateFiles(dir, pattern).Any())
                         return true;

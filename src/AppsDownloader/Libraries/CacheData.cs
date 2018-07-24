@@ -273,8 +273,18 @@
                 var name = Ini.Read(section, "Name", config);
                 if (string.IsNullOrWhiteSpace(name))
                     continue;
-                if (name.StartsWithEx("jPortable"))
-                    name = name.Replace("jPortable", "Java");
+                var filters = new[]
+                {
+                    ("jPortable", "Java (Runtime)"),
+                    ("jdkPortable", "Java (Development)")
+                };
+                foreach (var filter in filters)
+                {
+                    if (!name.StartsWithEx(filter.Item1))
+                        continue;
+                    name = name.Replace(filter.Item1, filter.Item2);
+                    break;
+                }
                 if (!name.StartsWithEx(AppSupplierHosts.PortableApps))
                 {
                     var newName = new Regex(", Portable Edition|Portable64|Portable", RegexOptions.IgnoreCase).Replace(name, string.Empty);
