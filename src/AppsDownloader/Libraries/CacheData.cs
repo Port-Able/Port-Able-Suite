@@ -30,8 +30,7 @@
                 _appImages = FileEx.Deserialize<Dictionary<string, Image>>(CachePaths.AppImages);
                 if (_appImages == default(Dictionary<string, Image>))
                     _appImages = FileEx.Deserialize<Dictionary<string, Image>>(CorePaths.AppImages);
-                if (_appImages == default(Dictionary<string, Image>))
-                    _appImages = new Dictionary<string, Image>();
+                _appImages = _appImages != default(Dictionary<string, Image>) ? _appImages.ToDictionary(x => x.Key, x => x.Value, StringComparer.OrdinalIgnoreCase) : new Dictionary<string, Image>(StringComparer.OrdinalIgnoreCase);
                 return _appImages;
             }
         }
@@ -46,8 +45,7 @@
                 _appImagesLarge = FileEx.Deserialize<Dictionary<string, Image>>(CachePaths.AppImagesLarge);
                 if (_appImagesLarge == default(Dictionary<string, Image>))
                     _appImagesLarge = FileEx.Deserialize<Dictionary<string, Image>>(CorePaths.AppImagesLarge);
-                if (_appImagesLarge == default(Dictionary<string, Image>))
-                    _appImagesLarge = new Dictionary<string, Image>();
+                _appImagesLarge = _appImagesLarge != default(Dictionary<string, Image>) ? _appImagesLarge.ToDictionary(x => x.Key, x => x.Value, StringComparer.OrdinalIgnoreCase) : new Dictionary<string, Image>(StringComparer.OrdinalIgnoreCase);
                 return _appImagesLarge;
             }
         }

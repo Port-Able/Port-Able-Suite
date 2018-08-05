@@ -28,8 +28,7 @@
                 if (_appImages != default(Dictionary<string, Image>))
                     return _appImages;
                 _appImages = FileEx.Deserialize<Dictionary<string, Image>>(File.Exists(CachePaths.AppImages) ? CachePaths.AppImages : CorePaths.AppImages);
-                if (_appImages == default(Dictionary<string, Image>))
-                    _appImages = new Dictionary<string, Image>();
+                _appImages = _appImages != default(Dictionary<string, Image>) ? _appImages.ToDictionary(x => x.Key, x => x.Value, StringComparer.OrdinalIgnoreCase) : new Dictionary<string, Image>(StringComparer.OrdinalIgnoreCase);
                 return _appImages;
             }
         }
