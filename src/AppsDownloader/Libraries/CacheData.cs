@@ -8,7 +8,6 @@
     using System.Linq;
     using System.Net;
     using System.Text;
-    using System.Text.RegularExpressions;
     using LangResources;
     using Properties;
     using SilDev;
@@ -287,9 +286,9 @@
                 }
                 if (!name.StartsWithEx(AppSupplierHosts.PortableApps))
                 {
-                    var newName = new Regex(", Portable Edition|Portable64|Portable", RegexOptions.IgnoreCase).Replace(name, string.Empty);
+                    var newName = name.RemoveTextIgnoreCase(", Portable Edition", "Portable64", "Portable");
                     if (!string.IsNullOrWhiteSpace(newName))
-                        newName = Regex.Replace(newName, @"\s+", " ").Trim().TrimEnd(',');
+                        newName = newName.ReduceWhiteSpace().TrimEnd(' ', ',');
                     if (!string.IsNullOrWhiteSpace(newName) && !newName.Equals(name))
                         name = newName;
                 }
@@ -325,7 +324,7 @@
 
                 #region Category
 
-                var category = Ini.Read(section, "Category", config);
+                var category = Ini.Read(section, "Category", config)?.ReduceWhiteSpace().Replace("&", "and");
                 if (serverKey != null)
                 {
                     var custom = Language.GetText(nameof(en_US.listViewGroup12));
