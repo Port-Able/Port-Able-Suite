@@ -286,6 +286,13 @@
 
             Log.AllowLogging(Ini.FilePath, "DebugMode", Ini.GetRegex(false));
 
+            if (Elevation.IsAdministrator)
+            {
+                var path = Path.Combine("HKCU\\Software\\Portable Apps Suite", CorePaths.HomeDir.Encrypt(ChecksumAlgorithms.Adler32), ProcessEx.CurrentId.ToString());
+                if (Reg.CreateNewSubKey(path))
+                    AppDomain.CurrentDomain.ProcessExit += (s, e) => Reg.RemoveSubKey(path);
+            }
+
             if (!CacheData.CurrentAppInfo.Any())
             {
                 using(var process = ProcessEx.Start(CorePaths.AppsDownloader, Elevation.IsAdministrator, false))

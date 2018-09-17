@@ -153,6 +153,15 @@ namespace Updater.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to HKCU\Software\Portable Apps Suite.
+        /// </summary>
+        internal static string RegPath {
+            get {
+                return ResourceManager.GetString("RegPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Port-Able%20Suite.
         /// </summary>
         internal static string ReleasePath {

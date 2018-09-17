@@ -159,6 +159,9 @@ exit /b</value>
   <data name="GitSnapshotsPath" xml:space="preserve">
     <value>Port-Able-Suite-Snapper/raw/master</value>
   </data>
+  <data name="RegPath" xml:space="preserve">
+    <value>HKCU\Software\Portable Apps Suite</value>
+  </data>
   <data name="ReleasePath" xml:space="preserve">
     <value>Port-Able%20Suite</value>
   </data>

@@ -424,7 +424,11 @@ namespace Updater
                     lastStamp = _lastStamp;
                 if (!Ini.Read("MD5", lastStamp, _hashInfo).EqualsEx(UpdatePath.EncryptFile()))
                     throw new InvalidOperationException();
-                ProcessEx.Start(helperPath, true, ProcessWindowStyle.Hidden);
+                var path = Path.Combine(Resources.RegPath, HomeDir.Encrypt(ChecksumAlgorithms.Adler32));
+                var elevated = Reg.SubKeyExists(path) && Reg.GetSubKeys(path)?.Any() == true;
+                if (elevated)
+                    Reg.RemoveSubKey(path);
+                ProcessEx.Start(helperPath, elevated, ProcessWindowStyle.Hidden);
                 Application.Exit();
             }
             catch (Exception ex)
