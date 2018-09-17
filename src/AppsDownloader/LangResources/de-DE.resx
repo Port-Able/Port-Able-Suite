@@ -269,6 +269,10 @@ Bitte stellen Sie sicher dass Ihre Einstellungen gespeichert sind, bevor Sie die
     <value>Installierte hervorheben</value>
     <comment>CheckBox</comment>
   </data>
+  <data name="HostNotAvailable" xml:space="preserve">
+    <value>[ Nicht verfügbar . . . ]</value>
+    <comment>ListViewColumnValue</comment>
+  </data>
   <data name="InitializingMsg" xml:space="preserve">
     <value>Initialisiere, bitte warten . . .</value>
     <comment>Message</comment>
@@ -406,9 +410,11 @@ Es muss mindestens {1} mehr Speicherplatz freigeben werden.</value>
   </data>
   <data name="TransferDirDriveMsg" xml:space="preserve">
     <value>Das benutzerdefinierte Übertragungsverzeichnis kann sich nicht auf demselben Speichergerät wie die Suite befinden.</value>
+    <comment>Message</comment>
   </data>
   <data name="transferGroupBox" xml:space="preserve">
     <value>Übertragungsverzeichnis</value>
+    <comment>ListViewGroup/Label</comment>
   </data>
   <data name="urlStatusLabel" xml:space="preserve">
     <value>Quelle:</value>

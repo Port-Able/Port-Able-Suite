@@ -97,7 +97,7 @@ namespace Updater.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://www.si13n7.com.
+        ///   Looks up a localized string similar to http://www.port-a.de.
         /// </summary>
         internal static string DevUri {
             get {
@@ -112,15 +112,6 @@ namespace Updater.Properties {
             get {
                 object obj = ResourceManager.GetObject("diagonal_pattern", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to http://ns.{0}.si13n7.com.
-        /// </summary>
-        internal static string DnsUri {
-            get {
-                return ResourceManager.GetString("DnsUri", resourceCulture);
             }
         }
         
@@ -162,7 +153,7 @@ namespace Updater.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Downloads/Port-Able%20Suite.
+        ///   Looks up a localized string similar to Port-Able%20Suite.
         /// </summary>
         internal static string ReleasePath {
             get {

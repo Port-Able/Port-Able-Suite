@@ -383,6 +383,15 @@ namespace AppsDownloader.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [ Not available . . . ].
+        /// </summary>
+        internal static string HostNotAvailable {
+            get {
+                return ResourceManager.GetString("HostNotAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Initializing, please wait . . ..
         /// </summary>
         internal static string InitializingMsg {

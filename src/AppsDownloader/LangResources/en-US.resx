@@ -269,6 +269,10 @@ Please make sure your settings are saved before confirming this message!</value>
     <value>Highlight Installed</value>
     <comment>CheckBox</comment>
   </data>
+  <data name="HostNotAvailable" xml:space="preserve">
+    <value>[ Not available . . . ]</value>
+    <comment>ListViewColumnValue</comment>
+  </data>
   <data name="InitializingMsg" xml:space="preserve">
     <value>Initializing, please wait . . .</value>
     <comment>Message</comment>
@@ -406,9 +410,11 @@ You must free up at least {1} more space.</value>
   </data>
   <data name="TransferDirMsg" xml:space="preserve">
     <value>The custom transfer directory can not be on the same storage device as the suite.</value>
+    <comment>Message</comment>
   </data>
   <data name="transferGroupBox" xml:space="preserve">
     <value>Transfer Path</value>
+    <comment>ListViewGroup/Label</comment>
   </data>
   <data name="urlStatusLabel" xml:space="preserve">
     <value>Source:</value>

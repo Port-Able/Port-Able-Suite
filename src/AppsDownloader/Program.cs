@@ -43,7 +43,8 @@ namespace AppsDownloader
 
                 if (!ActionGuid.IsUpdateInstance)
                 {
-                    var notifyBox = NotifyBoxEx.Show(Language.GetText(nameof(en_US.InitializingMsg)), Settings.Title, NotifyBoxStartPosition.Center, 0u, false);
+                    var notifyBox = new NotifyBox();
+                    notifyBox.Show(Language.GetText(nameof(en_US.InitializingMsg)), Settings.Title, NotifyBoxStartPosition.Center);
                     Application.Run(new MainForm(notifyBox).Plus());
                     return;
                 }

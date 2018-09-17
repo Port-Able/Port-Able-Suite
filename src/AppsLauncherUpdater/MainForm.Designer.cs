@@ -129,7 +129,7 @@ namespace Updater
             this.statusTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
             this.statusTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.statusTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 105F));
-            this.statusTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 95F));
+            this.statusTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 82F));
             this.statusTableLayoutPanel.Controls.Add(this.progressLabel, 0, 0);
             this.statusTableLayoutPanel.Controls.Add(this.statusBarPanel, 1, 0);
             this.statusTableLayoutPanel.Controls.Add(this.virusTotalBtn, 3, 0);
@@ -173,9 +173,9 @@ namespace Updater
             // 
             // virusTotalBtn
             // 
-            this.virusTotalBtn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.virusTotalBtn.Dock = System.Windows.Forms.DockStyle.Top;
             this.virusTotalBtn.ForeColor = System.Drawing.Color.Gray;
-            this.virusTotalBtn.Location = new System.Drawing.Point(463, 0);
+            this.virusTotalBtn.Location = new System.Drawing.Point(476, 0);
             this.virusTotalBtn.Name = "virusTotalBtn";
             this.virusTotalBtn.Size = new System.Drawing.Size(99, 21);
             this.virusTotalBtn.TabIndex = 3;
@@ -185,13 +185,13 @@ namespace Updater
             // 
             // webBtn
             // 
-            this.webBtn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.webBtn.Dock = System.Windows.Forms.DockStyle.Top;
             this.webBtn.ForeColor = System.Drawing.Color.Gray;
-            this.webBtn.Location = new System.Drawing.Point(568, 0);
+            this.webBtn.Location = new System.Drawing.Point(581, 0);
             this.webBtn.Name = "webBtn";
-            this.webBtn.Size = new System.Drawing.Size(89, 21);
+            this.webBtn.Size = new System.Drawing.Size(76, 21);
             this.webBtn.TabIndex = 4;
-            this.webBtn.Text = "www.si13n7.com";
+            this.webBtn.Text = "www.port-a.de";
             this.webBtn.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.webBtn.Click += new System.EventHandler(this.WebBtn_Click);
             // 
@@ -201,7 +201,7 @@ namespace Updater
             this.statusLabel.ForeColor = System.Drawing.Color.LightSteelBlue;
             this.statusLabel.Location = new System.Drawing.Point(203, 0);
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(254, 21);
+            this.statusLabel.Size = new System.Drawing.Size(267, 21);
             this.statusLabel.TabIndex = 5;
             this.statusLabel.Text = "Waiting for confirmation...";
             this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;

@@ -7,6 +7,7 @@ namespace Updater
     using System.Drawing;
     using System.Globalization;
     using System.IO;
+    using System.Linq;
     using System.Threading;
     using System.Windows.Forms;
     using LangResources;
@@ -96,46 +97,19 @@ namespace Updater
             // Get update infos if not already set
             if (string.IsNullOrWhiteSpace(_hashInfo))
             {
-                // Get available download mirrors
-                var dnsInfo = string.Empty;
-                for (var i = 0; i < 6; i++)
+                var mirrors = new[]
                 {
-                    try
-                    {
-                        var path = string.Format(Resources.DnsUri, i);
-                        if (!NetEx.FileIsAvailable(path, 20000))
-                            throw new PathNotFoundException(path);
-                        var data = NetEx.Transfer.DownloadString(path);
-                        if (string.IsNullOrWhiteSpace(data))
-                            throw new ArgumentNullException(nameof(data));
-                        dnsInfo = data;
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Write(ex);
-                    }
-                    if (string.IsNullOrWhiteSpace(dnsInfo) && i < 5)
-                    {
-                        Thread.Sleep(1000);
-                        continue;
-                    }
-                    break;
-                }
-                if (!string.IsNullOrWhiteSpace(dnsInfo))
-                    foreach (var section in Ini.GetSections(dnsInfo))
-                    {
-                        var addr = Ini.Read(section, _ipv4 ? "addr" : "ipv6", dnsInfo);
-                        if (string.IsNullOrEmpty(addr))
-                            continue;
-                        var domain = Ini.Read(section, "domain", dnsInfo);
-                        if (string.IsNullOrEmpty(domain))
-                            continue;
-                        var ssl = Ini.ReadOnly(section, "ssl", false, dnsInfo);
-                        domain = PathEx.AltCombine(ssl ? "https:" : "http:", domain);
-                        if (!DownloadMirrors.ContainsEx(domain))
-                            DownloadMirrors.Add(domain);
-                    }
-                if (DownloadMirrors.Count == 0)
+                    // IPv4 + IPv6
+                    "http://dl.0.port-a.de",
+                    "http://dl.1.port-a.de",
+
+                    // IPv4
+                    "http://dl.2.port-a.de"
+                };
+                if (!_ipv4 && _ipv6)
+                    mirrors = mirrors.Take(2).ToArray();
+                DownloadMirrors.AddRange(mirrors);
+                if (!DownloadMirrors.Any())
                 {
                     Environment.ExitCode = 1;
                     Application.Exit();
@@ -207,7 +181,7 @@ namespace Updater
                 if (MessageBox.Show(Language.GetText(nameof(en_US.UpdateAvailableMsg)), Text, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     // Update changelog
-                    if (DownloadMirrors.Count > 0)
+                    if (DownloadMirrors.Any())
                     {
                         var changes = string.Empty;
                         foreach (var mirror in DownloadMirrors)
@@ -342,7 +316,7 @@ namespace Updater
             if (!(sender is Button owner))
                 return;
             owner.Enabled = false;
-            string downloadPath = null;
+            var downloadPath = default(string);
             if (!string.IsNullOrWhiteSpace(_lastStamp))
                 try
                 {

@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Threading;
     using SilDev;
 
     internal enum AppSuppliers
@@ -16,7 +15,7 @@
 
     internal static class AppSupplierHosts
     {
-        internal const string Internal = "si13n7.com";
+        internal const string Internal = "port-a.de";
         internal const string PortableApps = "portableapps.com";
         internal const string SourceForge = "sourceforge.net";
     }
@@ -217,75 +216,21 @@
                     break;
                 }
 
-                // Internal ('si13n7.com')
+                // Internal - port-a.de
                 default:
                 {
-                    var servers = new[]
+                    var mirrors = new[]
                     {
-                        "https://www.si13n7.com/dns/info.ini",
-                        "http://ns.0.si13n7.com",
-                        "http://ns.1.si13n7.com",
-                        "http://ns.2.si13n7.com",
-                        "http://ns.3.si13n7.com",
-                        "http://ns.4.si13n7.com",
-                        "http://ns.5.si13n7.com"
+                        // IPv4 + IPv6
+                        "http://dl.0.port-a.de",
+                        "http://dl.1.port-a.de",
+
+                        // IPv4
+                        "http://dl.2.port-a.de"
                     };
                     if (!Network.IPv4IsAvalaible && Network.IPv6IsAvalaible)
-                        servers = servers.Take(2).ToArray();
-
-                    var info = default(string);
-                    for (var i = 0; i < servers.Length; i++)
-                    {
-                        try
-                        {
-                            var server = servers[i];
-                            if (!NetEx.FileIsAvailable(server, 20000))
-                                throw new PathNotFoundException(server);
-                            var data = NetEx.Transfer.DownloadString(server);
-                            if (string.IsNullOrWhiteSpace(data))
-                                throw new ArgumentNullException(nameof(data));
-                            info = data;
-                            if (Log.DebugMode > 0)
-                                Log.Write($"{nameof(AppSuppliers.Internal)}: Domain names have been set successfully from '{server}'.");
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Write(ex);
-                        }
-                        if (string.IsNullOrWhiteSpace(info) && i < servers.Length - 1)
-                        {
-                            Thread.Sleep(1000);
-                            continue;
-                        }
-                        break;
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(info))
-                    {
-                        foreach (var section in Ini.GetSections(info))
-                        {
-                            var addr = string.Empty;
-                            if (Network.IPv4IsAvalaible)
-                                addr = Ini.Read(section, "addr", info);
-                            if (string.IsNullOrEmpty(addr) && Network.IPv6IsAvalaible)
-                                addr = Ini.Read(section, "ipv6", info);
-                            if (string.IsNullOrEmpty(addr))
-                                continue;
-                            var domain = Ini.Read(section, "domain", info);
-                            if (string.IsNullOrEmpty(domain))
-                                continue;
-                            var ssl = Ini.Read(section, "ssl", false, info);
-                            if (Log.DebugMode > 0)
-                                Log.Write($"{nameof(AppSuppliers.Internal)}: Section '{section}'; Address: '{addr}'; '{domain}'; SSL: '{ssl}';");
-                            domain = PathEx.AltCombine(ssl ? "https:" : "http:", domain);
-                            if (_mirrors[supplier].ContainsEx(domain))
-                                continue;
-                            _mirrors[supplier].Add(domain);
-                            if (Log.DebugMode > 0)
-                                Log.Write($"{nameof(AppSuppliers.Internal)}: Domain '{domain}' added.");
-                        }
-                        Ini.Detach(info);
-                    }
+                        mirrors = mirrors.Take(2).ToArray();
+                    _mirrors[supplier].AddRange(mirrors);
                     break;
                 }
             }

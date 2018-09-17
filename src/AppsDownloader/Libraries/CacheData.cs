@@ -119,7 +119,7 @@
             var fileDate = File.Exists(filePath) ? File.GetLastWriteTime(filePath) : DateTime.MinValue;
             foreach (var mirror in AppSupply.GetMirrors(AppSuppliers.Internal))
             {
-                var link = PathEx.AltCombine(mirror, "Downloads", "Port-Able%20Suite", ".free", fileName);
+                var link = PathEx.AltCombine(mirror, "Port-Able%20Suite", ".free", fileName);
                 if (Log.DebugMode > 0)
                     Log.Write($"Cache: Looking for '{link}'.");
                 if (!NetEx.FileIsAvailable(link, 30000))
@@ -174,7 +174,7 @@
 
             foreach (var mirror in AppSupply.GetMirrors(AppSuppliers.Internal))
             {
-                var link = PathEx.AltCombine(mirror, "Downloads", "Port-Able%20Suite", ".free", "AppInfo.ini");
+                var link = PathEx.AltCombine(mirror, "Port-Able%20Suite", ".free", "AppInfo.ini");
                 if (Log.DebugMode > 0)
                     Log.Write($"Cache: Looking for '{link}'.");
                 if (NetEx.FileIsAvailable(link, 30000))
@@ -197,7 +197,7 @@
             var tmpZip = Path.Combine(tmpDir, "AppInfo.7z");
             foreach (var mirror in AppSupply.GetMirrors(AppSuppliers.Internal))
             {
-                var link = PathEx.AltCombine(mirror, "Downloads", "Port-Able%20Suite", ".free", "AppInfo.7z");
+                var link = PathEx.AltCombine(mirror, "Port-Able%20Suite", ".free", "AppInfo.7z");
                 if (Log.DebugMode > 0)
                     Log.Write($"Cache: Looking for '{link}'.");
                 if (NetEx.FileIsAvailable(link, 30000))
@@ -407,7 +407,7 @@
                 if (!string.IsNullOrWhiteSpace(path1))
                 {
                     if (path1.StartsWithEx(".free", ".repack"))
-                        path1 = PathEx.AltCombine(AppSupply.GetMirrors(AppSuppliers.Internal).First(), "Downloads", "Port-Able%20Suite", path1);
+                        path1 = PathEx.AltCombine(AppSupply.GetMirrors(AppSuppliers.Internal).First(), "Port-Able%20Suite", path1);
                     hash = Ini.Read(section, "ArchiveHash", config);
                 }
                 else

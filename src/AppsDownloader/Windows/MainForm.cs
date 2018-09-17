@@ -127,7 +127,8 @@ namespace AppsDownloader.Windows
             if (ActionGuid.IsUpdateInstance)
                 return;
             notifyBox?.Close();
-            NotifyBox = NotifyBoxEx.Show(Language.GetText(nameof(en_US.DatabaseAccessMsg)), Settings.Title, NotifyBoxStartPosition.Center, 0u, false);
+            NotifyBox = new NotifyBox();
+            NotifyBox.Show(Language.GetText(nameof(en_US.DatabaseAccessMsg)), Settings.Title, NotifyBoxStartPosition.Center);
         }
 
         private ListView AppsListClone { get; } = new ListView();
@@ -483,8 +484,9 @@ namespace AppsDownloader.Windows
                 if (string.IsNullOrWhiteSpace(url))
                     continue;
 
-                var src = AppSupplierHosts.Internal;
+                var src = Language.GetText(en_US.HostNotAvailable);
                 if (url.StartsWithEx("http"))
+                {
                     if (url.ContainsEx(AppSupplierHosts.PortableApps) && url.ContainsEx("/redirect/"))
                         src = AppSupplierHosts.SourceForge;
                     else
@@ -493,6 +495,18 @@ namespace AppsDownloader.Windows
                         if (string.IsNullOrEmpty(src))
                             continue;
                     }
+                }
+                else
+                {
+                    if (appData.ServerKey != null)
+                        foreach (var srv in Shareware.GetAddresses())
+                        {
+                            if (Shareware.FindAddressKey(srv) != appData.ServerKey)
+                                continue;
+                            src = srv.GetFullHost();
+                            break;
+                        }
+                }
 
                 var item = new ListViewItem(appData.Name)
                 {
