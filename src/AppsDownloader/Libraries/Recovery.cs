@@ -48,7 +48,7 @@
 
         private static void Repair(string guid, bool elevated)
         {
-            using (var process = ProcessEx.Start(PathEx.LocalPath, guid, elevated, false))
+            using (var process = ProcessEx.Start(CorePaths.AppsLauncher, guid, elevated, false))
                 if (process?.HasExited == false)
                     process.WaitForExit();
         }
