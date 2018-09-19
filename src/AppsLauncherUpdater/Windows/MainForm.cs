@@ -231,9 +231,9 @@ namespace Updater.Windows
             {
                 foreach (var key in Ini.GetKeys("SHA256", HashInfo))
                 {
-                    var file = Path.Combine(CachePaths.UpdateDir, $"{key}.exe");
+                    var file = PathEx.Combine(PathEx.LocalDir, $"{key}.exe");
                     if (!File.Exists(file))
-                        file = PathEx.Combine(PathEx.LocalDir, $"{key}.exe");
+                        file = Path.Combine(CorePaths.HomeDir, $"{key}.exe");
                     if (Ini.Read("SHA256", key, HashInfo).EqualsEx(file.EncryptFile(ChecksumAlgorithms.Sha256)))
                         continue;
                     updateAvailable = true;
