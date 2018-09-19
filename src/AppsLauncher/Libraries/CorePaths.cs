@@ -8,7 +8,7 @@
     internal static class CorePaths
     {
         private static string[] _appDirs;
-        private static string _appsDir, _appImages, _appsDownloader, _appsSuiteUpdater, _archiver, _homeDir, _restorePointDir, _repositoryPath, _systemExplorer, _systemRestore, _tempDir;
+        private static string _appsDir, _appImages, _appsDownloader, _appsSuiteUpdater, _fileArchiver, _homeDir, _restorePointDir, _repositoryPath, _systemExplorer, _systemRestore, _tempDir;
         private static string[][] _fullAppsSuitePathMap;
 
         internal static string AppsDir
@@ -76,15 +76,15 @@
         {
             get
             {
-                if (_archiver != default(string))
-                    return _archiver;
+                if (_fileArchiver != default(string))
+                    return _fileArchiver;
 #if x86
                 Compaction.SevenZipHelper.Location = Path.Combine(HomeDir, "Binaries\\Helper\\7z");
 #else
                 Compaction.SevenZipHelper.Location = Path.Combine(HomeDir, "Binaries\\Helper\\7z\\x64");
 #endif
-                _archiver = Compaction.SevenZipHelper.FilePath;
-                return _archiver;
+                _fileArchiver = Compaction.SevenZipHelper.FilePath;
+                return _fileArchiver;
             }
         }
 
@@ -112,7 +112,9 @@
                     new[]
                     {
                         Path.Combine(HomeDir, "Binaries\\Helper\\7z\\7zG.exe"),
-                        Path.Combine(HomeDir, "Binaries\\Helper\\7z\\x64\\7zG.exe")
+                        Path.Combine(HomeDir, "Binaries\\Helper\\7z\\x64\\7zG.exe"),
+                        Path.Combine(HomeDir, "Binaries\\Helper\\7z\\7z.dll"),
+                        Path.Combine(HomeDir, "Binaries\\Helper\\7z\\x64\\7z.dll")
                     }
                 };
                 return _fullAppsSuitePathMap;

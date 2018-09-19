@@ -149,6 +149,8 @@ namespace AppsLauncher.Windows
             foreach (var fvi in verInfoList)
             {
                 var description = fvi.FileDescription;
+                if (description.StartsWithEx("7z"))
+                    description = description.Replace("7z", "7-Zip");
                 if (!description.Contains("(64"))
                     if (PortableExecutable.Is64Bit(fvi.FileName))
                         description += " (64-bit)";
@@ -166,13 +168,13 @@ namespace AppsLauncher.Windows
                 var fna = Path.GetFileName(fvi.FileName);
                 if (fna.EqualsEx(strArray.Second().Select(Path.GetFileName).ToArray()))
                     reqVer = verArray.Second();
-                else if (fna.EqualsEx("7zG.exe"))
+                else if (fna.EqualsEx("7zG.exe") || fna.EqualsEx("7z.dll"))
                     reqVer = verArray.Third();
                 else
                     reqVer = verArray.First();
                 var curVer = FileEx.GetVersion(fvi.FileName);
                 var strVer = curVer.ToString();
-                if (!fna.EqualsEx("7zG.exe"))
+                if (!fna.EqualsEx("7zG.exe") && !fna.EqualsEx("7z.dll"))
                 {
                     reqVer = Version.Parse(reqVer.ToString(3));
                     curVer = Version.Parse(curVer.ToString(3));
