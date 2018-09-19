@@ -6,7 +6,7 @@
     internal static class CorePaths
     {
         private static string[] _appDirs;
-        private static string _appsDir, _appImages, _appImagesLarge, _appsLauncher, _appsSuiteUpdater, _archiver, _homeDir, _redirectUrl, _tempDir, _transferDir;
+        private static string _appsDir, _appImages, _appImagesLarge, _appsLauncher, _appsSuiteUpdater, _fileArchiver, _homeDir, _redirectUrl, _tempDir, _transferDir;
 
         internal static string AppsDir
         {
@@ -83,15 +83,15 @@
         {
             get
             {
-                if (_archiver != default(string))
-                    return _archiver;
+                if (_fileArchiver != default(string))
+                    return _fileArchiver;
 #if x86
                 Compaction.SevenZipHelper.Location = PathEx.Combine(PathEx.LocalDir, "Helper\\7z");
 #else
                 Compaction.SevenZipHelper.Location = PathEx.Combine(PathEx.LocalDir, "Helper\\7z\\x64");
 #endif
-                _archiver = Compaction.SevenZipHelper.FilePath;
-                return _archiver;
+                _fileArchiver = Compaction.SevenZipHelper.FilePath;
+                return _fileArchiver;
             }
         }
 
