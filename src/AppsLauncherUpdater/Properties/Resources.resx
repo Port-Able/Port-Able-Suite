@@ -147,28 +147,4 @@ set path=%WinDir%\System32\cmd.exe
 if exist %0 start "{2}" %path% /c del /f /q %0 &amp;&amp; taskkill /fi "{0}" /im cmd.exe /t
 exit /b</value>
   </data>
-  <data name="DevUri" xml:space="preserve">
-    <value>http://www.port-a.de</value>
-  </data>
-  <data name="GitProfileUri" xml:space="preserve">
-    <value>https://github.com/Port-Able</value>
-  </data>
-  <data name="GitReleasesPath" xml:space="preserve">
-    <value>Port-Able-Suite/releases</value>
-  </data>
-  <data name="GitSnapshotsPath" xml:space="preserve">
-    <value>Port-Able-Suite-Snapper/raw/master</value>
-  </data>
-  <data name="RegPath" xml:space="preserve">
-    <value>HKCU\Software\Portable Apps Suite</value>
-  </data>
-  <data name="ReleasePath" xml:space="preserve">
-    <value>Port-Able%20Suite</value>
-  </data>
-  <data name="Titel" xml:space="preserve">
-    <value>Port-Able Suite</value>
-  </data>
-  <data name="VirusTotalUri" xml:space="preserve">
-    <value>https://www.virustotal.com/#/file/{0}/</value>
-  </data>
 </root>

@@ -97,15 +97,6 @@ namespace Updater.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://www.port-a.de.
-        /// </summary>
-        internal static string DevUri {
-            get {
-                return ResourceManager.GetString("DevUri", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap diagonal_pattern {
@@ -116,75 +107,12 @@ namespace Updater.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://github.com/Port-Able.
-        /// </summary>
-        internal static string GitProfileUri {
-            get {
-                return ResourceManager.GetString("GitProfileUri", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Port-Able-Suite/releases.
-        /// </summary>
-        internal static string GitReleasesPath {
-            get {
-                return ResourceManager.GetString("GitReleasesPath", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Port-Able-Suite-Snapper/raw/master.
-        /// </summary>
-        internal static string GitSnapshotsPath {
-            get {
-                return ResourceManager.GetString("GitSnapshotsPath", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon Logo {
             get {
                 object obj = ResourceManager.GetObject("Logo", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to HKCU\Software\Portable Apps Suite.
-        /// </summary>
-        internal static string RegPath {
-            get {
-                return ResourceManager.GetString("RegPath", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Port-Able%20Suite.
-        /// </summary>
-        internal static string ReleasePath {
-            get {
-                return ResourceManager.GetString("ReleasePath", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Port-Able Suite.
-        /// </summary>
-        internal static string Titel {
-            get {
-                return ResourceManager.GetString("Titel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to https://www.virustotal.com/#/file/{0}/.
-        /// </summary>
-        internal static string VirusTotalUri {
-            get {
-                return ResourceManager.GetString("VirusTotalUri", resourceCulture);
             }
         }
     }
