@@ -85,6 +85,11 @@ namespace Updater.Windows
             this.changeLog.Text = "Commits:\nhttps://github.com/Port-Able/Port-Able-Suite/commits/master";
             this.changeLog.WordWrap = false;
             this.changeLog.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.ChangeLog_LinkClicked);
+            this.changeLog.Click += new System.EventHandler(this.ChangeLog_HideCaret);
+            this.changeLog.EnabledChanged += new System.EventHandler(this.ChangeLog_HideCaret);
+            this.changeLog.SizeChanged += new System.EventHandler(this.ChangeLog_HideCaret);
+            this.changeLog.VisibleChanged += new System.EventHandler(this.ChangeLog_HideCaret);
+            this.changeLog.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ChangeLog_HideCaret);
             // 
             // logoBox
             // 

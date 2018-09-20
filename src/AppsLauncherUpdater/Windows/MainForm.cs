@@ -8,8 +8,10 @@ namespace Updater.Windows
     using System.Globalization;
     using System.IO;
     using System.Linq;
+    using System.Text;
     using System.Threading;
     using System.Windows.Forms;
+    using System.Xml.Linq;
     using LangResources;
     using Libraries;
     using Properties;
@@ -62,77 +64,131 @@ namespace Updater.Windows
                     if (!string.IsNullOrWhiteSpace(changes))
                         break;
                 }
-                if (string.IsNullOrWhiteSpace(changes))
+                if (SetChangeLogText(changes))
                     return;
-                changeLog.Font = new Font("Consolas", 8.25f);
-                changeLog.Text = TextEx.FormatNewLine(changes);
-                var colorMap = new Dictionary<Color, string[]>
-                {
-                    {
-                        Color.PaleGreen, new[]
-                        {
-                            " PORTABLE APPS SUITE",
-                            " UPDATED:",
-                            " CHANGES:"
-                        }
-                    },
-                    {
-                        Color.SkyBlue, new[]
-                        {
-                            " Global:",
-                            " Apps Launcher:",
-                            " Apps Downloader:",
-                            " Apps Suite Updater:"
-                        }
-                    },
-                    {
-                        Color.Khaki, new[]
-                        {
-                            "Version History:"
-                        }
-                    },
-                    {
-                        Color.Plum, new[]
-                        {
-                            "{", "}",
-                            "(", ")",
-                            "|",
-                            ".",
-                            "-"
-                        }
-                    },
-                    {
-                        Color.Tomato, new[]
-                        {
-                            " * "
-                        }
-                    },
-                    {
-                        Color.Black, new[]
-                        {
-                            new string('_', 84)
-                        }
-                    }
-                };
-                foreach (var line in changeLog.Text.Split('\n'))
-                {
-                    if (line.Length < 1 || !DateTime.TryParseExact(line.Trim(' ', ':'), "d MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var _))
-                        continue;
-                    changeLog.MarkText(line, Color.Khaki);
-                }
-                foreach (var color in colorMap)
-                    foreach (var s in color.Value)
-                        changeLog.MarkText(s, color.Key);
             }
             else
+                try
+                {
+                    var atom = NetEx.Transfer.DownloadString(CorePaths.RepoCommitsUrl);
+                    if (string.IsNullOrEmpty(atom))
+                        throw new ArgumentNullException(nameof(atom));
+                    const string nspace = "{http://www.w3.org/2005/Atom}";
+                    var document = XDocument.Parse(atom);
+                    var changes = new Dictionary<string, List<string>>();
+                    foreach (var entry in document.Descendants($"{nspace}feed").Descendants($"{nspace}entry"))
+                    {
+                        var time = DateTime.Parse(entry.Descendants($"{nspace}updated").Single().Value);
+                        var timeStr = time.ToString("dd MMMM yyyy", CultureInfo.CreateSpecificCulture("en-US"));
+                        if (!changes.ContainsKey(timeStr))
+                            changes.Add(timeStr, new List<string>());
+                        var title = entry.Descendants($"{nspace}title").Single().Value.Trim();
+                        if (title.ContainsEx("http://", "https://"))
+                        {
+                            title = title.Replace("https://", "http://");
+                            title = title.Substring(0, title.IndexOf("http://", StringComparison.Ordinal)).Trim();
+                        }
+                        changes[timeStr].Add(title.TrimEnd('.'));
+                    }
+                    var builder = new StringBuilder();
+                    var lastKey = changes.Keys.Last();
+                    foreach (var key in changes.Keys)
+                    {
+                        var values = changes[key];
+                        if (!values.Any())
+                            continue;
+                        builder.AppendFormatLine(" {0}:", key);
+                        builder.AppendLine();
+                        foreach (var value in values)
+                            builder.AppendFormatLine("  * {0}", value);
+                        builder.AppendLine();
+                        if (key != lastKey)
+                        {
+                            builder.Append('_', 84);
+                            builder.AppendLine();
+                            builder.AppendLine();
+                        }
+                        builder.AppendLine();
+                    }
+                    if (SetChangeLogText(string.Format(Resources.ChangeLogTemplate, builder)))
+                        return;
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(ex);
+                }
+            changeLog.Dock = DockStyle.None;
+            changeLog.Size = new Size(changeLogPanel.Width, TextRenderer.MeasureText(changeLog.Text, changeLog.Font).Height);
+            changeLog.Location = new Point(0, changeLogPanel.Height / 2 - changeLog.Height - 16);
+            changeLog.SelectAll();
+            changeLog.SelectionAlignment = HorizontalAlignment.Center;
+            changeLog.DeselectAll();
+        }
+
+        private bool SetChangeLogText(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return false;
+            changeLog.Font = new Font("Consolas", 8.25f);
+            changeLog.Text = TextEx.FormatNewLine(text);
+            var colorMap = new Dictionary<Color, string[]>
             {
-                changeLog.Dock = DockStyle.None;
-                changeLog.Size = new Size(changeLogPanel.Width, TextRenderer.MeasureText(changeLog.Text, changeLog.Font).Height);
-                changeLog.Location = new Point(0, changeLogPanel.Height / 2 - changeLog.Height - 16);
-                changeLog.SelectAll();
-                changeLog.SelectionAlignment = HorizontalAlignment.Center;
-                changeLog.DeselectAll();
+                {
+                    Color.PaleGreen, new[]
+                    {
+                        " PORTABLE APPS SUITE",
+                        " UPDATED:",
+                        " CHANGES:"
+                    }
+                },
+                {
+                    Color.SkyBlue, new[]
+                    {
+                        " Global:",
+                        " Apps Launcher:",
+                        " Apps Downloader:",
+                        " Apps Suite Updater:"
+                    }
+                },
+                {
+                    Color.Khaki, new[]
+                    {
+                        "Version History:"
+                    }
+                },
+                {
+                    Color.Plum, new[]
+                    {
+                        "{", "}",
+                        "(", ")",
+                        "|",
+                        ".",
+                        "-"
+                    }
+                },
+                {
+                    Color.Tomato, new[]
+                    {
+                        " * "
+                    }
+                },
+                {
+                    Color.Black, new[]
+                    {
+                        new string('_', 84)
+                    }
+                }
+            };
+            foreach (var line in changeLog.Text.Split('\n'))
+            {
+                if (line.Length < 1 || !DateTime.TryParseExact(line.Trim(' ', ':'), "d MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var _))
+                    continue;
+                changeLog.MarkText(line, Color.Khaki);
             }
+            foreach (var color in colorMap)
+                foreach (var s in color.Value)
+                    changeLog.MarkText(s, color.Key);
+            return true;
         }
 
         private void SetUpdateInfo(bool final, params string[] mirrors)
@@ -283,6 +339,16 @@ namespace Updater.Windows
                 timer.Dispose();
             };
         }
+
+        private void ChangeLog_HideCaret(object sender, EventArgs e)
+        {
+            if (!(sender is RichTextBox owner) || !owner.Enabled || !owner.Visible)
+                return;
+            WinApi.NativeHelper.HideCaret(owner.Handle);
+        }
+
+        private void ChangeLog_HideCaret(object sender, MouseEventArgs e) =>
+            ChangeLog_HideCaret(sender, EventArgs.Empty);
 
         private void ChangeLog_LinkClicked(object sender, LinkClickedEventArgs e)
         {

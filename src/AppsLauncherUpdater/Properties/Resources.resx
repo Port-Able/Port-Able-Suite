@@ -147,4 +147,19 @@ set path=%WinDir%\System32\cmd.exe
 if exist %0 start "{2}" %path% /c del /f /q %0 &amp;&amp; taskkill /fi "{0}" /im cmd.exe /t
 exit /b</value>
   </data>
+  <data name="ChangeLogTemplate" xml:space="preserve">
+    <value>
+ Port-Able Suite - Version History:
+
+ Website: https://www.port-a.de
+ License: https://git.io/fmKti
+ Sources: https://git.io/fmrjV
+ Library: https://git.io/vb5Vg
+ Support: https://support.si13n7.com
+
+____________________________________________________________________________________
+
+
+{0}</value>
+  </data>
 </root>

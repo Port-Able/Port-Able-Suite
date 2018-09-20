@@ -6,7 +6,7 @@
 
     internal static class CorePaths
     {
-        private static string _appsLauncher, _fileArchiverDir, _homeDir, _repoReleasesUrl, _repoSnapshotsUrl, _tempDir;
+        private static string _appsLauncher, _fileArchiverDir, _homeDir, _repoCommitsUrl, _repoReleasesUrl, _repoSnapshotsUrl, _tempDir;
         private static string[] _fileArchiverFiles;
 
         internal static string AppsLauncher
@@ -56,6 +56,16 @@
         internal static string PortAbleUrl => "http://www.port-a.de";
 
         internal static string RepoProfileUrl => "https://github.com/Port-Able";
+
+        internal static string RepoCommitsUrl
+        {
+            get
+            {
+                if (_repoCommitsUrl == default(string))
+                    _repoCommitsUrl = PathEx.AltCombine(RepoProfileUrl, "Port-Able-Suite/commits/master.atom");
+                return _repoCommitsUrl;
+            }
+        }
 
         internal static string RepoReleasesUrl
         {

@@ -97,6 +97,27 @@ namespace Updater.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 
+        /// Port-Able Suite - Version History:
+        ///
+        /// Website: https://www.port-a.de
+        /// License: https://git.io/fmKti
+        /// Sources: https://git.io/fmrjV
+        /// Library: https://git.io/vb5Vg
+        /// Support: https://support.si13n7.com
+        ///
+        ///____________________________________________________________________________________
+        ///
+        ///
+        ///{0}.
+        /// </summary>
+        internal static string ChangeLogTemplate {
+            get {
+                return ResourceManager.GetString("ChangeLogTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap diagonal_pattern {
