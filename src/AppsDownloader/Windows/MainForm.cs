@@ -491,7 +491,7 @@ namespace AppsDownloader.Windows
                         src = AppSupplierHosts.SourceForge;
                     else
                     {
-                        src = url.GetShortHost();
+                        src = NetEx.GetShortHost(url);
                         if (string.IsNullOrEmpty(src))
                             continue;
                     }
@@ -503,7 +503,7 @@ namespace AppsDownloader.Windows
                         {
                             if (Shareware.FindAddressKey(srv) != appData.ServerKey)
                                 continue;
-                            src = srv.GetFullHost();
+                            src = NetEx.GetFullHost(srv);
                             break;
                         }
                 }

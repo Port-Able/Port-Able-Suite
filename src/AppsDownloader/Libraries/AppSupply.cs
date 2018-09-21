@@ -194,7 +194,7 @@
                         "https://vorboss.dl.sourceforge.net",
                         "https://downloads.sourceforge.net"
                     };
-                    if (Network.IPv4IsAvalaible)
+                    if (NetEx.IPv4IsAvalaible)
                     {
                         var sortHelper = new Dictionary<string, long>();
                         if (Log.DebugMode > 0)
@@ -228,7 +228,7 @@
                         // IPv4
                         "http://dl.2.port-a.de"
                     };
-                    if (!Network.IPv4IsAvalaible && Network.IPv6IsAvalaible)
+                    if (!NetEx.IPv4IsAvalaible && NetEx.IPv6IsAvalaible)
                         mirrors = mirrors.Take(2).ToArray();
                     _mirrors[supplier].AddRange(mirrors);
                     break;

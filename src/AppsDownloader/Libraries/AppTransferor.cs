@@ -51,8 +51,8 @@
                         DestPath = PathEx.Combine(Settings.TransferDir, fileName);
                     }
 
-                    var shortHost = tuple.Item1.GetShortHost();
-                    var redirect = !Network.IPv4IsAvalaible && !string.IsNullOrWhiteSpace(shortHost) && !shortHost.EqualsEx(AppSupplierHosts.Internal);
+                    var shortHost = NetEx.GetShortHost(tuple.Item1);
+                    var redirect = !NetEx.IPv4IsAvalaible && !string.IsNullOrWhiteSpace(shortHost) && !shortHost.EqualsEx(AppSupplierHosts.Internal);
                     List<string> mirrors;
                     switch (shortHost)
                     {
@@ -80,7 +80,7 @@
                             continue;
                     }
 
-                    var sHost = tuple.Item1.GetShortHost();
+                    var sHost = NetEx.GetShortHost(tuple.Item1);
                     var fhost = tuple.Item1.Substring(0, tuple.Item1.IndexOf(sHost, StringComparison.OrdinalIgnoreCase) + sHost.Length);
                     foreach (var mirror in mirrors)
                     {

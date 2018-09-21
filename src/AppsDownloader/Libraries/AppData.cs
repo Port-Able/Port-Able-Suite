@@ -171,7 +171,7 @@
                 if (!DownloadCollection.Any())
                     return default(string);
                 var downloadUrl = DownloadCollection.First().Value.FirstOrDefault()?.Item1;
-                if (downloadUrl?.Any() == true && downloadUrl.GetShortHost()?.EqualsEx(AppSupplierHosts.Internal) == true)
+                if (downloadUrl?.Any() == true && NetEx.GetShortHost(downloadUrl)?.EqualsEx(AppSupplierHosts.Internal) == true)
                     appDir = downloadUrl.ContainsEx("/.repack/") ? CorePaths.AppDirs.Third() : CorePaths.AppDirs.Second();
                 _installDir = Path.Combine(appDir, Key);
                 return _installDir;
