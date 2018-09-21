@@ -13,9 +13,11 @@
             {
                 if (_updateDir != default(string))
                     return _updateDir;
-                foreach (var dir in DirectoryEx.EnumerateDirectories(CorePaths.TempDir, "UpdateData-{*}"))
-                    DirectoryEx.TryDelete(dir);
-                _updateDir = Path.Combine(CorePaths.TempDir, $"UpdateData-{ActionGuid.CurrentAction}");
+                var dir = Path.Combine(CorePaths.TempDir, "UpdateData");
+                DirectoryEx.TryDelete(dir);
+                dir = Path.Combine(dir, ActionGuid.CurrentAction.Encrypt(ChecksumAlgorithms.Adler32));
+                if (DirectoryEx.Create(dir))
+                    _updateDir = dir;
                 return _updateDir;
             }
         }

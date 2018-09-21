@@ -6,8 +6,7 @@
 
     internal static class CorePaths
     {
-        private static string _appsLauncher, _fileArchiverDir, _homeDir, _repoCommitsUrl, _repoReleasesUrl, _repoSnapshotsUrl, _tempDir;
-        private static string[] _fileArchiverFiles;
+        private static string _appsLauncher, _fileArchiver, _homeDir, _repoCommitsUrl, _repoReleasesUrl, _repoSnapshotsUrl, _tempDir;
 
         internal static string AppsLauncher
         {
@@ -19,27 +18,27 @@
             }
         }
 
-        internal static string FileArchiverDir
+        internal static string FileArchiver
         {
             get
             {
-                if (_fileArchiverDir == default(string))
-                    _fileArchiverDir = Path.Combine(PathEx.LocalDir, Environment.Is64BitOperatingSystem ? "Helper\\7z\\x64" : "Helper\\7z");
-                return _fileArchiverDir;
-            }
-        }
-
-        internal static string[] FileArchiverFiles
-        {
-            get
-            {
-                if (_fileArchiverFiles == default(string[]))
-                    _fileArchiverFiles = new[]
+                if (_fileArchiver != default(string))
+                    return _fileArchiver;
+                Compaction.SevenZipHelper.Location = Path.Combine(PathEx.LocalDir, Environment.Is64BitOperatingSystem ? "Helper\\7z\\x64" : "Helper\\7z");
+                if (string.IsNullOrEmpty(Compaction.SevenZipHelper.FilePath))
+                    Network.DownloadArchiver();
+                else
+                    foreach (var file in DirectoryEx.EnumerateFiles(Compaction.SevenZipHelper.Location))
                     {
-                        Path.Combine(FileArchiverDir, "7zG.exe"),
-                        Path.Combine(FileArchiverDir, "7z.dll")
-                    };
-                return _fileArchiverFiles;
+                        var name = Path.GetFileName(file);
+                        if (string.IsNullOrEmpty(name))
+                            continue;
+                        var path = Path.Combine(CachePaths.UpdateDir, name);
+                        FileEx.Copy(file, path);
+                    }
+                Compaction.SevenZipHelper.Location = CachePaths.UpdateDir;
+                _fileArchiver = Compaction.SevenZipHelper.FilePath;
+                return _fileArchiver;
             }
         }
 
@@ -98,7 +97,9 @@
                     return _tempDir;
                 if (DirectoryEx.Create(_tempDir))
                 {
-                    Recovery.RepairAppsSuiteDirs();
+                    using (var process = ProcessEx.Start(AppsLauncher, ActionGuid.RepairDirs, Elevation.IsAdministrator, false))
+                        if (process?.HasExited == false)
+                            process.WaitForExit();
                     return _tempDir;
                 }
                 _tempDir = EnvironmentEx.GetVariableValue("TEMP");

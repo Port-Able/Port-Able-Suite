@@ -242,7 +242,7 @@ namespace Updater.Windows
             // Get update infos from GitHub if enabled
             if (Settings.UpdateChannel == Settings.UpdateChannelOptions.Beta)
             {
-                if (!Network.IPv4IsAvalaible && Network.IPv6IsAvalaible)
+                if (!NetEx.IPv4IsAvalaible && NetEx.IPv6IsAvalaible)
                 {
                     Environment.ExitCode = 1;
                     Application.Exit();
@@ -263,7 +263,7 @@ namespace Updater.Windows
                     // IPv4
                     "http://dl.2.port-a.de"
                 };
-                if (!Network.IPv4IsAvalaible && Network.IPv6IsAvalaible)
+                if (!NetEx.IPv4IsAvalaible && NetEx.IPv6IsAvalaible)
                     mirrors = mirrors.Take(2).ToArray();
                 DownloadMirrors.AddRange(mirrors.Select(x => PathEx.AltCombine(x, "Port-Able%20Suite")));
                 if (!DownloadMirrors.Any())
@@ -306,6 +306,14 @@ namespace Updater.Windows
 
             // Install updates
             if (updateAvailable)
+            {
+                if (string.IsNullOrEmpty(CorePaths.FileArchiver))
+                {
+                    if (MessageBox.Show(Language.GetText(nameof(en_US.RequirementsErrorMsg)), Text, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+                        Process.Start(CorePaths.RepoReleasesUrl);
+                    Environment.ExitCode = 1;
+                    Environment.Exit(Environment.ExitCode);
+                }
                 if (MessageBox.Show(Language.GetText(nameof(en_US.UpdateAvailableMsg)), Text, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     SetChangeLog(DownloadMirrors.ToArray());
@@ -313,6 +321,8 @@ namespace Updater.Windows
                     FormEx.Dockable(this);
                     return;
                 }
+                DirectoryEx.TryDelete(CachePaths.UpdateDir);
+            }
 
             // Exit the application if no updates were found
             Environment.ExitCode = 2;
@@ -403,25 +413,8 @@ namespace Updater.Windows
                     downloadPath = null;
                 }
 
-            if (!string.IsNullOrWhiteSpace(downloadPath))
-                try
-                {
-                    if (!Directory.Exists(CachePaths.UpdateDir))
-                        Directory.CreateDirectory(CachePaths.UpdateDir);
-                    foreach (var path in CorePaths.FileArchiverFiles)
-                    {
-                        var file = Path.GetFileName(path);
-                        if (string.IsNullOrEmpty(file))
-                            continue;
-                        File.Copy(path, Path.Combine(CachePaths.UpdateDir, file));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Log.Write(ex, true);
-                    return;
-                }
-
+            if (string.IsNullOrWhiteSpace(downloadPath))
+                return;
             try
             {
                 Transferor.DownloadFile(downloadPath, CachePaths.UpdatePath);

@@ -136,12 +136,15 @@ taskkill /f /im "AppsDownloader64.exe" &gt;nul 2&gt;&amp;1
 taskkill /f /im "AppsLauncher.exe" &gt;nul 2&gt;&amp;1
 taskkill /f /im "AppsLauncher64.exe" &gt;nul 2&gt;&amp;1
 
-cd /d "%~dp0"
-7zG.exe x Update.7z -o"{1}\" -y
+if exist 7z.exe 7z.exe x Update.7z -o"{1}\" -y
+if exist 7zG.exe 7zG.exe x Update.7z -o"{1}\" -y
 ping localhost -n 5 &gt;nul
-del /f /q Update.7z
-del /f /q 7z.dll
-del /f /q 7zG.exe
+
+if exist LICENSE.txt del /f /q LICENSE.txt
+if exist Update.7z del /f /q Update.7z
+if exist 7z.exe del /f /q 7z.exe
+if exist 7zG.exe del /f /q 7zG.exe
+if exist 7z.dll del /f /q 7z.dll
 
 set path=%WinDir%\System32\cmd.exe
 if exist %0 start "{2}" %path% /c del /f /q %0 &amp;&amp; taskkill /fi "{0}" /im cmd.exe /t

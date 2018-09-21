@@ -121,6 +121,10 @@
     <value>Abbrechen</value>
     <comment>Button</comment>
   </data>
+  <data name="InitRequirementsNotify" xml:space="preserve">
+    <value>Anforderungen werden initialisiert . . .</value>
+    <comment>Notify</comment>
+  </data>
   <data name="InstallErrorMsg" xml:space="preserve">
     <value>Ein Fehler ist aufgetreten, bitte versuchen Sie es später erneut.</value>
     <comment>Message</comment>

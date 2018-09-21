@@ -76,7 +76,6 @@
     <Compile Include="Libraries\CachePaths.cs" />
     <Compile Include="Libraries\CorePaths.cs" />
     <Compile Include="Libraries\Network.cs" />
-    <Compile Include="Libraries\Recovery.cs" />
     <Compile Include="Libraries\Settings.cs" />
     <Compile Include="Windows\MainForm.cs">
       <SubType>Form</SubType>

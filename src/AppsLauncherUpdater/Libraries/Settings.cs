@@ -1,16 +1,14 @@
 ﻿namespace Updater.Libraries
 {
     using System;
-    using System.Diagnostics;
     using System.Drawing;
     using System.IO;
-    using System.Windows.Forms;
-    using LangResources;
     using SilDev;
 
     internal static class Settings
     {
         internal const string Section = "Launcher";
+        internal const string Title = "Port-Able Suite Updater";
         private static string _language, _registryPath;
         private static int? _updateChannel;
 
@@ -74,13 +72,6 @@
             };
 
             Log.AllowLogging(Ini.FilePath, "DebugMode", Ini.GetRegex(false));
-
-            if (Recovery.AppsSuiteIsHealthy())
-                return;
-            if (MessageBox.Show(global::Language.GetText(nameof(en_US.RequirementsErrorMsg)), @"Port-Able Suite", MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
-                Process.Start(CorePaths.RepoReleasesUrl);
-            Environment.ExitCode = 1;
-            Environment.Exit(Environment.ExitCode);
         }
 
         internal enum UpdateChannelOptions

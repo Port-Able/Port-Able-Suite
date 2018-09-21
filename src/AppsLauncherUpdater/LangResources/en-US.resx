@@ -121,6 +121,10 @@
     <value>Cancel</value>
     <comment>Button</comment>
   </data>
+  <data name="InitRequirementsNotify" xml:space="preserve">
+    <value>Requirements are being initialized . . .</value>
+    <comment>Notify</comment>
+  </data>
   <data name="InstallErrorMsg" xml:space="preserve">
     <value>An error occurred, please try again later.</value>
     <comment>Message</comment>

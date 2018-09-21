@@ -70,6 +70,15 @@ namespace Updater.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Requirements are being initialized . . ..
+        /// </summary>
+        internal static string InitRequirementsNotify {
+            get {
+                return ResourceManager.GetString("InitRequirementsNotify", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error occurred, please try again later..
         /// </summary>
         internal static string InstallErrorMsg {

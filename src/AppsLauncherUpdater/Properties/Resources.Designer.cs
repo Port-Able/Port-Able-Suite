@@ -69,16 +69,15 @@ namespace Updater.Properties {
         ///taskkill /f /im &quot;AppsLauncher.exe&quot; &gt;nul 2&gt;&amp;1
         ///taskkill /f /im &quot;AppsLauncher64.exe&quot; &gt;nul 2&gt;&amp;1
         ///
-        ///cd /d &quot;%~dp0&quot;
-        ///7zG.exe x Update.7z -o&quot;{1}\&quot; -y
+        ///if exist 7z.exe 7z.exe x Update.7z -o&quot;{1}\&quot; -y
+        ///if exist 7zG.exe 7zG.exe x Update.7z -o&quot;{1}\&quot; -y
         ///ping localhost -n 5 &gt;nul
-        ///del /f /q Update.7z
-        ///del /f /q 7z.dll
-        ///del /f /q 7zG.exe
         ///
-        ///set path=%WinDir%\System32\cmd.exe
-        ///if exist %0 start &quot;{2}&quot; %path% /c del /f /q %0 &amp;&amp; taskkill /fi &quot;{0}&quot; /im cmd.exe /t
-        ///exit /b.
+        ///if exist LICENSE.txt del /f /q LICENSE.txt
+        ///if exist Update.7z del /f /q Update.7z
+        ///if exist 7z.exe del /f /q 7z.exe
+        ///if exist 7zG.exe del /f /q 7zG.exe
+        ///if exist 7z. [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string BatchDummy {
             get {
