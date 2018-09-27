@@ -131,6 +131,8 @@ namespace AppsDownloader.Windows
             NotifyBox.Show(Language.GetText(nameof(en_US.DatabaseAccessMsg)), Settings.Title, NotifyBoxStartPosition.Center);
         }
 
+        private bool AutoRetry { get; set; }
+
         private ListView AppsListClone { get; } = new ListView();
 
         private Dictionary<string, Color> GroupColors { get; }
@@ -486,7 +488,6 @@ namespace AppsDownloader.Windows
 
                 var src = Language.GetText(en_US.HostNotAvailable);
                 if (url.StartsWithEx("http"))
-                {
                     if (url.ContainsEx(AppSupplierHosts.PortableApps) && url.ContainsEx("/redirect/"))
                         src = AppSupplierHosts.SourceForge;
                     else
@@ -495,7 +496,6 @@ namespace AppsDownloader.Windows
                         if (string.IsNullOrEmpty(src))
                             continue;
                     }
-                }
                 else
                 {
                     if (appData.ServerKey != null)
@@ -1064,7 +1064,11 @@ namespace AppsDownloader.Windows
 
                 owner.Enabled = false;
                 if (!appTransferor.DownloadStarted)
+                {
+                    if (!AutoRetry)
+                        AutoRetry = appTransferor.AutoRetry;
                     TransferFails.Add(appTransferor.AppData);
+                }
                 if (appsList.CheckedItems.Count > 0)
                 {
                     var listViewItem = CurrentTransfer.Key;
@@ -1104,9 +1108,11 @@ namespace AppsDownloader.Windows
                     TaskBarProgress.SetState(Handle, TaskBarProgressFlags.Error);
                     var fails = TransferFails.Select(x => x.Name).Distinct().ToArray();
                     var warning = string.Format(Language.GetText(fails.Length == 1 ? nameof(en_US.AppDownloadErrorMsg) : nameof(en_US.AppsDownloadErrorMsg)), fails.Join(Environment.NewLine));
-                    switch (MessageBoxEx.Show(this, warning, Settings.Title, MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning))
+                    switch (AutoRetry ? DialogResult.Retry : MessageBoxEx.Show(this, warning, Settings.Title, MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning))
                     {
                         case DialogResult.Retry:
+                            AutoRetry = false;
+
                             foreach (var appData in TransferFails.Distinct())
                             {
                                 var item = appsList.Items.Cast<ListViewItem>().FirstOrDefault(x => x.Name.EqualsEx(appData.Key));

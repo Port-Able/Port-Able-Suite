@@ -240,6 +240,19 @@ namespace AppsDownloader.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Es gibt ein Problem mit der Prüfsumme der folgenden Datei:
+        ///
+        ///{0}
+        ///
+        ///In einigen Fällen ist es nur ein kleines Synchronisationsproblem in der Online-Datenbank. Dies könnte jedoch auch auf einen unvollständigen Download oder ein anderes Problem zurückzuführen sein..
+        /// </summary>
+        internal static string ChecksumErrorMsg {
+            get {
+                return ResourceManager.GetString("ChecksumErrorMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Anwendung.
         /// </summary>
         internal static string columnHeader1 {

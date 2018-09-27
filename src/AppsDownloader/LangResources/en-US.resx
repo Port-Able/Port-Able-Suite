@@ -201,6 +201,14 @@ This could be due an incomplete download or other network issue.</value>
     <value>Cancel</value>
     <comment>Button</comment>
   </data>
+  <data name="ChecksumErrorMsg" xml:space="preserve">
+    <value>There is a problem with the checksum of the following file:
+
+{0}
+
+In some cases, it's just a little synchronization problem in the online database. However, this could also be due to an incomplete download or other issue.</value>
+    <comment>Message</comment>
+  </data>
   <data name="columnHeader1" xml:space="preserve">
     <value>Application</value>
     <comment>ListViewColumn</comment>

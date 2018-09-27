@@ -240,6 +240,19 @@ namespace AppsDownloader.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There is a problem with the checksum of the following file:
+        ///
+        ///{0}
+        ///
+        ///In some cases, it&apos;s just a little synchronization problem in the online database. However, this could also be due to an incomplete download or other issue..
+        /// </summary>
+        internal static string ChecksumErrorMsg {
+            get {
+                return ResourceManager.GetString("ChecksumErrorMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Application.
         /// </summary>
         internal static string columnHeader1 {

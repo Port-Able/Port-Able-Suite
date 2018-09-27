@@ -111,6 +111,8 @@
 
         public Tuple<string, string> UserData { get; }
 
+        public bool AutoRetry { get; private set; }
+
         public bool DownloadStarted { get; private set; }
 
         public bool InstallStarted { get; private set; }
@@ -191,11 +193,16 @@
                     }
 
                 if (fileHash != nonHash && !fileHash.EqualsEx(data.Item2))
-                {
-                    if (Log.DebugMode > 0)
-                        Log.Write($"Install: Checksum is invalid (Key: '{AppData.Key}'; File: '{DestPath}'; CurrentHash: '{fileHash}'; RequiredHash: '{data.Item2}').");
-                    continue;
-                }
+                    switch (MessageBoxEx.Show(string.Format(Language.GetText(nameof(en_US.ChecksumErrorMsg)), Path.GetFileName(DestPath)), Settings.Title, MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button3))
+                    {
+                        case DialogResult.Ignore:
+                            break;
+                        case DialogResult.Retry:
+                            AutoRetry = true;
+                            continue;
+                        default:
+                            continue;
+                    }
 
                 if (Directory.Exists(AppData.InstallDir))
                     if (!BreakFileLocks(AppData.InstallDir, false))

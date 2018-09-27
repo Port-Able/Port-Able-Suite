@@ -201,6 +201,14 @@ Dies könnte mit einem unvollständigen Download, oder einem anderen Netzwerkpro
     <value>Abbrechen</value>
     <comment>Button</comment>
   </data>
+  <data name="ChecksumErrorMsg" xml:space="preserve">
+    <value>Es gibt ein Problem mit der Prüfsumme der folgenden Datei:
+
+{0}
+
+In einigen Fällen ist es nur ein kleines Synchronisationsproblem in der Online-Datenbank. Dies könnte jedoch auch auf einen unvollständigen Download oder ein anderes Problem zurückzuführen sein.</value>
+    <comment>Message</comment>
+  </data>
   <data name="columnHeader1" xml:space="preserve">
     <value>Anwendung</value>
     <comment>ListViewColumn</comment>
