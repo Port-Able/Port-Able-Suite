@@ -17,7 +17,6 @@
                 throw new ArgumentNullException(nameof(appData));
 
             InitializeComponent();
-            SuspendLayout();
 
             Text = appData.Name;
             var text = appData.ToString(true);
