@@ -1,4 +1,4 @@
-[![Release](http://si13n7.com/.shields/releases/port-able-suite.svg)](https://github.com/Port-Able/Port-Able-Suite/releases/latest) [![License](http://si13n7.com/.shields/licenses/gnu_gpl_v3.0.svg)](https://github.com/Port-Able/Port-Able-Suite/blob/master/LICENSE.txt)
+[![Release](https://www.si13n7.de/Downloads/.shields/releases/port-able-suite.svg)](https://github.com/Port-Able/Port-Able-Suite/releases/latest) [![License](https://www.si13n7.de/Downloads/.shields/licenses/gnu_gpl_v3.0.svg)](https://github.com/Port-Able/Port-Able-Suite/blob/master/LICENSE.txt)
 
 # [Port-Able Suite](http://port-able.si13n7.com)
 
@@ -35,6 +35,6 @@ But to be honest, my focus isn't only to get applications for my portable device
 
 ***
 
-Would you like to help support this project? [Donate by PayPal](http://donate.si13n7.com/); [Report a Problem](https://support.si13n7.com/) or [Open an Issue](https://github.com/Port-Able/Port-Able-Suite/issues/new)!
+Would you like to help support this project? [Donate by PayPal](http://donate.si13n7.com/); [Report a Problem](https://support.si13n7.de/) or [Open an Issue](https://github.com/Port-Able/Port-Able-Suite/issues/new)!
 
 If you need help or if you have any questions, please feel free to [Contact Me](http://contact.si13n7.com/)!
