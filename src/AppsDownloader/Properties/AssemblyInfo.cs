@@ -8,11 +8,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Port-Able Apps Downloader (64-bit)")]
 [assembly: AssemblyProduct("AppsDownloader64")]
 #endif
-
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Si13n7 Dev. ®")]
-[assembly: AssemblyCopyright("Copyright © Si13n7 Dev. ® 2018")]
+[assembly: AssemblyCopyright("Copyright © Si13n7 Dev. ® 2019")]
 [assembly: AssemblyTrademark("Si13n7 Dev. ®")]
 [assembly: AssemblyCulture("")]
 
@@ -20,4 +19,4 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("a3418f24-e739-45c2-b31e-f50f4124e600")]
 
-[assembly: AssemblyVersion("18.9.27.0")]
+[assembly: AssemblyVersion("19.1.25.0")]
