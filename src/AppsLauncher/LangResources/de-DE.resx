@@ -225,7 +225,7 @@ Verbesserungsvorschläge sind auch sehr willkommen!</value>
     <value>{0} {1} gefunden!</value>
     <comment>Status</comment>
   </data>
-  <data name="associateAppWayQuestion" xml:space="preserve">
+  <data name="AssociateAppWayQuestion" xml:space="preserve">
     <value>Wie sollen die Dateitypen zugewiesen werden?</value>
     <comment>Message</comment>
   </data>
@@ -237,7 +237,7 @@ Verbesserungsvorschläge sind auch sehr willkommen!</value>
     <value>Sie haben noch keine Dateitypen hinzugefügt.</value>
     <comment>Message</comment>
   </data>
-  <data name="associateConflictMsg" xml:space="preserve">
+  <data name="AssociateConflictMsg" xml:space="preserve">
     <value>Folgende Dateitypen sind bereits mit anderen Anwendungen verknüpft:
 
 {0}
@@ -245,14 +245,19 @@ Verbesserungsvorschläge sind auch sehr willkommen!</value>
 Möchten Sie dennoch fortfahren?</value>
     <comment>Message</comment>
   </data>
-  <data name="associateQuestionMsg0" xml:space="preserve">
+  <data name="AssociateQuestionMsg0" xml:space="preserve">
     <value>Soll dieser Dateityp immer mit dieser Anwendung geöffnet werden?</value>
+    <comment>Message</comment>
   </data>
-  <data name="associateQuestionMsg1" xml:space="preserve">
+  <data name="AssociateQuestionMsg1" xml:space="preserve">
     <value>Sollen die folgenden Dateitypen immer mit dieser Anwendung geöffnet werden?
 
 Dateitypen: {0}</value>
     <comment>Message</comment>
+  </data>
+  <data name="AssociateRestPointLabel" xml:space="preserve">
+    <value>{0} - Dateitypzuordnung</value>
+    <comment>Label</comment>
   </data>
   <data name="BgImageSizeInfoMsg" xml:space="preserve">
     <value>Bitte beachten Sie dass ein großes Bild den Start dieser Anwendung negativ beeinflussen kann.</value>

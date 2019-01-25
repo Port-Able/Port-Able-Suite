@@ -100,7 +100,7 @@
                 {
                     var result = !quiet ? MessageBoxEx.Show(Language.GetText(nameof(en_US.RestorePointMsg1)), Settings.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) : DialogResult.Yes;
                     if (result == DialogResult.Yes)
-                        EnvironmentEx.SystemRestore.Create($"{appData.Name} - File Type Assotiation", EnvironmentEx.RestoreEventType.BeginSystemChange, EnvironmentEx.RestorePointType.ModifySettings);
+                        EnvironmentEx.SystemRestore.Create(string.Format(en_US.AssociateRestPointLabel, appData.Name), EnvironmentEx.RestoreEventType.BeginSystemChange, EnvironmentEx.RestorePointType.ModifySettings);
                 }
 
                 var restPointDir = Path.Combine(CorePaths.RestorePointDir, appData.Key);

@@ -225,7 +225,7 @@ Suggestions are also very welcome!</value>
     <value>{0} {1} found!</value>
     <comment>Status</comment>
   </data>
-  <data name="associateAppWayQuestion" xml:space="preserve">
+  <data name="AssociateAppWayQuestion" xml:space="preserve">
     <value>How are the file types to be assigned?</value>
     <comment>Message</comment>
   </data>
@@ -237,7 +237,7 @@ Suggestions are also very welcome!</value>
     <value>Please add some file types before you use this option.</value>
     <comment>Message</comment>
   </data>
-  <data name="associateConflictMsg" xml:space="preserve">
+  <data name="AssociateConflictMsg" xml:space="preserve">
     <value>The following file types are already defined for a different app:
 
 {0}
@@ -245,15 +245,19 @@ Suggestions are also very welcome!</value>
 Do you want to continue?</value>
     <comment>Message</comment>
   </data>
-  <data name="associateQuestionMsg0" xml:space="preserve">
+  <data name="AssociateQuestionMsg0" xml:space="preserve">
     <value>Do you always want to open this kind of file with this application?</value>
     <comment>Message</comment>
   </data>
-  <data name="associateQuestionMsg1" xml:space="preserve">
+  <data name="AssociateQuestionMsg1" xml:space="preserve">
     <value>Do you always want to open the following file types with this application?
 
 Types: {0}</value>
     <comment>Message</comment>
+  </data>
+  <data name="AssociateRestPointLabel" xml:space="preserve">
+    <value>{0} - File Type Assotiation</value>
+    <comment>Label</comment>
   </data>
   <data name="BgImageSizeInfoMsg" xml:space="preserve">
     <value>Please note that a large picture may negatively affect the start of this application.</value>

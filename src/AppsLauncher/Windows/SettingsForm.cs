@@ -382,7 +382,7 @@ namespace AppsLauncher.Windows
             if (string.IsNullOrEmpty(msg))
                 return false;
             msg += sep;
-            return MessageBoxEx.Show(this, string.Format(Language.GetText(nameof(en_US.associateConflictMsg)), msg), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes;
+            return MessageBoxEx.Show(this, string.Format(Language.GetText(nameof(en_US.AssociateConflictMsg)), msg), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes;
         }
 
         private void AssociateBtn_Click(object sender, EventArgs e)

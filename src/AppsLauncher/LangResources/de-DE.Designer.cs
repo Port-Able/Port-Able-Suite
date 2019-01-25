@@ -296,9 +296,9 @@ namespace AppsLauncher.LangResources {
         /// <summary>
         ///   Looks up a localized string similar to Wie sollen die Dateitypen zugewiesen werden?.
         /// </summary>
-        internal static string associateAppWayQuestion {
+        internal static string AssociateAppWayQuestion {
             get {
-                return ResourceManager.GetString("associateAppWayQuestion", resourceCulture);
+                return ResourceManager.GetString("AssociateAppWayQuestion", resourceCulture);
             }
         }
         
@@ -327,18 +327,18 @@ namespace AppsLauncher.LangResources {
         ///
         ///Möchten Sie dennoch fortfahren?.
         /// </summary>
-        internal static string associateConflictMsg {
+        internal static string AssociateConflictMsg {
             get {
-                return ResourceManager.GetString("associateConflictMsg", resourceCulture);
+                return ResourceManager.GetString("AssociateConflictMsg", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Soll dieser Dateityp immer mit dieser Anwendung geöffnet werden?.
         /// </summary>
-        internal static string associateQuestionMsg0 {
+        internal static string AssociateQuestionMsg0 {
             get {
-                return ResourceManager.GetString("associateQuestionMsg0", resourceCulture);
+                return ResourceManager.GetString("AssociateQuestionMsg0", resourceCulture);
             }
         }
         
@@ -347,9 +347,18 @@ namespace AppsLauncher.LangResources {
         ///
         ///Dateitypen: {0}.
         /// </summary>
-        internal static string associateQuestionMsg1 {
+        internal static string AssociateQuestionMsg1 {
             get {
-                return ResourceManager.GetString("associateQuestionMsg1", resourceCulture);
+                return ResourceManager.GetString("AssociateQuestionMsg1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} - Dateitypzuordnung.
+        /// </summary>
+        internal static string AssociateRestPointLabel {
+            get {
+                return ResourceManager.GetString("AssociateRestPointLabel", resourceCulture);
             }
         }
         

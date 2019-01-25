@@ -71,7 +71,7 @@
             MessageBoxEx.ButtonText.Yes = "App";
             MessageBoxEx.ButtonText.No = "Launcher";
             MessageBoxEx.ButtonText.Cancel = Language.GetText(nameof(en_US.Cancel));
-            var result = MessageBoxEx.Show(Language.GetText(nameof(en_US.associateAppWayQuestion)), Settings.Title, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+            var result = MessageBoxEx.Show(Language.GetText(nameof(en_US.AssociateAppWayQuestion)), Settings.Title, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
             switch (result)
             {
                 case DialogResult.Yes:
