@@ -166,7 +166,7 @@
                 var types = Arguments.FileTypes.Where(x => !Arguments.SavedFileTypes.Contains(x)).ToList();
                 if (types.Any())
                 {
-                    var question = types.Count == 1 ? Language.GetText(nameof(en_US.associateQuestionMsg0)) : string.Format(Language.GetText(nameof(en_US.associateQuestionMsg1)), $"{types.Join("; ")}");
+                    var question = types.Count == 1 ? Language.GetText(nameof(en_US.AssociateQuestionMsg0)) : string.Format(Language.GetText(nameof(en_US.AssociateQuestionMsg1)), types.Join("; "));
                     if (MessageBoxEx.Show(question, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
                         types = types.Select(x => $".{x.ToLower()}").ToList();
