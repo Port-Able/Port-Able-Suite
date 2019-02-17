@@ -609,7 +609,7 @@ namespace AppsLauncher.Windows
             if (appData != default(LocalAppData))
             {
                 if (string.IsNullOrWhiteSpace(fileTypes.Text))
-                    appData.Settings.FileTypes = Array.Empty<string>();
+                    appData.Settings.FileTypes = default(string[]);
                 else
                 {
                     if (e == EventArgs.Empty || !FileTypesConflict())
