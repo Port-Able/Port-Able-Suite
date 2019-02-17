@@ -110,7 +110,7 @@
             get
             {
                 if (_redirectUrl == default(string))
-                    _redirectUrl = "https://temp.si13n7.com/transfer.php?base=";
+                    _redirectUrl = "https://transfer.0-9a-z.de/index.php?base=";
                 return _redirectUrl;
             }
         }
