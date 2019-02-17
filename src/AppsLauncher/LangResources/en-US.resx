@@ -499,6 +499,10 @@ This will allow you to go back in time and undo the following changes.</value>
   <data name="showLargeImagesCheck" xml:space="preserve">
     <value>Show Large Images</value>
   </data>
+  <data name="sortArgPathsCheck" xml:space="preserve">
+    <value>Sort paths in command line arguments</value>
+    <comment>CheckBox</comment>
+  </data>
   <data name="startArgsDefaultLabelTip" xml:space="preserve">
     <value>Current command-line arguments.</value>
     <comment>ToolTip</comment>

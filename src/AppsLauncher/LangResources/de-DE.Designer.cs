@@ -907,6 +907,15 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pfade in Befehlszeilenargumenten sortieren.
+        /// </summary>
+        internal static string sortArgPathsCheck {
+            get {
+                return ResourceManager.GetString("sortArgPathsCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Derzeitige Befehlszeilenargumente..
         /// </summary>
         internal static string startArgsDefaultLabelTip {

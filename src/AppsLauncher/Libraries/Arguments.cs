@@ -58,6 +58,7 @@
                 _validPaths = args.ToList();
                 return _validPaths;
             }
+            set => _validPaths = value;
         }
 
         internal static string ValidPathsStr

@@ -153,6 +153,11 @@
             var arguments = Ini.Read("AppInfo", "Arg", ConfigPath);
             if (Arguments.ValidPaths.Any())
             {
+                if (Settings.SortArgPaths)
+                {
+                    var comparer = new Comparison.AlphanumericComparer();
+                    Arguments.ValidPaths = Arguments.ValidPaths.OrderBy(x => x, comparer).ToList();
+                }
                 if (string.IsNullOrWhiteSpace(arguments))
                     arguments = $"{Settings.StartArgsFirst}{Arguments.ValidPathsStr}{Settings.StartArgsLast}".Trim();
                 var curKey = Arguments.ValidPathsStr?.GetHashCode() ?? -1;
@@ -238,7 +243,7 @@
             private readonly string _section;
             private string[] _fileAboluteTypes, _fileTypes;
             private FileTypeAssocData _fileTypeAssoc;
-            private bool? _noConfirm, _noUpdates, _runAsAdmin;
+            private bool? _noConfirm, _noUpdates, _runAsAdmin, _sortArgPaths;
             private DateTime _noUpdatesTime;
             private string _startArgsFirst, _startArgsLast;
 
@@ -369,6 +374,21 @@
                 {
                     _runAsAdmin = value;
                     WriteValue(nameof(RunAsAdmin), _runAsAdmin, false);
+                }
+            }
+
+            public bool SortArgPaths
+            {
+                get
+                {
+                    if (!_sortArgPaths.HasValue)
+                        _sortArgPaths = Ini.Read(_section, nameof(SortArgPaths), false);
+                    return (bool)_sortArgPaths;
+                }
+                set
+                {
+                    _sortArgPaths = value;
+                    WriteValue(nameof(SortArgPaths), _sortArgPaths, false);
                 }
             }
 

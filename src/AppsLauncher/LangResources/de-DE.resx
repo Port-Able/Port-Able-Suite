@@ -507,6 +507,10 @@ Dadurch können Sie die folgenden Änderungen jederzeit wieder rückgängig mach
   <data name="showLargeImagesCheck" xml:space="preserve">
     <value>Große Bilder anzeigen</value>
   </data>
+  <data name="sortArgPathsCheck" xml:space="preserve">
+    <value>Pfade in Befehlszeilenargumenten sortieren</value>
+    <comment>CheckBox</comment>
+  </data>
   <data name="startArgsDefaultLabelTip" xml:space="preserve">
     <value>Derzeitige Befehlszeilenargumente.</value>
     <comment>ToolTip</comment>

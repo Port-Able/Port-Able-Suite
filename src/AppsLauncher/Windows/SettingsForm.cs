@@ -653,6 +653,7 @@ namespace AppsLauncher.Windows
                 appData.Settings.StartArgsFirst = startArgsFirst.Text;
                 appData.Settings.StartArgsLast = startArgsLast.Text;
 
+                appData.Settings.SortArgPaths = sortArgPathsCheck.Checked;
                 appData.Settings.NoConfirm = noConfirmCheck.Checked;
                 appData.Settings.RunAsAdmin = runAsAdminCheck.Checked;
                 appData.Settings.NoUpdates = noUpdatesCheck.Checked;

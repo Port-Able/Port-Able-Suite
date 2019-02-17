@@ -1,5 +1,7 @@
 namespace AppsLauncher.Windows
 {
+    using System.ComponentModel;
+
     partial class SettingsForm
     {
         /// <summary>
@@ -35,6 +37,7 @@ namespace AppsLauncher.Windows
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tabCtrl = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.sortArgPathsCheck = new System.Windows.Forms.CheckBox();
             this.fileTypesTableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.fileTypesButtonFlowLayout = new System.Windows.Forms.FlowLayoutPanel();
             this.associateBtn = new System.Windows.Forms.Button();
@@ -142,7 +145,7 @@ namespace AppsLauncher.Windows
             // 
             this.panel2.BackColor = System.Drawing.Color.Black;
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 382);
+            this.panel2.Location = new System.Drawing.Point(0, 410);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(494, 1);
             this.panel2.TabIndex = 12;
@@ -164,13 +167,14 @@ namespace AppsLauncher.Windows
             this.tabCtrl.Multiline = true;
             this.tabCtrl.Name = "tabCtrl";
             this.tabCtrl.SelectedIndex = 0;
-            this.tabCtrl.Size = new System.Drawing.Size(494, 382);
+            this.tabCtrl.Size = new System.Drawing.Size(494, 410);
             this.tabCtrl.TabIndex = 13;
             // 
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.Color.SlateGray;
             this.tabPage1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tabPage1.Controls.Add(this.sortArgPathsCheck);
             this.tabPage1.Controls.Add(this.fileTypesTableLayout);
             this.tabPage1.Controls.Add(this.startArgsTableLayout);
             this.tabPage1.Controls.Add(this.runAsAdminCheck);
@@ -184,9 +188,23 @@ namespace AppsLauncher.Windows
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(486, 356);
+            this.tabPage1.Size = new System.Drawing.Size(486, 384);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "App Options";
+            // 
+            // sortArgPathsCheck
+            // 
+            this.sortArgPathsCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.sortArgPathsCheck.AutoSize = true;
+            this.sortArgPathsCheck.BackColor = System.Drawing.Color.Transparent;
+            this.sortArgPathsCheck.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sortArgPathsCheck.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.sortArgPathsCheck.Location = new System.Drawing.Point(142, 280);
+            this.sortArgPathsCheck.Name = "sortArgPathsCheck";
+            this.sortArgPathsCheck.Size = new System.Drawing.Size(208, 17);
+            this.sortArgPathsCheck.TabIndex = 7;
+            this.sortArgPathsCheck.Text = "Sort paths in command line arguments";
+            this.sortArgPathsCheck.UseVisualStyleBackColor = false;
             // 
             // fileTypesTableLayout
             // 
@@ -202,7 +220,7 @@ namespace AppsLauncher.Windows
             this.fileTypesTableLayout.RowCount = 2;
             this.fileTypesTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.fileTypesTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
-            this.fileTypesTableLayout.Size = new System.Drawing.Size(307, 167);
+            this.fileTypesTableLayout.Size = new System.Drawing.Size(307, 175);
             this.fileTypesTableLayout.TabIndex = 4;
             // 
             // fileTypesButtonFlowLayout
@@ -211,7 +229,7 @@ namespace AppsLauncher.Windows
             this.fileTypesButtonFlowLayout.Controls.Add(this.restoreFileTypesBtn);
             this.fileTypesButtonFlowLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             this.fileTypesButtonFlowLayout.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.fileTypesButtonFlowLayout.Location = new System.Drawing.Point(0, 128);
+            this.fileTypesButtonFlowLayout.Location = new System.Drawing.Point(0, 136);
             this.fileTypesButtonFlowLayout.Margin = new System.Windows.Forms.Padding(0);
             this.fileTypesButtonFlowLayout.Name = "fileTypesButtonFlowLayout";
             this.fileTypesButtonFlowLayout.Size = new System.Drawing.Size(307, 39);
@@ -258,7 +276,7 @@ namespace AppsLauncher.Windows
             this.fileTypes.Margin = new System.Windows.Forms.Padding(0);
             this.fileTypes.Multiline = true;
             this.fileTypes.Name = "fileTypes";
-            this.fileTypes.Size = new System.Drawing.Size(307, 128);
+            this.fileTypes.Size = new System.Drawing.Size(307, 136);
             this.fileTypes.TabIndex = 0;
             this.fileTypes.MouseEnter += new System.EventHandler(this.ToolTipAtMouseEnter);
             // 
@@ -314,7 +332,7 @@ namespace AppsLauncher.Windows
             this.startArgsTableLayout.Controls.Add(this.startArgsFirst, 0, 0);
             this.startArgsTableLayout.Controls.Add(this.startArgsLast, 2, 0);
             this.startArgsTableLayout.Controls.Add(this.startArgsDefaultLabel, 1, 0);
-            this.startArgsTableLayout.Location = new System.Drawing.Point(131, 233);
+            this.startArgsTableLayout.Location = new System.Drawing.Point(131, 239);
             this.startArgsTableLayout.Name = "startArgsTableLayout";
             this.startArgsTableLayout.RowCount = 1;
             this.startArgsTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -363,10 +381,10 @@ namespace AppsLauncher.Windows
             this.runAsAdminCheck.BackColor = System.Drawing.Color.Transparent;
             this.runAsAdminCheck.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.runAsAdminCheck.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.runAsAdminCheck.Location = new System.Drawing.Point(142, 298);
+            this.runAsAdminCheck.Location = new System.Drawing.Point(142, 326);
             this.runAsAdminCheck.Name = "runAsAdminCheck";
             this.runAsAdminCheck.Size = new System.Drawing.Size(259, 17);
-            this.runAsAdminCheck.TabIndex = 8;
+            this.runAsAdminCheck.TabIndex = 9;
             this.runAsAdminCheck.Text = "Run this app always with administrator privileges";
             this.runAsAdminCheck.UseVisualStyleBackColor = false;
             // 
@@ -377,10 +395,10 @@ namespace AppsLauncher.Windows
             this.noUpdatesCheck.BackColor = System.Drawing.Color.Transparent;
             this.noUpdatesCheck.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.noUpdatesCheck.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.noUpdatesCheck.Location = new System.Drawing.Point(142, 321);
+            this.noUpdatesCheck.Location = new System.Drawing.Point(142, 349);
             this.noUpdatesCheck.Name = "noUpdatesCheck";
             this.noUpdatesCheck.Size = new System.Drawing.Size(190, 17);
-            this.noUpdatesCheck.TabIndex = 9;
+            this.noUpdatesCheck.TabIndex = 10;
             this.noUpdatesCheck.Text = "Never search updates for this app";
             this.noUpdatesCheck.UseVisualStyleBackColor = false;
             // 
@@ -437,7 +455,7 @@ namespace AppsLauncher.Windows
             this.addArgsLabel.BackColor = System.Drawing.Color.Transparent;
             this.addArgsLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.addArgsLabel.ForeColor = System.Drawing.Color.Silver;
-            this.addArgsLabel.Location = new System.Drawing.Point(2, 240);
+            this.addArgsLabel.Location = new System.Drawing.Point(2, 246);
             this.addArgsLabel.Name = "addArgsLabel";
             this.addArgsLabel.Size = new System.Drawing.Size(126, 13);
             this.addArgsLabel.TabIndex = 5;
@@ -452,10 +470,10 @@ namespace AppsLauncher.Windows
             this.noConfirmCheck.BackColor = System.Drawing.Color.Transparent;
             this.noConfirmCheck.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.noConfirmCheck.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.noConfirmCheck.Location = new System.Drawing.Point(142, 275);
+            this.noConfirmCheck.Location = new System.Drawing.Point(142, 303);
             this.noConfirmCheck.Name = "noConfirmCheck";
             this.noConfirmCheck.Size = new System.Drawing.Size(180, 17);
-            this.noConfirmCheck.TabIndex = 7;
+            this.noConfirmCheck.TabIndex = 8;
             this.noConfirmCheck.Text = "Disable confirmation for this app";
             this.noConfirmCheck.UseVisualStyleBackColor = false;
             this.noConfirmCheck.MouseEnter += new System.EventHandler(this.ToolTipAtMouseEnter);
@@ -493,7 +511,7 @@ namespace AppsLauncher.Windows
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(486, 356);
+            this.tabPage2.Size = new System.Drawing.Size(486, 384);
             this.tabPage2.TabIndex = 2;
             this.tabPage2.Text = "Style";
             // 
@@ -504,7 +522,7 @@ namespace AppsLauncher.Windows
             this.showLargeImagesCheck.BackColor = System.Drawing.Color.Transparent;
             this.showLargeImagesCheck.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.showLargeImagesCheck.ForeColor = System.Drawing.Color.Silver;
-            this.showLargeImagesCheck.Location = new System.Drawing.Point(259, 290);
+            this.showLargeImagesCheck.Location = new System.Drawing.Point(259, 299);
             this.showLargeImagesCheck.Name = "showLargeImagesCheck";
             this.showLargeImagesCheck.Size = new System.Drawing.Size(137, 17);
             this.showLargeImagesCheck.TabIndex = 24;
@@ -522,7 +540,7 @@ namespace AppsLauncher.Windows
             this.fadeInCombo.Items.AddRange(new object[] {
             "Blend",
             "Slide"});
-            this.fadeInCombo.Location = new System.Drawing.Point(153, 19);
+            this.fadeInCombo.Location = new System.Drawing.Point(153, 28);
             this.fadeInCombo.Name = "fadeInCombo";
             this.fadeInCombo.Size = new System.Drawing.Size(64, 21);
             this.fadeInCombo.TabIndex = 1;
@@ -533,7 +551,7 @@ namespace AppsLauncher.Windows
             this.fadeInComboLabel.BackColor = System.Drawing.Color.Transparent;
             this.fadeInComboLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.fadeInComboLabel.ForeColor = System.Drawing.Color.Silver;
-            this.fadeInComboLabel.Location = new System.Drawing.Point(17, 22);
+            this.fadeInComboLabel.Location = new System.Drawing.Point(17, 31);
             this.fadeInComboLabel.Name = "fadeInComboLabel";
             this.fadeInComboLabel.Size = new System.Drawing.Size(130, 13);
             this.fadeInComboLabel.TabIndex = 0;
@@ -547,7 +565,7 @@ namespace AppsLauncher.Windows
             this.hScrollBarCheck.BackColor = System.Drawing.Color.Transparent;
             this.hScrollBarCheck.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.hScrollBarCheck.ForeColor = System.Drawing.Color.Silver;
-            this.hScrollBarCheck.Location = new System.Drawing.Point(259, 267);
+            this.hScrollBarCheck.Location = new System.Drawing.Point(259, 276);
             this.hScrollBarCheck.Name = "hScrollBarCheck";
             this.hScrollBarCheck.Size = new System.Drawing.Size(165, 17);
             this.hScrollBarCheck.TabIndex = 23;
@@ -561,7 +579,7 @@ namespace AppsLauncher.Windows
             this.bgLayout.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.bgLayout.Font = new System.Drawing.Font("Tahoma", 8.25F);
             this.bgLayout.FormattingEnabled = true;
-            this.bgLayout.Location = new System.Drawing.Point(126, 130);
+            this.bgLayout.Location = new System.Drawing.Point(126, 139);
             this.bgLayout.Name = "bgLayout";
             this.bgLayout.Size = new System.Drawing.Size(90, 21);
             this.bgLayout.TabIndex = 8;
@@ -573,7 +591,7 @@ namespace AppsLauncher.Windows
             this.bgLayoutLabel.BackColor = System.Drawing.Color.Transparent;
             this.bgLayoutLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bgLayoutLabel.ForeColor = System.Drawing.Color.Silver;
-            this.bgLayoutLabel.Location = new System.Drawing.Point(14, 133);
+            this.bgLayoutLabel.Location = new System.Drawing.Point(14, 142);
             this.bgLayoutLabel.Name = "bgLayoutLabel";
             this.bgLayoutLabel.Size = new System.Drawing.Size(112, 13);
             this.bgLayoutLabel.TabIndex = 7;
@@ -585,7 +603,7 @@ namespace AppsLauncher.Windows
             this.controlColorPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.controlColorPanel.BackColor = System.Drawing.SystemColors.Control;
             this.controlColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.controlColorPanel.Location = new System.Drawing.Point(200, 204);
+            this.controlColorPanel.Location = new System.Drawing.Point(200, 213);
             this.controlColorPanel.Name = "controlColorPanel";
             this.controlColorPanel.Size = new System.Drawing.Size(16, 16);
             this.controlColorPanel.TabIndex = 13;
@@ -600,7 +618,7 @@ namespace AppsLauncher.Windows
             this.controlColorPanelLabel.BackColor = System.Drawing.Color.Transparent;
             this.controlColorPanelLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.controlColorPanelLabel.ForeColor = System.Drawing.Color.Silver;
-            this.controlColorPanelLabel.Location = new System.Drawing.Point(14, 205);
+            this.controlColorPanelLabel.Location = new System.Drawing.Point(14, 214);
             this.controlColorPanelLabel.Name = "controlColorPanelLabel";
             this.controlColorPanelLabel.Size = new System.Drawing.Size(180, 13);
             this.controlColorPanelLabel.TabIndex = 12;
@@ -611,7 +629,7 @@ namespace AppsLauncher.Windows
             // 
             this.resetColorsBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.resetColorsBtn.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.resetColorsBtn.Location = new System.Drawing.Point(153, 313);
+            this.resetColorsBtn.Location = new System.Drawing.Point(153, 322);
             this.resetColorsBtn.Name = "resetColorsBtn";
             this.resetColorsBtn.Size = new System.Drawing.Size(63, 23);
             this.resetColorsBtn.TabIndex = 22;
@@ -624,7 +642,7 @@ namespace AppsLauncher.Windows
             this.controlTextColorPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.controlTextColorPanel.BackColor = System.Drawing.SystemColors.WindowText;
             this.controlTextColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.controlTextColorPanel.Location = new System.Drawing.Point(200, 225);
+            this.controlTextColorPanel.Location = new System.Drawing.Point(200, 234);
             this.controlTextColorPanel.Name = "controlTextColorPanel";
             this.controlTextColorPanel.Size = new System.Drawing.Size(16, 16);
             this.controlTextColorPanel.TabIndex = 15;
@@ -638,7 +656,7 @@ namespace AppsLauncher.Windows
             this.previewMainColor.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.previewMainColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.previewMainColor.Controls.Add(this.previewBg);
-            this.previewMainColor.Location = new System.Drawing.Point(251, 43);
+            this.previewMainColor.Location = new System.Drawing.Point(251, 52);
             this.previewMainColor.Name = "previewMainColor";
             this.previewMainColor.Size = new System.Drawing.Size(198, 213);
             this.previewMainColor.TabIndex = 50;
@@ -756,7 +774,7 @@ namespace AppsLauncher.Windows
             this.controlTextColorPanelLabel.BackColor = System.Drawing.Color.Transparent;
             this.controlTextColorPanelLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.controlTextColorPanelLabel.ForeColor = System.Drawing.Color.Silver;
-            this.controlTextColorPanelLabel.Location = new System.Drawing.Point(14, 226);
+            this.controlTextColorPanelLabel.Location = new System.Drawing.Point(14, 235);
             this.controlTextColorPanelLabel.Name = "controlTextColorPanelLabel";
             this.controlTextColorPanelLabel.Size = new System.Drawing.Size(180, 13);
             this.controlTextColorPanelLabel.TabIndex = 14;
@@ -772,7 +790,7 @@ namespace AppsLauncher.Windows
             this.defBgCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.defBgCheck.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.defBgCheck.ForeColor = System.Drawing.Color.Silver;
-            this.defBgCheck.Location = new System.Drawing.Point(52, 155);
+            this.defBgCheck.Location = new System.Drawing.Point(52, 164);
             this.defBgCheck.Name = "defBgCheck";
             this.defBgCheck.Size = new System.Drawing.Size(137, 17);
             this.defBgCheck.TabIndex = 9;
@@ -785,7 +803,7 @@ namespace AppsLauncher.Windows
             this.btnColorPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnColorPanel.BackColor = System.Drawing.SystemColors.ControlDark;
             this.btnColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.btnColorPanel.Location = new System.Drawing.Point(200, 246);
+            this.btnColorPanel.Location = new System.Drawing.Point(200, 255);
             this.btnColorPanel.Name = "btnColorPanel";
             this.btnColorPanel.Size = new System.Drawing.Size(16, 16);
             this.btnColorPanel.TabIndex = 17;
@@ -798,7 +816,7 @@ namespace AppsLauncher.Windows
             // 
             this.setBgBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.setBgBtn.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.setBgBtn.Location = new System.Drawing.Point(34, 102);
+            this.setBgBtn.Location = new System.Drawing.Point(34, 111);
             this.setBgBtn.Name = "setBgBtn";
             this.setBgBtn.Size = new System.Drawing.Size(183, 23);
             this.setBgBtn.TabIndex = 6;
@@ -812,7 +830,7 @@ namespace AppsLauncher.Windows
             this.btnColorPanelLabel.BackColor = System.Drawing.Color.Transparent;
             this.btnColorPanelLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnColorPanelLabel.ForeColor = System.Drawing.Color.Silver;
-            this.btnColorPanelLabel.Location = new System.Drawing.Point(14, 247);
+            this.btnColorPanelLabel.Location = new System.Drawing.Point(14, 256);
             this.btnColorPanelLabel.Name = "btnColorPanelLabel";
             this.btnColorPanelLabel.Size = new System.Drawing.Size(180, 13);
             this.btnColorPanelLabel.TabIndex = 16;
@@ -825,7 +843,7 @@ namespace AppsLauncher.Windows
             this.fadeInNumLabel.BackColor = System.Drawing.Color.Transparent;
             this.fadeInNumLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.fadeInNumLabel.ForeColor = System.Drawing.Color.Silver;
-            this.fadeInNumLabel.Location = new System.Drawing.Point(19, 49);
+            this.fadeInNumLabel.Location = new System.Drawing.Point(19, 58);
             this.fadeInNumLabel.Name = "fadeInNumLabel";
             this.fadeInNumLabel.Size = new System.Drawing.Size(128, 13);
             this.fadeInNumLabel.TabIndex = 2;
@@ -841,7 +859,7 @@ namespace AppsLauncher.Windows
             0,
             0,
             131072});
-            this.opacityNum.Location = new System.Drawing.Point(153, 74);
+            this.opacityNum.Location = new System.Drawing.Point(153, 83);
             this.opacityNum.Maximum = new decimal(new int[] {
             100,
             0,
@@ -865,7 +883,7 @@ namespace AppsLauncher.Windows
             // fadeInNum
             // 
             this.fadeInNum.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.fadeInNum.Location = new System.Drawing.Point(153, 46);
+            this.fadeInNum.Location = new System.Drawing.Point(153, 55);
             this.fadeInNum.Maximum = new decimal(new int[] {
             750,
             0,
@@ -891,7 +909,7 @@ namespace AppsLauncher.Windows
             this.btnTextColorPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnTextColorPanel.BackColor = System.Drawing.SystemColors.WindowText;
             this.btnTextColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.btnTextColorPanel.Location = new System.Drawing.Point(200, 288);
+            this.btnTextColorPanel.Location = new System.Drawing.Point(200, 297);
             this.btnTextColorPanel.Name = "btnTextColorPanel";
             this.btnTextColorPanel.Size = new System.Drawing.Size(16, 16);
             this.btnTextColorPanel.TabIndex = 21;
@@ -906,7 +924,7 @@ namespace AppsLauncher.Windows
             this.opacityNumLabel.BackColor = System.Drawing.Color.Transparent;
             this.opacityNumLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.opacityNumLabel.ForeColor = System.Drawing.Color.Silver;
-            this.opacityNumLabel.Location = new System.Drawing.Point(17, 76);
+            this.opacityNumLabel.Location = new System.Drawing.Point(17, 85);
             this.opacityNumLabel.Name = "opacityNumLabel";
             this.opacityNumLabel.Size = new System.Drawing.Size(130, 13);
             this.opacityNumLabel.TabIndex = 4;
@@ -919,7 +937,7 @@ namespace AppsLauncher.Windows
             this.mainColorPanelLabel.BackColor = System.Drawing.Color.Transparent;
             this.mainColorPanelLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.mainColorPanelLabel.ForeColor = System.Drawing.Color.Silver;
-            this.mainColorPanelLabel.Location = new System.Drawing.Point(14, 184);
+            this.mainColorPanelLabel.Location = new System.Drawing.Point(14, 193);
             this.mainColorPanelLabel.Name = "mainColorPanelLabel";
             this.mainColorPanelLabel.Size = new System.Drawing.Size(180, 13);
             this.mainColorPanelLabel.TabIndex = 10;
@@ -931,7 +949,7 @@ namespace AppsLauncher.Windows
             this.btnHoverColorPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnHoverColorPanel.BackColor = System.Drawing.SystemColors.Highlight;
             this.btnHoverColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.btnHoverColorPanel.Location = new System.Drawing.Point(200, 267);
+            this.btnHoverColorPanel.Location = new System.Drawing.Point(200, 276);
             this.btnHoverColorPanel.Name = "btnHoverColorPanel";
             this.btnHoverColorPanel.Size = new System.Drawing.Size(16, 16);
             this.btnHoverColorPanel.TabIndex = 19;
@@ -946,7 +964,7 @@ namespace AppsLauncher.Windows
             this.btnHoverColorPanelLabel.BackColor = System.Drawing.Color.Transparent;
             this.btnHoverColorPanelLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnHoverColorPanelLabel.ForeColor = System.Drawing.Color.Silver;
-            this.btnHoverColorPanelLabel.Location = new System.Drawing.Point(14, 268);
+            this.btnHoverColorPanelLabel.Location = new System.Drawing.Point(14, 277);
             this.btnHoverColorPanelLabel.Name = "btnHoverColorPanelLabel";
             this.btnHoverColorPanelLabel.Size = new System.Drawing.Size(180, 13);
             this.btnHoverColorPanelLabel.TabIndex = 18;
@@ -958,7 +976,7 @@ namespace AppsLauncher.Windows
             this.mainColorPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.mainColorPanel.BackColor = System.Drawing.SystemColors.Highlight;
             this.mainColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mainColorPanel.Location = new System.Drawing.Point(200, 183);
+            this.mainColorPanel.Location = new System.Drawing.Point(200, 192);
             this.mainColorPanel.Name = "mainColorPanel";
             this.mainColorPanel.Size = new System.Drawing.Size(16, 16);
             this.mainColorPanel.TabIndex = 11;
@@ -973,7 +991,7 @@ namespace AppsLauncher.Windows
             this.btnTextColorPanelLabel.BackColor = System.Drawing.Color.Transparent;
             this.btnTextColorPanelLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnTextColorPanelLabel.ForeColor = System.Drawing.Color.Silver;
-            this.btnTextColorPanelLabel.Location = new System.Drawing.Point(14, 289);
+            this.btnTextColorPanelLabel.Location = new System.Drawing.Point(14, 298);
             this.btnTextColorPanelLabel.Name = "btnTextColorPanelLabel";
             this.btnTextColorPanelLabel.Size = new System.Drawing.Size(180, 13);
             this.btnTextColorPanelLabel.TabIndex = 20;
@@ -999,7 +1017,7 @@ namespace AppsLauncher.Windows
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(486, 356);
+            this.tabPage3.Size = new System.Drawing.Size(486, 384);
             this.tabPage3.TabIndex = 1;
             this.tabPage3.Text = "Misc";
             // 
@@ -1009,7 +1027,7 @@ namespace AppsLauncher.Windows
             this.updateChannel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.updateChannel.Font = new System.Drawing.Font("Tahoma", 8.25F);
             this.updateChannel.FormattingEnabled = true;
-            this.updateChannel.Location = new System.Drawing.Point(302, 276);
+            this.updateChannel.Location = new System.Drawing.Point(302, 285);
             this.updateChannel.Name = "updateChannel";
             this.updateChannel.Size = new System.Drawing.Size(139, 21);
             this.updateChannel.TabIndex = 10;
@@ -1023,7 +1041,7 @@ namespace AppsLauncher.Windows
             this.topControlTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.topControlTableLayout.Controls.Add(this.appDirs, 0, 0);
             this.topControlTableLayout.Controls.Add(this.buttonFlowLayout, 0, 1);
-            this.topControlTableLayout.Location = new System.Drawing.Point(135, 27);
+            this.topControlTableLayout.Location = new System.Drawing.Point(135, 36);
             this.topControlTableLayout.Name = "topControlTableLayout";
             this.topControlTableLayout.RowCount = 2;
             this.topControlTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -1094,7 +1112,7 @@ namespace AppsLauncher.Windows
             this.updateChannelLabel.BackColor = System.Drawing.Color.Transparent;
             this.updateChannelLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.updateChannelLabel.ForeColor = System.Drawing.Color.Silver;
-            this.updateChannelLabel.Location = new System.Drawing.Point(2, 280);
+            this.updateChannelLabel.Location = new System.Drawing.Point(2, 289);
             this.updateChannelLabel.Name = "updateChannelLabel";
             this.updateChannelLabel.Size = new System.Drawing.Size(294, 13);
             this.updateChannelLabel.TabIndex = 9;
@@ -1107,7 +1125,7 @@ namespace AppsLauncher.Windows
             this.defaultPos.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.defaultPos.Font = new System.Drawing.Font("Tahoma", 8.25F);
             this.defaultPos.FormattingEnabled = true;
-            this.defaultPos.Location = new System.Drawing.Point(302, 214);
+            this.defaultPos.Location = new System.Drawing.Point(302, 223);
             this.defaultPos.Name = "defaultPos";
             this.defaultPos.Size = new System.Drawing.Size(139, 21);
             this.defaultPos.TabIndex = 6;
@@ -1119,7 +1137,7 @@ namespace AppsLauncher.Windows
             this.defaultPosLabel.BackColor = System.Drawing.Color.Transparent;
             this.defaultPosLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.defaultPosLabel.ForeColor = System.Drawing.Color.Silver;
-            this.defaultPosLabel.Location = new System.Drawing.Point(2, 218);
+            this.defaultPosLabel.Location = new System.Drawing.Point(2, 227);
             this.defaultPosLabel.Name = "defaultPosLabel";
             this.defaultPosLabel.Size = new System.Drawing.Size(294, 13);
             this.defaultPosLabel.TabIndex = 5;
@@ -1132,7 +1150,7 @@ namespace AppsLauncher.Windows
             this.startMenuIntegration.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.startMenuIntegration.Font = new System.Drawing.Font("Tahoma", 8.25F);
             this.startMenuIntegration.FormattingEnabled = true;
-            this.startMenuIntegration.Location = new System.Drawing.Point(302, 183);
+            this.startMenuIntegration.Location = new System.Drawing.Point(302, 192);
             this.startMenuIntegration.Name = "startMenuIntegration";
             this.startMenuIntegration.Size = new System.Drawing.Size(139, 21);
             this.startMenuIntegration.TabIndex = 4;
@@ -1144,7 +1162,7 @@ namespace AppsLauncher.Windows
             this.startMenuIntegrationLabel.BackColor = System.Drawing.Color.Transparent;
             this.startMenuIntegrationLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.startMenuIntegrationLabel.ForeColor = System.Drawing.Color.Silver;
-            this.startMenuIntegrationLabel.Location = new System.Drawing.Point(2, 186);
+            this.startMenuIntegrationLabel.Location = new System.Drawing.Point(2, 195);
             this.startMenuIntegrationLabel.Name = "startMenuIntegrationLabel";
             this.startMenuIntegrationLabel.Size = new System.Drawing.Size(294, 13);
             this.startMenuIntegrationLabel.TabIndex = 3;
@@ -1160,7 +1178,7 @@ namespace AppsLauncher.Windows
             this.setLang.Items.AddRange(new object[] {
             "en-US",
             "de-DE"});
-            this.setLang.Location = new System.Drawing.Point(302, 307);
+            this.setLang.Location = new System.Drawing.Point(302, 316);
             this.setLang.Name = "setLang";
             this.setLang.Size = new System.Drawing.Size(139, 21);
             this.setLang.TabIndex = 12;
@@ -1172,7 +1190,7 @@ namespace AppsLauncher.Windows
             this.setLangLabel.BackColor = System.Drawing.Color.Transparent;
             this.setLangLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.setLangLabel.ForeColor = System.Drawing.Color.Silver;
-            this.setLangLabel.Location = new System.Drawing.Point(2, 311);
+            this.setLangLabel.Location = new System.Drawing.Point(2, 320);
             this.setLangLabel.Name = "setLangLabel";
             this.setLangLabel.Size = new System.Drawing.Size(294, 13);
             this.setLangLabel.TabIndex = 11;
@@ -1185,7 +1203,7 @@ namespace AppsLauncher.Windows
             this.updateCheck.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.updateCheck.Font = new System.Drawing.Font("Tahoma", 8.25F);
             this.updateCheck.FormattingEnabled = true;
-            this.updateCheck.Location = new System.Drawing.Point(302, 245);
+            this.updateCheck.Location = new System.Drawing.Point(302, 254);
             this.updateCheck.Name = "updateCheck";
             this.updateCheck.Size = new System.Drawing.Size(139, 21);
             this.updateCheck.TabIndex = 8;
@@ -1197,7 +1215,7 @@ namespace AppsLauncher.Windows
             this.updateCheckLabel.BackColor = System.Drawing.Color.Transparent;
             this.updateCheckLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.updateCheckLabel.ForeColor = System.Drawing.Color.Silver;
-            this.updateCheckLabel.Location = new System.Drawing.Point(2, 249);
+            this.updateCheckLabel.Location = new System.Drawing.Point(2, 258);
             this.updateCheckLabel.Name = "updateCheckLabel";
             this.updateCheckLabel.Size = new System.Drawing.Size(294, 13);
             this.updateCheckLabel.TabIndex = 7;
@@ -1209,7 +1227,7 @@ namespace AppsLauncher.Windows
             this.appDirsLabel.BackColor = System.Drawing.Color.Transparent;
             this.appDirsLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.appDirsLabel.ForeColor = System.Drawing.Color.Silver;
-            this.appDirsLabel.Location = new System.Drawing.Point(2, 30);
+            this.appDirsLabel.Location = new System.Drawing.Point(2, 39);
             this.appDirsLabel.Name = "appDirsLabel";
             this.appDirsLabel.Size = new System.Drawing.Size(127, 13);
             this.appDirsLabel.TabIndex = 0;
@@ -1247,7 +1265,7 @@ namespace AppsLauncher.Windows
             this.panel1.Controls.Add(this.saveBtnPanel);
             this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 383);
+            this.panel1.Location = new System.Drawing.Point(0, 411);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(494, 68);
             this.panel1.TabIndex = 11;
@@ -1309,7 +1327,7 @@ namespace AppsLauncher.Windows
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(494, 451);
+            this.ClientSize = new System.Drawing.Size(494, 479);
             this.Controls.Add(this.tabCtrl);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -1414,5 +1432,6 @@ namespace AppsLauncher.Windows
         private System.Windows.Forms.TableLayoutPanel topControlTableLayout;
         private System.Windows.Forms.FlowLayoutPanel buttonFlowLayout;
         private System.Windows.Forms.CheckBox showLargeImagesCheck;
+        private System.Windows.Forms.CheckBox sortArgPathsCheck;
     }
 }
