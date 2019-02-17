@@ -289,7 +289,8 @@ namespace AppsDownloader.Windows
             foreach (var appTransferor in TransferManager.Values)
                 appTransferor.Transfer.CancelAsync();
 
-            ProcessEx.SendHelper.WaitThenDelete(Settings.TransferDir);
+            if (DirectoryEx.EnumerateFiles(Settings.TransferDir)?.Any() == true)
+                ProcessEx.SendHelper.WaitThenDelete(Settings.TransferDir);
         }
 
         private void AppsList_Enter(object sender, EventArgs e) =>
