@@ -608,7 +608,10 @@ namespace AppsLauncher.Windows
             var appData = CacheData.FindAppData(appsBox.SelectedItem.ToString());
             if (appData != default(LocalAppData))
             {
-                if (!string.IsNullOrWhiteSpace(fileTypes.Text))
+                if (string.IsNullOrWhiteSpace(fileTypes.Text))
+                    appData.Settings.FileTypes = Array.Empty<string>();
+                else
+                {
                     if (e == EventArgs.Empty || !FileTypesConflict())
                     {
                         var typesList = new List<string>();
@@ -645,6 +648,7 @@ namespace AppsLauncher.Windows
                     }
                     else
                         fileTypes.Text = appData.Settings.FileTypes.Join(',');
+                }
 
                 appData.Settings.StartArgsFirst = startArgsFirst.Text;
                 appData.Settings.StartArgsLast = startArgsLast.Text;
