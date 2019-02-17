@@ -259,13 +259,18 @@ namespace Updater.Windows
                     // IPv4 + IPv6
                     "http://dl.0.port-a.de",
                     "http://dl.1.port-a.de",
-
-                    // IPv4
-                    "http://dl.2.port-a.de"
+                    "http://dl-0.de",
+                    "http://dl-1.de",
+                    "http://dl.2.port-a.de",
+                    "http://dl.3.port-a.de",
+                    "http://dl-2.de",
+                    "http://dl-3.de",
+                    "http://dl.4.port-a.de",
+                    "http://dl.5.port-a.de",
+                    "http://dl-4.de",
+                    "http://dl-5.de"
                 };
-                if (!NetEx.IPv4IsAvalaible && NetEx.IPv6IsAvalaible)
-                    mirrors = mirrors.Take(2).ToArray();
-                DownloadMirrors.AddRange(mirrors.Select(x => PathEx.AltCombine(x, "Port-Able%20Suite")));
+                DownloadMirrors.AddRange(mirrors.Select(x => PathEx.AltCombine(x, "Port-Able")));
                 if (!DownloadMirrors.Any())
                 {
                     Environment.ExitCode = 1;
