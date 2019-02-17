@@ -52,7 +52,7 @@
                     }
 
                     var shortHost = NetEx.GetShortHost(tuple.Item1);
-                    var redirect = !NetEx.IPv4IsAvalaible && !string.IsNullOrWhiteSpace(shortHost) && !shortHost.EqualsEx(AppSupplierHosts.Internal);
+                    var redirect = Settings.ForceTransferRedirection || !NetEx.IPv4IsAvalaible && !string.IsNullOrWhiteSpace(shortHost) && !shortHost.EqualsEx(AppSupplierHosts.Internal);
                     List<string> mirrors;
                     switch (shortHost)
                     {

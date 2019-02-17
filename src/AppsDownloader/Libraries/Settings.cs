@@ -19,8 +19,19 @@
 #else
         internal const string Title = "Apps Downloader (64-bit)";
 #endif
+        private static bool? _forceTransferRedirection;
         private static string _machineId, _transferDir;
         private static string[] _nsisButtons;
+
+        internal static bool ForceTransferRedirection
+        {
+            get
+            {
+                if (!_forceTransferRedirection.HasValue)
+                    _forceTransferRedirection = Ini.Read(Section, nameof(ForceTransferRedirection), false);
+                return (bool)_forceTransferRedirection;
+            }
+        }
 
         internal static string MachineId
         {
