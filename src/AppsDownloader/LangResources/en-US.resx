@@ -117,6 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Address" xml:space="preserve">
+    <value>Address</value>
+    <comment>DataGridViewRowColumn</comment>
+  </data>
+  <data name="advancedGroupBox" xml:space="preserve">
+    <value>*Advanced</value>
+    <comment>GroupBox</comment>
+  </data>
   <data name="AppDownloadedMsg" xml:space="preserve">
     <value>App successfully downloaded!</value>
     <comment>Message</comment>
@@ -368,6 +376,10 @@ Please try again later.</value>
 You must free up at least {1} more space.</value>
     <comment>Message</comment>
   </data>
+  <data name="openSrcManBtn" xml:space="preserve">
+    <value>Open the App Source Manager</value>
+    <comment>Button</comment>
+  </data>
   <data name="OperationCanceledMsg" xml:space="preserve">
     <value>Operation canceled.</value>
     <comment>Message</comment>
@@ -380,6 +392,10 @@ You must free up at least {1} more space.</value>
     <value>Operation failed.</value>
     <comment>Message</comment>
   </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+    <comment>DataGridViewRowColumn</comment>
+  </data>
   <data name="rememberLangCheck" xml:space="preserve">
     <value>Do not ask again for this application</value>
     <comment>CheckBox</comment>
@@ -387,6 +403,10 @@ You must free up at least {1} more space.</value>
   <data name="RequirementsErrorMsg" xml:space="preserve">
     <value>This program is incomplete. Would you like to download it again?</value>
     <comment>Message</comment>
+  </data>
+  <data name="saveBtn" xml:space="preserve">
+    <value>Save</value>
+    <comment>Button</comment>
   </data>
   <data name="SettingsForm" xml:space="preserve">
     <value>Settings</value>
@@ -403,6 +423,10 @@ You must free up at least {1} more space.</value>
   <data name="showLargeImagesCheck" xml:space="preserve">
     <value>Show Large Images</value>
     <comment>CheckBox</comment>
+  </data>
+  <data name="SourceManagerForm" xml:space="preserve">
+    <value>App Sources Manager (BETA)</value>
+    <comment>Form</comment>
   </data>
   <data name="startBtn" xml:space="preserve">
     <value>Start</value>
@@ -427,5 +451,9 @@ You must free up at least {1} more space.</value>
   <data name="urlStatusLabel" xml:space="preserve">
     <value>Source:</value>
     <comment>StatusLabel</comment>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>User</value>
+    <comment>DataGridViewRowColumn</comment>
   </data>
 </root>

@@ -61,6 +61,24 @@ namespace AppsDownloader.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adresse.
+        /// </summary>
+        internal static string Address {
+            get {
+                return ResourceManager.GetString("Address", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to *Erweitert.
+        /// </summary>
+        internal static string advancedGroupBox {
+            get {
+                return ResourceManager.GetString("advancedGroupBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to App erfolgreich heruntergeladen!.
         /// </summary>
         internal static string AppDownloadedMsg {
@@ -597,6 +615,15 @@ namespace AppsDownloader.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to App Quellen Manager öffnen.
+        /// </summary>
+        internal static string openSrcManBtn {
+            get {
+                return ResourceManager.GetString("openSrcManBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Der Vorgang wurde abgebrochen..
         /// </summary>
         internal static string OperationCanceledMsg {
@@ -624,6 +651,15 @@ namespace AppsDownloader.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Passwort.
+        /// </summary>
+        internal static string Password {
+            get {
+                return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Einstellung für diese Anwendung merken.
         /// </summary>
         internal static string rememberLangCheck {
@@ -638,6 +674,15 @@ namespace AppsDownloader.LangResources {
         internal static string RequirementsErrorMsg {
             get {
                 return ResourceManager.GetString("RequirementsErrorMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speichern.
+        /// </summary>
+        internal static string saveBtn {
+            get {
+                return ResourceManager.GetString("saveBtn", resourceCulture);
             }
         }
         
@@ -674,6 +719,15 @@ namespace AppsDownloader.LangResources {
         internal static string showLargeImagesCheck {
             get {
                 return ResourceManager.GetString("showLargeImagesCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App Quellen Manager (BETA).
+        /// </summary>
+        internal static string SourceManagerForm {
+            get {
+                return ResourceManager.GetString("SourceManagerForm", resourceCulture);
             }
         }
         
@@ -728,6 +782,15 @@ namespace AppsDownloader.LangResources {
         internal static string urlStatusLabel {
             get {
                 return ResourceManager.GetString("urlStatusLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Benutzer.
+        /// </summary>
+        internal static string User {
+            get {
+                return ResourceManager.GetString("User", resourceCulture);
             }
         }
     }

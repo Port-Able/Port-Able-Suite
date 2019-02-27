@@ -10,7 +10,7 @@
     internal static class Shareware
     {
         private static string _computerId;
-        private static Dictionary<byte[], Tuple<byte[], byte[]>> _data;
+        private static Dictionary<string, Tuple<string, string>> _data;
 
         private static string ComputerId
         {
@@ -22,18 +22,18 @@
             }
         }
 
-        internal static Dictionary<byte[], Tuple<byte[], byte[]>> Data
+        internal static Dictionary<string, Tuple<string, string>> Data
         {
             get
             {
-                if (_data != default(Dictionary<byte[], Tuple<byte[], byte[]>>))
+                if (_data != default(Dictionary<string, Tuple<string, string>>))
                     return _data;
 
                 if (File.Exists(CachePaths.SwData))
-                    _data = FileEx.Deserialize<Dictionary<byte[], Tuple<byte[], byte[]>>>(CachePaths.SwData);
+                    _data = FileEx.Deserialize<Dictionary<string, Tuple<string, string>>>(CachePaths.SwData);
 
                 if (_data?.Any() != true)
-                    _data = new Dictionary<byte[], Tuple<byte[], byte[]>>();
+                    _data = new Dictionary<string, Tuple<string, string>>();
 
                 var key = Settings.GetConfigKey(nameof(Shareware), nameof(Data), "Count");
                 var count = Ini.Read(Settings.Section, key, 0);
@@ -60,7 +60,7 @@
 
                     CacheData.UpdateSettingsMerges(Settings.Section);
 
-                    if (srv == default(byte[]) || usr == default(byte[]) || pwd == default(byte[]))
+                    if (srv == default(string) || usr == default(string) || pwd == default(string))
                         continue;
 
                     _data[srv] = Tuple.Create(usr, pwd);
@@ -79,18 +79,30 @@
                     FileEx.TryDelete(CachePaths.SwData);
                 return _data;
             }
+            set
+            {
+                _data = value;
+                if (_data?.Any() == true)
+                {
+                    DirectoryEx.Create(Path.GetDirectoryName(CachePaths.SwData));
+                    FileEx.Serialize(CachePaths.SwData, _data);
+                    return;
+                }
+                if (File.Exists(CachePaths.SwData))
+                    FileEx.TryDelete(CachePaths.SwData);
+            }
         }
 
         internal static bool Enabled =>
             Data?.Any() == true;
 
-        internal static string Decrypt(byte[] data) =>
-            data?.Decrypt(ComputerId).ToStringDefault();
+        internal static string Decrypt(string data) => 
+            !string.IsNullOrWhiteSpace(data) ? data.Decode(BinaryToTextEncodings.Base91)?.Decrypt(ComputerId).ToStringDefault() : default(string);
 
-        internal static byte[] Encrypt(string data) =>
-            data?.Encrypt(ComputerId);
+        internal static string Encrypt(string data) => 
+            !string.IsNullOrWhiteSpace(data) ? data.Encrypt(ComputerId)?.Encode(BinaryToTextEncodings.Base91) : default(string);
 
-        internal static byte[] FindAddressKey(string address) =>
+        internal static string FindAddressKey(string address) =>
             Data.Keys.FirstOrDefault(key => address.EqualsEx(Decrypt(key)));
 
         internal static IEnumerable<string> GetAddresses() =>

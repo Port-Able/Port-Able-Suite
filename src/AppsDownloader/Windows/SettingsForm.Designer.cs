@@ -1,5 +1,7 @@
 ﻿namespace AppsDownloader.Windows
 {
+    using System.ComponentModel;
+
     partial class SettingsForm
     {
         /// <summary>
@@ -67,10 +69,13 @@
             this.transferPathBox = new System.Windows.Forms.TextBox();
             this.transferPathBtn = new System.Windows.Forms.Button();
             this.logoBox = new System.Windows.Forms.PictureBox();
+            this.openSrcManBtn = new System.Windows.Forms.Button();
+            this.advancedGroupBox = new System.Windows.Forms.GroupBox();
             this.appListGroupBox.SuspendLayout();
             this.groupColorsGroupBox.SuspendLayout();
             this.transferGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logoBox)).BeginInit();
+            this.advancedGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // highlightInstalledCheck
@@ -145,7 +150,6 @@
             // 
             // groupColorsGroupBox
             // 
-            this.groupColorsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupColorsGroupBox.Controls.Add(this.listViewGroup1);
             this.groupColorsGroupBox.Controls.Add(this.group1ColorPanel);
             this.groupColorsGroupBox.Controls.Add(this.listViewGroup12);
@@ -524,12 +528,10 @@
             // 
             // transferGroupBox
             // 
-            this.transferGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.transferGroupBox.Controls.Add(this.transferPathUndoBtn);
             this.transferGroupBox.Controls.Add(this.transferPathBox);
             this.transferGroupBox.Controls.Add(this.transferPathBtn);
-            this.transferGroupBox.Location = new System.Drawing.Point(12, 335);
+            this.transferGroupBox.Location = new System.Drawing.Point(11, 335);
             this.transferGroupBox.Name = "transferGroupBox";
             this.transferGroupBox.Size = new System.Drawing.Size(446, 70);
             this.transferGroupBox.TabIndex = 11;
@@ -579,12 +581,33 @@
             this.logoBox.TabIndex = 12;
             this.logoBox.TabStop = false;
             // 
+            // openSrcManBtn
+            // 
+            this.openSrcManBtn.Location = new System.Drawing.Point(20, 29);
+            this.openSrcManBtn.Name = "openSrcManBtn";
+            this.openSrcManBtn.Size = new System.Drawing.Size(405, 23);
+            this.openSrcManBtn.TabIndex = 13;
+            this.openSrcManBtn.Text = "Open the App Source Manager";
+            this.openSrcManBtn.UseVisualStyleBackColor = true;
+            this.openSrcManBtn.Click += new System.EventHandler(this.OpenSrcManBtn_Click);
+            // 
+            // advancedGroupBox
+            // 
+            this.advancedGroupBox.Controls.Add(this.openSrcManBtn);
+            this.advancedGroupBox.Location = new System.Drawing.Point(12, 411);
+            this.advancedGroupBox.Name = "advancedGroupBox";
+            this.advancedGroupBox.Size = new System.Drawing.Size(446, 70);
+            this.advancedGroupBox.TabIndex = 12;
+            this.advancedGroupBox.TabStop = false;
+            this.advancedGroupBox.Text = "*Advanced";
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(469, 416);
+            this.ClientSize = new System.Drawing.Size(469, 494);
+            this.Controls.Add(this.advancedGroupBox);
             this.Controls.Add(this.logoBox);
             this.Controls.Add(this.transferGroupBox);
             this.Controls.Add(this.groupColorsGroupBox);
@@ -594,7 +617,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(485, 455);
+            this.MinimumSize = new System.Drawing.Size(485, 533);
             this.Name = "SettingsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
@@ -646,5 +669,7 @@
         private System.Windows.Forms.Button transferPathBtn;
         private System.Windows.Forms.PictureBox logoBox;
         private System.Windows.Forms.Button transferPathUndoBtn;
+        private System.Windows.Forms.Button openSrcManBtn;
+        private System.Windows.Forms.GroupBox advancedGroupBox;
     }
 }

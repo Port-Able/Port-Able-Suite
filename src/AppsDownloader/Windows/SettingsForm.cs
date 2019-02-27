@@ -40,9 +40,10 @@
             appListGroupBox.ResumeLayout(false);
             appListGroupBox.PerformLayout();
             groupColorsGroupBox.ResumeLayout(false);
-            transferGroupBox.ResumeLayout(false);
             ((ISupportInitialize)logoBox).EndInit();
+            transferGroupBox.ResumeLayout(false);
             transferGroupBox.PerformLayout();
+            advancedGroupBox.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -243,6 +244,23 @@
                 transferPathUndoBtn.BackgroundImage = transferPathUndoBtn.BackgroundImage.SwitchGrayScale(transferPathUndoBtn);
             }
             MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationCompletedMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+
+        private void OpenSrcManBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (Form dialog = new SourceManagerForm())
+                {
+                    dialog.TopMost = true;
+                    dialog.Plus();
+                    dialog.ShowDialog();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
         }
     }
 }

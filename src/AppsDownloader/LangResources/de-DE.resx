@@ -117,6 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Address" xml:space="preserve">
+    <value>Adresse</value>
+    <comment>DataGridViewRowColumn</comment>
+  </data>
+  <data name="advancedGroupBox" xml:space="preserve">
+    <value>*Erweitert</value>
+    <comment>GroupBox</comment>
+  </data>
   <data name="AppDownloadedMsg" xml:space="preserve">
     <value>App erfolgreich heruntergeladen!</value>
     <comment>Message</comment>
@@ -368,6 +376,10 @@ Bitte versuchen Sie es später noch einmal.</value>
 Es muss mindestens {1} mehr Speicherplatz freigeben werden.</value>
     <comment>Message</comment>
   </data>
+  <data name="openSrcManBtn" xml:space="preserve">
+    <value>App Quellen Manager öffnen</value>
+    <comment>Button</comment>
+  </data>
   <data name="OperationCanceledMsg" xml:space="preserve">
     <value>Der Vorgang wurde abgebrochen.</value>
     <comment>Message</comment>
@@ -380,6 +392,10 @@ Es muss mindestens {1} mehr Speicherplatz freigeben werden.</value>
     <value>Der Vorgang ist fehlgeschlagen.</value>
     <comment>Message</comment>
   </data>
+  <data name="Password" xml:space="preserve">
+    <value>Passwort</value>
+    <comment>DataGridViewRowColumn</comment>
+  </data>
   <data name="rememberLangCheck" xml:space="preserve">
     <value>Einstellung für diese Anwendung merken</value>
     <comment>CheckBox</comment>
@@ -387,6 +403,10 @@ Es muss mindestens {1} mehr Speicherplatz freigeben werden.</value>
   <data name="RequirementsErrorMsg" xml:space="preserve">
     <value>Das Programm ist unvollständig. Möchten Sie es erneut herunterladen?</value>
     <comment>Message</comment>
+  </data>
+  <data name="saveBtn" xml:space="preserve">
+    <value>Speichern</value>
+    <comment>Button</comment>
   </data>
   <data name="SettingsForm" xml:space="preserve">
     <value>Einstellungen</value>
@@ -403,6 +423,10 @@ Es muss mindestens {1} mehr Speicherplatz freigeben werden.</value>
   <data name="showLargeImagesCheck" xml:space="preserve">
     <value>Große Bilder anzeigen</value>
     <comment>CheckBox</comment>
+  </data>
+  <data name="SourceManagerForm" xml:space="preserve">
+    <value>App Quellen Manager (BETA)</value>
+    <comment>Form</comment>
   </data>
   <data name="startBtn" xml:space="preserve">
     <value>Start</value>
@@ -427,5 +451,9 @@ Es muss mindestens {1} mehr Speicherplatz freigeben werden.</value>
   <data name="urlStatusLabel" xml:space="preserve">
     <value>Quelle:</value>
     <comment>StatusLabel</comment>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Benutzer</value>
+    <comment>DataGridViewRowColumn</comment>
   </data>
 </root>

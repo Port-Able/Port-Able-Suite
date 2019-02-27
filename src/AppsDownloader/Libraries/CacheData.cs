@@ -249,7 +249,7 @@
                 var appInfo = NetEx.Transfer.DownloadString(url, usr, pwd);
                 if (string.IsNullOrWhiteSpace(appInfo))
                     continue;
-                UpdateAppInfoData(appInfo, null, key);
+                UpdateAppInfoData(appInfo, null, key.Decode(BinaryToTextEncodings.Base91));
             }
         }
 
