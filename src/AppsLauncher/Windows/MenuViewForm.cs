@@ -406,7 +406,7 @@ namespace AppsLauncher.Windows
 
         private void AppsListView_MouseLeave(object sender, EventArgs e)
         {
-            if (sender is ListView owner && owner.Focus())
+            if (sender is ListView owner && !owner.LabelEdit && owner.Focus())
                 owner.Parent.Select();
         }
 
