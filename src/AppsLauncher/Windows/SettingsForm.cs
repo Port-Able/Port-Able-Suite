@@ -273,6 +273,7 @@ namespace AppsLauncher.Windows
             startArgsFirst.Text = SelectedAppData.Settings.StartArgsFirst;
             startArgsLast.Text = SelectedAppData.Settings.StartArgsLast;
 
+            sortArgPathsCheck.Checked = SelectedAppData.Settings.SortArgPaths;
             noConfirmCheck.Checked = SelectedAppData.Settings.NoConfirm;
             runAsAdminCheck.Checked = SelectedAppData.Settings.RunAsAdmin;
             noUpdatesCheck.Checked = SelectedAppData.Settings.NoUpdates;
