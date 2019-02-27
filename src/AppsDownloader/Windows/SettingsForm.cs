@@ -72,6 +72,9 @@
             WinApi.NativeHelper.MoveWindowToVisibleScreenArea(Handle);
         }
 
+        private void SettingsForm_Shown(object sender, EventArgs e) =>
+            Opacity = 1d;
+
         private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (Settings.Window.HighlightInstalled != highlightInstalledCheck.Checked)
