@@ -1,6 +1,6 @@
-[![Release](https://www.si13n7.de/Downloads/.shields/releases/port-able-suite.svg)](https://github.com/Port-Able/Port-Able-Suite/releases/latest) [![License](https://www.si13n7.de/Downloads/.shields/licenses/gnu_gpl_v3.0.svg)](https://github.com/Port-Able/Port-Able-Suite/blob/master/LICENSE.txt)
+[![Release](https://assets.si13n7.de/images/shields/releases/port-able-suite.svg)](https://github.com/Port-Able/Port-Able-Suite/releases/latest) [![License](https://assets.si13n7.de/images/shields/licenses/gnu_gpl_v3.0.svg)](https://github.com/Port-Able/Port-Able-Suite/blob/master/LICENSE.txt)
 
-# [Port-Able Suite](http://port-able.si13n7.com)
+# [Port-Able Suite](https://dl.si13n7.de/Port-Able/)
 
 The Port-Able Suite helps you manage a collection of portable apps. It lets you easily download new apps, automatically searches for app updates, and more.
 
