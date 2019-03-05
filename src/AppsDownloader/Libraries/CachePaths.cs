@@ -5,7 +5,7 @@
 
     internal static class CachePaths
     {
-        private static string _appImages, _appImagesLarge, _appInfo, _settingsMerges, _swData;
+        private static string _appImages, _appImagesLarge, _appInfo, _settingsMerges, _swData, _swDataKey;
 
         internal static string AppImages
         {
@@ -54,6 +54,16 @@
                 if (_swData == default(string))
                     _swData = Path.Combine(CorePaths.TempDir, "SwData.dat");
                 return _swData;
+            }
+        }
+
+        internal static string SwDataKey
+        {
+            get
+            {
+                if (_swDataKey == default(string))
+                    _swDataKey = Path.Combine(CorePaths.TempDir, "SwData.key");
+                return _swDataKey;
             }
         }
     }
