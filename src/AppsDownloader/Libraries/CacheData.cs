@@ -11,12 +11,14 @@
     using LangResources;
     using Properties;
     using SilDev;
+    using SilDev.Investment;
 
     internal static class CacheData
     {
         private static Dictionary<string, Image> _appImages, _appImagesLarge;
         private static List<AppData> _appInfo;
         private static List<string> _settingsMerges;
+        private static byte[] _swDataKey;
         private static readonly List<Tuple<ResourcesEx.IconIndex, bool, Icon>> Icons = new List<Tuple<ResourcesEx.IconIndex, bool, Icon>>();
         private static readonly List<Tuple<ResourcesEx.IconIndex, bool, Image>> Images = new List<Tuple<ResourcesEx.IconIndex, bool, Image>>();
 
@@ -71,6 +73,24 @@
                 if (_settingsMerges == default(List<string>))
                     _settingsMerges = new List<string>();
                 return _settingsMerges;
+            }
+        }
+
+        internal static byte[] SwDataKey
+        {
+            get
+            {
+                if (_swDataKey != default(byte[]))
+                    return _swDataKey;
+                if (File.Exists(CachePaths.SwDataKey))
+                    _swDataKey = FileEx.ReadAllBytes(CachePaths.SwDataKey);
+                if (_swDataKey?.Any() == true)
+                    return _swDataKey;
+                var random = new RandomInvestor();
+                _swDataKey = new byte[4096];
+                random.GetGenerator().NextBytes(_swDataKey);
+                FileEx.WriteAllBytes(CachePaths.SwDataKey, _swDataKey);
+                return _swDataKey;
             }
         }
 
@@ -249,7 +269,7 @@
                 var appInfo = NetEx.Transfer.DownloadString(url, usr, pwd);
                 if (string.IsNullOrWhiteSpace(appInfo))
                     continue;
-                UpdateAppInfoData(appInfo, null, key.Decode(BinaryToTextEncodings.Base91));
+                UpdateAppInfoData(appInfo, null, key.Decode(BinaryToTextEncodings.Base85));
             }
         }
 
