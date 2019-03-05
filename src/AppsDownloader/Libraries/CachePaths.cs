@@ -52,7 +52,7 @@
             get
             {
                 if (_swData == default(string))
-                    _swData = Path.Combine(CorePaths.TempDir, nameof(SwData), Settings.MachineId, "SwData.dat");
+                    _swData = Path.Combine(CorePaths.TempDir, "SwData.dat");
                 return _swData;
             }
         }
