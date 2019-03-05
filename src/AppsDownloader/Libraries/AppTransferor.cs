@@ -70,9 +70,10 @@
                             if (AppData.ServerKey != default(byte[]))
                                 foreach (var srv in Shareware.GetAddresses())
                                 {
-                                    if (Shareware.FindAddressKey(srv) != AppData.ServerKey.Encode(BinaryToTextEncodings.Base91))
+                                    if (Shareware.FindAddressKey(srv) != AppData.ServerKey.Encode(BinaryToTextEncodings.Base85))
                                         continue;
-                                    srcUrl = PathEx.AltCombine(srv, srcUrl);
+                                    if (!srcUrl.StartsWithEx("http://", "https://"))
+                                        srcUrl = PathEx.AltCombine(srv, srcUrl);
                                     UserData = Tuple.Create(Shareware.GetUser(srv), Shareware.GetPassword(srv));
                                     break;
                                 }

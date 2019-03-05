@@ -425,7 +425,7 @@ You must free up at least {1} more space.</value>
     <comment>CheckBox</comment>
   </data>
   <data name="SourceManagerForm" xml:space="preserve">
-    <value>App Sources Manager (BETA)</value>
+    <value>App Sources Manager</value>
     <comment>Form</comment>
   </data>
   <data name="startBtn" xml:space="preserve">

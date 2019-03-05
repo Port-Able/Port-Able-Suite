@@ -34,13 +34,13 @@
                 if (string.IsNullOrWhiteSpace(srv))
                     continue;
                 var i = srcMngDataGridView.Rows.Add();
-                srcMngDataGridView.Rows[i].Cells["Address"].Value = srv;
+                srcMngDataGridView.Rows[i].Cells[nameof(Address)].Value = srv;
                 var usr = Shareware.GetUser(srv);
                 if (!string.IsNullOrWhiteSpace(srv))
-                    srcMngDataGridView.Rows[i].Cells["User"].Value = usr;
+                    srcMngDataGridView.Rows[i].Cells[nameof(User)].Value = usr;
                 var pwd = Shareware.GetPassword(srv);
                 if (!string.IsNullOrWhiteSpace(pwd))
-                    srcMngDataGridView.Rows[i].Cells["Password"].Value = pwd;
+                    srcMngDataGridView.Rows[i].Cells[nameof(Password)].Value = pwd;
             }
         }
 
@@ -49,13 +49,13 @@
             var srcData = new Dictionary<string, Tuple<string, string>>();
             foreach (var row in srcMngDataGridView.Rows.Cast<DataGridViewRow>())
             {
-                if (!(row.Cells["Address"].Value is string srv) || !srv.StartsWithEx("http://", "https://") || srv.Count(c => c == '.') < 1)
+                if (!(row.Cells[nameof(Address)].Value is string srv) || !srv.StartsWithEx("http://", "https://") || srv.Count(c => c == '.') < 1)
                     continue;
                 srv = Shareware.Encrypt(srv);
-                var usr = row.Cells["User"].Value as string ?? string.Empty;
+                var usr = row.Cells[nameof(User)].Value as string ?? string.Empty;
                 if (!string.IsNullOrEmpty(usr))
                     usr = Shareware.Encrypt(usr);
-                var pwd = row.Cells["Password"].Value as string ?? string.Empty;
+                var pwd = row.Cells[nameof(Password)].Value as string ?? string.Empty;
                 if (!string.IsNullOrEmpty(pwd))
                     pwd = Shareware.Encrypt(pwd);
                 srcData[srv] = Tuple.Create(usr, pwd);

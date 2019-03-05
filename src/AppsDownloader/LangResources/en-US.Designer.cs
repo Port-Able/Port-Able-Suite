@@ -723,7 +723,7 @@ namespace AppsDownloader.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to App Sources Manager (BETA).
+        ///   Looks up a localized string similar to App Sources Manager.
         /// </summary>
         internal static string SourceManagerForm {
             get {

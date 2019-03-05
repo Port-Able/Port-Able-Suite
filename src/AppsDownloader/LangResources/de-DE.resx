@@ -425,7 +425,7 @@ Es muss mindestens {1} mehr Speicherplatz freigeben werden.</value>
     <comment>CheckBox</comment>
   </data>
   <data name="SourceManagerForm" xml:space="preserve">
-    <value>App Quellen Manager (BETA)</value>
+    <value>App Quellen Manager</value>
     <comment>Form</comment>
   </data>
   <data name="startBtn" xml:space="preserve">

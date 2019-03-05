@@ -502,7 +502,7 @@ namespace AppsDownloader.Windows
                     if (appData.ServerKey != null)
                         foreach (var srv in Shareware.GetAddresses())
                         {
-                            if (Shareware.FindAddressKey(srv) != appData.ServerKey.Encode(BinaryToTextEncodings.Base91))
+                            if (Shareware.FindAddressKey(srv) != appData.ServerKey.Encode(BinaryToTextEncodings.Base85))
                                 continue;
                             src = NetEx.GetFullHost(srv);
                             break;
