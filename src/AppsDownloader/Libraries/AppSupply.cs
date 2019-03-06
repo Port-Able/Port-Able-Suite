@@ -170,6 +170,7 @@
                 {
                     var mirrors = new[]
                     {
+                        // IPv4
                         "http://downloads.portableapps.com",
                         "http://downloads2.portableapps.com",
                         "http://portableapps.com"
@@ -216,24 +217,26 @@
                     break;
                 }
 
-                // Internal - port-a.de
+                // Internal - port-a.de | p-able.de
                 default:
                 {
+                    // IPv4 + IPv6
                     var mirrors = new[]
                     {
-                        // IPv4 + IPv6
-                        "http://dl.0.port-a.de",
-                        "http://dl.1.port-a.de",
-                        "http://dl-0.de",
-                        "http://dl-1.de",
-                        "http://dl.2.port-a.de",
-                        "http://dl.3.port-a.de",
-                        "http://dl-2.de",
-                        "http://dl-3.de",
-                        "http://dl.4.port-a.de",
-                        "http://dl.5.port-a.de",
-                        "http://dl-4.de",
-                        "http://dl-5.de"
+                        "https://port-a.de",
+                        "https://p-able.de",
+
+                        // Backup
+                        "https://dl.si13n7.de/Port-Able",
+                        "https://dl.si13n7.com/Port-Able",
+
+                        // Reserved
+                        "http://dl-0.de/Port-Able",
+                        "http://dl-1.de/Port-Able",
+                        "http://dl-2.de/Port-Able",
+                        "http://dl-3.de/Port-Able",
+                        "http://dl-4.de/Port-Able",
+                        "http://dl-5.de/Port-Able"
                     };
                     _mirrors[supplier].AddRange(mirrors);
                     break;
