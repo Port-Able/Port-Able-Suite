@@ -49,6 +49,12 @@
   <PropertyGroup>
     <ApplicationManifest>app64.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\..\.helper\SilDev.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="SilDev.CSharpLib64">
@@ -154,6 +160,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Resources\NsisData.dat" />
+    <None Include="..\..\..\.helper\SilDev.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

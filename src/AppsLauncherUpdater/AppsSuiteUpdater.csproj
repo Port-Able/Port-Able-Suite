@@ -43,6 +43,12 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\..\.helper\SilDev.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="SilDev.CSharpLib">
       <SpecificVersion>False</SpecificVersion>
@@ -103,6 +109,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.manifest" />
+    <None Include="..\..\..\.helper\SilDev.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
