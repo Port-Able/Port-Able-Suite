@@ -10,13 +10,13 @@ using System.Runtime.InteropServices;
 #endif
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Si13n7 Dev. ®")]
-[assembly: AssemblyCopyright("Copyright © Si13n7 Dev. ® 2019")]
-[assembly: AssemblyTrademark("Si13n7 Dev. ®")]
+[assembly: AssemblyCompany("Si13n7 Dev.™")]
+[assembly: AssemblyCopyright("Copyright © Si13n7 Dev.™ 2019")]
+[assembly: AssemblyTrademark("Si13n7 Dev.™")]
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
 
 [assembly: Guid("ee806ac7-2a8b-4d79-8634-adbdbba0aebf")]
 
-[assembly: AssemblyVersion("19.3.6.0")]
+[assembly: AssemblyVersion("19.3.7.0")]
