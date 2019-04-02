@@ -82,6 +82,7 @@
     <Compile Include="Libraries\CorePaths.cs" />
     <Compile Include="Libraries\Network.cs" />
     <Compile Include="Libraries\Shareware.cs" />
+    <Compile Include="Libraries\UserAgents.cs" />
     <Compile Include="Windows\SourceManagerForm.cs">
       <SubType>Form</SubType>
     </Compile>

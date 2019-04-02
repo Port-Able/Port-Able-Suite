@@ -76,6 +76,7 @@
     </Compile>
     <Compile Include="Libraries\ActionGuid.cs" />
     <Compile Include="Libraries\CachePaths.cs" />
+    <Compile Include="Libraries\UserAgents.cs" />
     <Compile Include="Libraries\CorePaths.cs" />
     <Compile Include="Libraries\Network.cs" />
     <Compile Include="Libraries\Settings.cs" />
