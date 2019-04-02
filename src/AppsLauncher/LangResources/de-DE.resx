@@ -193,8 +193,20 @@ Verbesserungsvorschläge sind auch sehr willkommen!</value>
     <value>Die Verknüpfung konnte nicht erstellt werden.</value>
     <comment>Message</comment>
   </data>
+  <data name="appMenuItem4Msg2" xml:space="preserve">
+    <value>Die Verknüpfung wurde erfolgreich entfernt.</value>
+    <comment>Message</comment>
+  </data>
+  <data name="appMenuItem4Msg3" xml:space="preserve">
+    <value>Die Verknüpfung konnte nicht entfernt werden.</value>
+    <comment>Message</comment>
+  </data>
   <data name="appMenuItem5" xml:space="preserve">
     <value>An Taskleiste anheften</value>
+    <comment>ContextMenuItem</comment>
+  </data>
+  <data name="appMenuItem5b" xml:space="preserve">
+    <value>Von Taskleiste lösen</value>
     <comment>ContextMenuItem</comment>
   </data>
   <data name="appMenuItem6" xml:space="preserve">

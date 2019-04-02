@@ -222,11 +222,38 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Die Verknüpfung wurde erfolgreich entfernt..
+        /// </summary>
+        internal static string appMenuItem4Msg2 {
+            get {
+                return ResourceManager.GetString("appMenuItem4Msg2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Die Verknüpfung konnte nicht entfernt werden..
+        /// </summary>
+        internal static string appMenuItem4Msg3 {
+            get {
+                return ResourceManager.GetString("appMenuItem4Msg3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An Taskleiste anheften.
         /// </summary>
         internal static string appMenuItem5 {
             get {
                 return ResourceManager.GetString("appMenuItem5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Von Taskleiste lösen.
+        /// </summary>
+        internal static string appMenuItem5b {
+            get {
+                return ResourceManager.GetString("appMenuItem5b", resourceCulture);
             }
         }
         

@@ -222,11 +222,38 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Shortcut successfully removed..
+        /// </summary>
+        internal static string appMenuItem4Msg2 {
+            get {
+                return ResourceManager.GetString("appMenuItem4Msg2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shortcut could not be removed..
+        /// </summary>
+        internal static string appMenuItem4Msg3 {
+            get {
+                return ResourceManager.GetString("appMenuItem4Msg3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pin to taskbar.
         /// </summary>
         internal static string appMenuItem5 {
             get {
                 return ResourceManager.GetString("appMenuItem5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unpin from taskbar.
+        /// </summary>
+        internal static string appMenuItem5b {
+            get {
+                return ResourceManager.GetString("appMenuItem5b", resourceCulture);
             }
         }
         

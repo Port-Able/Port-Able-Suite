@@ -518,8 +518,26 @@ namespace AppsLauncher.Windows
                 owner.LabelEdit = false;
         }
 
-        private void AppMenu_Opening(object sender, CancelEventArgs e) =>
+        private void AppMenu_Opening(object sender, CancelEventArgs e)
+        {
             e.Cancel = appsListView.SelectedItems.Count == 0;
+            if (e.Cancel)
+                return;
+            var selectedItem = appsListView.SelectedItems.Cast<ListViewItem>().FirstOrDefault();
+            if (selectedItem == default(ListViewItem))
+                return;
+            var appData = CacheData.FindAppData(selectedItem.Text);
+            if (appData == default(LocalAppData))
+                return;
+            if (TaskBar.IsPinned(appData.FilePath))
+            {
+                appMenuItem5.Text = Language.GetText(nameof(en_US.appMenuItem5b));
+                appMenuItem5.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Unpin);
+                return;
+            }
+            appMenuItem5.Text = Language.GetText(nameof(en_US.appMenuItem5));
+            appMenuItem5.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Pin);
+        }
 
         private void AppMenuItem_Click(object sender, EventArgs e)
         {
@@ -562,9 +580,20 @@ namespace AppsLauncher.Windows
                 }
                 case nameof(appMenuItem5):
                 {
-                    var pinned = TaskBar.Pin(appData.FilePath);
+                    bool applied;
+                    string message;
+                    if (TaskBar.IsPinned(appData.FilePath))
+                    {
+                        applied = TaskBar.Unpin(appData.FilePath);
+                        message = Language.GetText(applied ? nameof(en_US.appMenuItem4Msg2) : nameof(en_US.appMenuItem4Msg3));
+                    }
+                    else
+                    {
+                        applied = TaskBar.Pin(appData.FilePath);
+                        message = Language.GetText(applied ? nameof(en_US.appMenuItem4Msg0) : nameof(en_US.appMenuItem4Msg1));
+                    }
                     MessageBoxEx.CenterMousePointer = !ClientRectangle.Contains(PointToClient(MousePosition));
-                    MessageBoxEx.Show(this, Language.GetText(pinned ? nameof(en_US.appMenuItem4Msg0) : nameof(en_US.appMenuItem4Msg1)), Settings.Title, MessageBoxButtons.OK, pinned ? MessageBoxIcon.Asterisk : MessageBoxIcon.Warning);
+                    MessageBoxEx.Show(this, message, Settings.Title, MessageBoxButtons.OK, applied ? MessageBoxIcon.Asterisk : MessageBoxIcon.Warning);
                     break;
                 }
                 case nameof(appMenuItem6):
