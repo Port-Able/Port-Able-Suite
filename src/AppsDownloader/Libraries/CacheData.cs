@@ -142,11 +142,11 @@
                 var link = PathEx.AltCombine(mirror, ".free", fileName);
                 if (Log.DebugMode > 0)
                     Log.Write($"Cache: Looking for '{link}'.");
-                if (!NetEx.FileIsAvailable(link, 30000))
+                if (!NetEx.FileIsAvailable(link, 30000, UserAgents.Internal))
                     continue;
-                if (!((NetEx.GetFileDate(link) - fileDate).TotalSeconds > 0d))
+                if (!((NetEx.GetFileDate(link, 30000, UserAgents.Internal) - fileDate).TotalSeconds > 0d))
                     break;
-                NetEx.Transfer.DownloadFile(link, filePath, 60000, null, false);
+                NetEx.Transfer.DownloadFile(link, filePath, 60000, UserAgents.Internal, false);
                 if (!File.Exists(filePath))
                     continue;
                 File.SetLastWriteTime(filePath, DateTime.Now);
@@ -197,8 +197,8 @@
                 var link = PathEx.AltCombine(mirror, ".free", "AppInfo.ini");
                 if (Log.DebugMode > 0)
                     Log.Write($"Cache: Looking for '{link}'.");
-                if (NetEx.FileIsAvailable(link, 30000))
-                    NetEx.Transfer.DownloadFile(link, CachePaths.AppInfo, 60000, null, false);
+                if (NetEx.FileIsAvailable(link, 30000, UserAgents.Internal))
+                    NetEx.Transfer.DownloadFile(link, CachePaths.AppInfo, 60000, UserAgents.Internal, false);
                 if (!File.Exists(CachePaths.AppInfo))
                     continue;
                 break;
@@ -220,8 +220,8 @@
                 var link = PathEx.AltCombine(mirror, ".free", "AppInfo.7z");
                 if (Log.DebugMode > 0)
                     Log.Write($"Cache: Looking for '{link}'.");
-                if (NetEx.FileIsAvailable(link, 30000))
-                    NetEx.Transfer.DownloadFile(link, tmpZip, 60000, null, false);
+                if (NetEx.FileIsAvailable(link, 30000, UserAgents.Internal))
+                    NetEx.Transfer.DownloadFile(link, tmpZip, 60000, UserAgents.Internal, false);
                 if (!File.Exists(tmpZip))
                     continue;
                 break;
@@ -231,8 +231,8 @@
                 var link = PathEx.AltCombine(AppSupplierHosts.PortableApps, "updater", "update.7z");
                 if (Log.DebugMode > 0)
                     Log.Write($"Cache: Looking for '{link}'.");
-                if (NetEx.FileIsAvailable(link, 60000))
-                    NetEx.Transfer.DownloadFile(link, tmpZip, 60000, null, false);
+                if (NetEx.FileIsAvailable(link, 60000, UserAgents.Empty))
+                    NetEx.Transfer.DownloadFile(link, tmpZip, 60000, UserAgents.Empty, false);
             }
             if (File.Exists(tmpZip))
             {
@@ -264,9 +264,9 @@
                 var url = PathEx.AltCombine(srv, "AppInfo.ini");
                 if (Log.DebugMode > 0)
                     Log.Write($"Shareware: Looking for '{{{key.Encode()}}}/AppInfo.ini'.");
-                if (!NetEx.FileIsAvailable(url, usr, pwd, 60000))
+                if (!NetEx.FileIsAvailable(url, usr, pwd, 60000, UserAgents.Default))
                     continue;
-                var appInfo = NetEx.Transfer.DownloadString(url, usr, pwd);
+                var appInfo = NetEx.Transfer.DownloadString(url, usr, pwd, 60000, UserAgents.Default);
                 if (string.IsNullOrWhiteSpace(appInfo))
                     continue;
                 UpdateAppInfoData(appInfo, null, key.Decode(BinaryToTextEncodings.Base85));

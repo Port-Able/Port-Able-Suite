@@ -58,9 +58,9 @@ namespace Updater.Windows
                     var path = PathEx.AltCombine(mirror, "ChangeLog.txt");
                     if (string.IsNullOrWhiteSpace(path))
                         continue;
-                    if (!NetEx.FileIsAvailable(path, 60000))
+                    if (!NetEx.FileIsAvailable(path, 60000, UserAgents.Internal))
                         continue;
-                    changes = NetEx.Transfer.DownloadString(path);
+                    changes = NetEx.Transfer.DownloadString(path, 60000, UserAgents.Internal);
                     if (!string.IsNullOrWhiteSpace(changes))
                         break;
                 }
@@ -70,7 +70,7 @@ namespace Updater.Windows
             else
                 try
                 {
-                    var atom = NetEx.Transfer.DownloadString(CorePaths.RepoCommitsUrl);
+                    var atom = NetEx.Transfer.DownloadString(CorePaths.RepoCommitsUrl, 60000, UserAgents.Default);
                     if (string.IsNullOrEmpty(atom))
                         throw new ArgumentNullException(nameof(atom));
                     const string nspace = "{http://www.w3.org/2005/Atom}";
@@ -200,18 +200,18 @@ namespace Updater.Windows
                 try
                 {
                     var path = PathEx.AltCombine(mirror, "Last.ini");
-                    if (!NetEx.FileIsAvailable(path, 60000))
+                    if (!NetEx.FileIsAvailable(path, 60000, UserAgents.Internal))
                         throw new PathNotFoundException(path);
-                    var data = NetEx.Transfer.DownloadString(path);
+                    var data = NetEx.Transfer.DownloadString(path, 60000, UserAgents.Internal);
                     if (string.IsNullOrWhiteSpace(data))
                         throw new ArgumentNullException(nameof(data));
                     var lastStamp = Ini.ReadOnly("Info", "LastStamp", data);
                     if (string.IsNullOrWhiteSpace(lastStamp))
                         throw new ArgumentNullException(nameof(lastStamp));
                     path = PathEx.AltCombine(mirror, $"{lastStamp}.ini");
-                    if (!NetEx.FileIsAvailable(path, 60000))
+                    if (!NetEx.FileIsAvailable(path, 60000, UserAgents.Internal))
                         throw new PathNotFoundException(path);
-                    data = NetEx.Transfer.DownloadString(path);
+                    data = NetEx.Transfer.DownloadString(path, 60000, UserAgents.Internal);
                     if (string.IsNullOrWhiteSpace(data))
                         throw new ArgumentNullException(nameof(data));
                     HashInfo = data;
@@ -389,7 +389,7 @@ namespace Updater.Windows
                 try
                 {
                     downloadPath = PathEx.AltCombine(CorePaths.RepoSnapshotsUrl, $"{LastStamp}.7z");
-                    if (!NetEx.FileIsAvailable(downloadPath, 60000))
+                    if (!NetEx.FileIsAvailable(downloadPath, 60000, UserAgents.Default))
                         throw new PathNotFoundException(downloadPath);
                 }
                 catch (Exception ex)
@@ -405,7 +405,7 @@ namespace Updater.Windows
                     foreach (var mirror in DownloadMirrors)
                     {
                         downloadPath = PathEx.AltCombine(mirror, $"{LastFinalStamp}.7z");
-                        exist = NetEx.FileIsAvailable(downloadPath, 60000);
+                        exist = NetEx.FileIsAvailable(downloadPath, 60000, UserAgents.Internal);
                         if (exist)
                             break;
                     }
@@ -422,7 +422,7 @@ namespace Updater.Windows
                 return;
             try
             {
-                Transferor.DownloadFile(downloadPath, CachePaths.UpdatePath);
+                Transferor.DownloadFile(downloadPath, CachePaths.UpdatePath, 60000, !string.IsNullOrWhiteSpace(LastStamp) ? UserAgents.Default : UserAgents.Internal);
                 checkDownload.Enabled = true;
             }
             catch (Exception ex)

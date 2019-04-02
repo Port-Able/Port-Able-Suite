@@ -18,7 +18,7 @@
         {
             AppData = appData;
             DestPath = default(string);
-            SrcData = new List<Tuple<string, string, bool>>();
+            SrcData = new List<Tuple<string, string, string, bool>>();
             UserData = Tuple.Create(default(string), default(string));
 
             var downloadCollection = AppData.DownloadCollection;
@@ -53,19 +53,24 @@
 
                     var shortHost = NetEx.GetShortHost(tuple.Item1);
                     var redirect = Settings.ForceTransferRedirection || !NetEx.IPv4IsAvalaible && !string.IsNullOrWhiteSpace(shortHost) && !shortHost.EqualsEx(AppSupplierHosts.Internal);
+                    string userAgent;
                     List<string> mirrors;
                     switch (shortHost)
                     {
                         case AppSupplierHosts.Internal:
+                            userAgent = UserAgents.Internal;
                             mirrors = AppSupply.GetMirrors(AppSuppliers.Internal);
                             break;
                         case AppSupplierHosts.PortableApps:
+                            userAgent = UserAgents.Empty;
                             mirrors = AppSupply.GetMirrors(AppSuppliers.PortableApps);
                             break;
                         case AppSupplierHosts.SourceForge:
+                            userAgent = UserAgents.Default;
                             mirrors = AppSupply.GetMirrors(AppSuppliers.SourceForge);
                             break;
                         default:
+                            userAgent = UserAgents.Default;
                             var srcUrl = tuple.Item1;
                             if (AppData.ServerKey != default(byte[]))
                                 foreach (var srv in Shareware.GetAddresses())
@@ -77,7 +82,7 @@
                                     UserData = Tuple.Create(Shareware.GetUser(srv), Shareware.GetPassword(srv));
                                     break;
                                 }
-                            SrcData.Add(Tuple.Create(srcUrl, tuple.Item2, false));
+                            SrcData.Add(Tuple.Create(srcUrl, tuple.Item2, userAgent, false));
                             continue;
                     }
 
@@ -91,8 +96,11 @@
                         if (SrcData.Any(x => x.Item1.EqualsEx(srcUrl)))
                             continue;
                         if (redirect)
+                        {
+                            userAgent = UserAgents.Internal;
                             srcUrl = CorePaths.RedirectUrl + srcUrl.Encode();
-                        SrcData.Add(Tuple.Create(srcUrl, tuple.Item2, false));
+                        }
+                        SrcData.Add(Tuple.Create(srcUrl, tuple.Item2, userAgent, false));
                         if (Log.DebugMode > 1)
                             Log.Write($"Transfer: '{srcUrl}' has been added.");
                     }
@@ -106,7 +114,7 @@
 
         public string DestPath { get; }
 
-        public List<Tuple<string, string, bool>> SrcData { get; }
+        public List<Tuple<string, string, string, bool>> SrcData { get; }
 
         public NetEx.AsyncTransfer Transfer { get; }
 
@@ -130,18 +138,16 @@
             for (var i = 0; i < SrcData.Count; i++)
             {
                 var data = SrcData[i];
-                if (data.Item3)
+                if (data.Item4)
                     continue;
-
                 if (!FileEx.Delete(DestPath))
                     throw new InvalidOperationException();
 
-                SrcData[i] = Tuple.Create(data.Item1, data.Item2, true);
-
-                var userAgent = default(string);
-                if (!NetEx.FileIsAvailable(data.Item1, UserData.Item1, UserData.Item2, 60000))
+                SrcData[i] = Tuple.Create(data.Item1, data.Item2, data.Item3, true);
+                var userAgent = data.Item3;
+                if (!NetEx.FileIsAvailable(data.Item1, UserData.Item1, UserData.Item2, 60000, userAgent))
                 {
-                    userAgent = "Mozilla/5.0";
+                    userAgent = UserAgents.WindowsChrome;
                     if (!NetEx.FileIsAvailable(data.Item1, UserData.Item1, UserData.Item2, 60000, userAgent))
                     {
                         if (Log.DebugMode > 0)
@@ -149,8 +155,8 @@
                         continue;
                     }
                 }
-                if (Log.DebugMode > 1)
-                    Log.Write($"Transfer{(userAgent != default(string) ? $" ({userAgent})" : string.Empty)}: '{data.Item1}' has been found.");
+                if (Log.DebugMode > 0)
+                    Log.Write($"Transfer{(!string.IsNullOrEmpty(userAgent) ? $" [{userAgent}]" : string.Empty)}: '{data.Item1}' has been found.");
 
                 Transfer.DownloadFile(data.Item1, DestPath, UserData.Item1, UserData.Item2, true, 60000, userAgent, false);
                 DownloadStarted = true;
@@ -167,7 +173,7 @@
             var fileHash = default(string);
             foreach (var data in SrcData)
             {
-                if (!data.Item3)
+                if (!data.Item4)
                     continue;
 
                 if (fileHash == default(string) || fileHash == nonHash)
