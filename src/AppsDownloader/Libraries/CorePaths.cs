@@ -1,5 +1,6 @@
 ﻿namespace AppsDownloader.Libraries
 {
+    using System;
     using System.IO;
     using SilDev;
 
@@ -8,15 +9,8 @@
         private static string[] _appDirs;
         private static string _appsDir, _appImages, _appImagesLarge, _appsLauncher, _appsSuiteUpdater, _fileArchiver, _homeDir, _redirectUrl, _tempDir, _transferDir;
 
-        internal static string AppsDir
-        {
-            get
-            {
-                if (_appsDir == default(string))
-                    _appsDir = Path.Combine(HomeDir, "Apps");
-                return _appsDir;
-            }
-        }
+        internal static string AppsDir =>
+            _appsDir ?? (_appsDir = Path.Combine(HomeDir, "Apps"));
 
         internal static string[] AppDirs
         {
@@ -35,91 +29,44 @@
             }
         }
 
-        internal static string AppImages
-        {
-            get
-            {
-                if (_appImages == default(string))
-                    _appImages = Path.Combine(HomeDir, "Assets\\AppImages.dat");
-                return _appImages;
-            }
-        }
+        internal static string AppImages =>
+            _appImages ?? (_appImages = Path.Combine(HomeDir, "Assets\\AppImages.dat"));
 
-        internal static string AppImagesLarge
-        {
-            get
-            {
-                if (_appImagesLarge == default(string))
-                    _appImagesLarge = Path.Combine(HomeDir, "Assets\\AppImagesLarge.dat");
-                return _appImagesLarge;
-            }
-        }
+        internal static string AppImagesLarge =>
+            _appImagesLarge ?? (_appImagesLarge = Path.Combine(HomeDir, "Assets\\AppImagesLarge.dat"));
 
-        internal static string AppsLauncher
-        {
-            get
-            {
-                if (_appsLauncher == default(string))
-#if x86
-                    _appsLauncher = Path.Combine(HomeDir, "AppsLauncher.exe");
-#else
-                    _appsLauncher = Path.Combine(HomeDir, "AppsLauncher64.exe");
-#endif
-                return _appsLauncher;
-            }
-        }
+        internal static string AppsLauncher =>
+            _appsLauncher ?? (_appsLauncher = Path.Combine(HomeDir, "AppsLauncher.exe"));
 
-        internal static string AppsSuiteUpdater
-        {
-            get
-            {
-                if (_appsSuiteUpdater == default(string))
-                    _appsSuiteUpdater = PathEx.Combine(PathEx.LocalDir, "Updater.exe");
-                return _appsSuiteUpdater;
-            }
-        }
+        internal static string AppsSuiteUpdater =>
+            _appsSuiteUpdater ?? (_appsSuiteUpdater = PathEx.Combine(PathEx.LocalDir, "Updater.exe"));
 
         internal static string FileArchiver
         {
             get
             {
-                if (_fileArchiver != default(string))
+                if (_fileArchiver != default)
                     return _fileArchiver;
-#if x86
-                Compaction.SevenZipHelper.Location = PathEx.Combine(PathEx.LocalDir, "Helper\\7z");
-#else
-                Compaction.SevenZipHelper.Location = PathEx.Combine(PathEx.LocalDir, "Helper\\7z\\x64");
-#endif
+                var path = PathEx.Combine(PathEx.LocalDir, "Helper\\7z");
+                if (Environment.Is64BitProcess)
+                    path = Path.Combine(path, "x64");
+                Compaction.SevenZipHelper.Location = path;
                 _fileArchiver = Compaction.SevenZipHelper.FilePath;
                 return _fileArchiver;
             }
         }
 
-        internal static string HomeDir
-        {
-            get
-            {
-                if (_homeDir == default(string))
-                    _homeDir = PathEx.Combine(PathEx.LocalDir, "..");
-                return _homeDir;
-            }
-        }
+        internal static string HomeDir =>
+            _homeDir ?? (_homeDir = PathEx.Combine(PathEx.LocalDir, ".."));
 
-        internal static string RedirectUrl
-        {
-            get
-            {
-                if (_redirectUrl == default(string))
-                    _redirectUrl = "https://transfer.0-9a-z.de/index.php?base=";
-                return _redirectUrl;
-            }
-        }
+        internal static string RedirectUrl =>
+            _redirectUrl ?? (_redirectUrl = "https://transfer.0-9a-z.de/index.php?base=");
 
         internal static string TempDir
         {
             get
             {
-                if (_tempDir != default(string))
+                if (_tempDir != default)
                     return _tempDir;
                 _tempDir = Path.Combine(HomeDir, "Documents\\.cache");
                 if (Directory.Exists(_tempDir))
@@ -137,14 +84,7 @@
             }
         }
 
-        internal static string TransferDir
-        {
-            get
-            {
-                if (_transferDir == default(string))
-                    _transferDir = Path.Combine(TempDir, "Transfer");
-                return _transferDir;
-            }
-        }
+        internal static string TransferDir =>
+            _transferDir ?? (_transferDir = Path.Combine(TempDir, "Transfer"));
     }
 }

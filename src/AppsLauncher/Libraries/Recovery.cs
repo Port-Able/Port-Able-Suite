@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Windows.Forms;
     using LangResources;
+    using Microsoft.Win32;
     using SilDev;
 
     internal static class Recovery
@@ -14,6 +15,9 @@
         {
             if (!Elevation.WritableLocation())
                 Elevation.RestartAsAdministrator();
+
+            VersionValidation();
+
             while (true)
             {
                 try
@@ -221,9 +225,41 @@
                         process.WaitForExit();
                 return;
             }
-            var envDir = EnvironmentEx.GetVariableValue(Settings.EnvironmentVariable);
-            if (!Settings.DeveloperVersion && !string.IsNullOrWhiteSpace(envDir) && !envDir.EqualsEx(PathEx.LocalDir))
+            if (!SystemIntegration.IsAccurate)
                 SystemIntegration.Enable(true, true);
+        }
+
+        internal static void VersionValidation()
+        {
+            if (Settings.DeveloperVersion || Settings.LastUpdateCheck == DateTime.MinValue || Settings.VersionValidation == AssemblyInfo.Version)
+                return;
+
+            Settings.VersionValidation = AssemblyInfo.Version;
+            Settings.WriteToFile();
+
+            RepairAppsSuiteDirs();
+
+            try
+            {
+                var subKeys = new[]
+                {
+                    "*",
+                    "Folder"
+                };
+                if (subKeys.Select(x => Path.Combine(x, "shell\\portableapps")).Any(varKey => Reg.SubKeyExists(Registry.ClassesRoot, varKey)))
+                    SystemIntegration.Enable(true, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            var path = PathEx.Combine(PathEx.LocalDir, "UpdateCompletion.bat");
+            if (File.Exists(path))
+                ProcessEx.Start(path);
+
+            Environment.ExitCode = 0;
+            Environment.Exit(Environment.ExitCode);
         }
     }
 }

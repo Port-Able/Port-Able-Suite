@@ -12,25 +12,11 @@
         private static string _language, _registryPath;
         private static int? _updateChannel;
 
-        internal static string Language
-        {
-            get
-            {
-                if (_language == default(string))
-                    _language = Ini.Read<string>(Section, nameof(Language), global::Language.SystemLang);
-                return _language;
-            }
-        }
+        internal static string Language => 
+            _language ?? (_language = Ini.Read<string>(Section, nameof(Language), global::Language.SystemLang));
 
-        internal static string RegistryPath
-        {
-            get
-            {
-                if (_registryPath == default(string))
-                    _registryPath = "HKCU\\Software\\Portable Apps Suite";
-                return _registryPath;
-            }
-        }
+        internal static string RegistryPath => 
+            _registryPath ?? (_registryPath = "HKCU\\Software\\Portable Apps Suite");
 
         internal static int ScreenDpi
         {

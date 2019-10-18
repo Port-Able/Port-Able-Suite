@@ -35,7 +35,6 @@ namespace AppsLauncher.Windows
             this.appMenuItemSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.appMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.appMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
-            this.appMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
             this.appMenuItemSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.appMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.appMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,7 +70,6 @@ namespace AppsLauncher.Windows
             this.appMenuItemSeparator1,
             this.appMenuItem3,
             this.appMenuItem4,
-            this.appMenuItem5,
             this.appMenuItemSeparator2,
             this.appMenuItem6,
             this.appMenuItem7,
@@ -81,7 +79,6 @@ namespace AppsLauncher.Windows
             this.appMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.appMenu.ShowItemToolTips = false;
             this.appMenu.Size = new System.Drawing.Size(212, 198);
-            this.appMenu.Opening += new System.ComponentModel.CancelEventHandler(this.AppMenu_Opening);
             // 
             // appMenuItem1
             // 
@@ -115,13 +112,6 @@ namespace AppsLauncher.Windows
             this.appMenuItem4.Size = new System.Drawing.Size(211, 22);
             this.appMenuItem4.Text = "Create a Desktop Shortcut";
             this.appMenuItem4.Click += new System.EventHandler(this.AppMenuItem_Click);
-            // 
-            // appMenuItem5
-            // 
-            this.appMenuItem5.Name = "appMenuItem5";
-            this.appMenuItem5.Size = new System.Drawing.Size(211, 22);
-            this.appMenuItem5.Text = "Pin to Taskbar";
-            this.appMenuItem5.Click += new System.EventHandler(this.AppMenuItem_Click);
             // 
             // appMenuItemSeparator2
             // 
@@ -398,7 +388,6 @@ namespace AppsLauncher.Windows
         private System.Windows.Forms.ToolStripSeparator appMenuItemSeparator1;
         private System.Windows.Forms.ToolStripMenuItem appMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem appMenuItem4;
-        private System.Windows.Forms.ToolStripMenuItem appMenuItem5;
         private System.Windows.Forms.ToolStripSeparator appMenuItemSeparator2;
         private System.Windows.Forms.ToolStripMenuItem appMenuItem6;
         private System.Windows.Forms.ToolStripMenuItem appMenuItem7;

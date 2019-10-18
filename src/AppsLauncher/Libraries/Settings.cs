@@ -12,16 +12,13 @@
     using SilDev;
     using SilDev.Drawing;
     using SilDev.QuickWmi;
+    using DrawingSize = System.Drawing.Size;
 
     internal static class Settings
     {
         internal const string EnvironmentVariable = "AppsSuiteDir";
         internal const string Section = "Launcher";
-#if x86
         internal const string Title = "Apps Launcher";
-#else
-        internal const string Title = "Apps Launcher (64-bit)";
-#endif
         private static string[] _appDirs;
         private static string _currentDirectory, _iconResourcePath, _language, _lastItem, _registryPath, _systemInstallId;
         private static bool? _startMenuIntegration;
@@ -53,12 +50,7 @@
 
         internal static string CurrentDirectory
         {
-            get
-            {
-                if (_currentDirectory == default(string))
-                    _currentDirectory = Ini.Read<string>(Section, nameof(CurrentDirectory));
-                return _currentDirectory;
-            }
+            get => _currentDirectory ?? (_currentDirectory = Ini.Read<string>(Section, nameof(CurrentDirectory)));
             set
             {
                 _currentDirectory = value;
@@ -73,7 +65,7 @@
         {
             get
             {
-                if (_iconResourcePath != default(string))
+                if (_iconResourcePath != default)
                     return _iconResourcePath;
                 _iconResourcePath = Ini.Read<string>(Section, nameof(IconResourcePath), "%system%");
                 return _iconResourcePath;
@@ -87,12 +79,7 @@
 
         internal static string Language
         {
-            get
-            {
-                if (_language == default(string))
-                    _language = Ini.Read<string>(Section, nameof(Language), global::Language.SystemLang);
-                return _language;
-            }
+            get => _language ?? (_language = Ini.Read<string>(Section, nameof(Language), global::Language.SystemLang));
             set
             {
                 _language = value;
@@ -102,12 +89,7 @@
 
         internal static string LastItem
         {
-            get
-            {
-                if (_lastItem == default(string))
-                    _lastItem = Ini.Read<string>(Section, nameof(LastItem));
-                return _lastItem;
-            }
+            get => _lastItem ?? (_lastItem = Ini.Read<string>(Section, nameof(LastItem)));
             set
             {
                 _lastItem = value;
@@ -115,15 +97,8 @@
             }
         }
 
-        internal static string RegistryPath
-        {
-            get
-            {
-                if (_registryPath == default(string))
-                    _registryPath = Path.Combine("HKCU\\Software\\Portable Apps Suite", PathEx.LocalPath.GetHashCode().ToString());
-                return _registryPath;
-            }
-        }
+        internal static string RegistryPath => 
+            _registryPath ?? (_registryPath = Path.Combine("HKCU\\Software\\Portable Apps Suite", PathEx.LocalPath.GetHashCode().ToString()));
 
         internal static int ScreenDpi
         {
@@ -155,15 +130,8 @@
             }
         }
 
-        internal static string SystemInstallId
-        {
-            get
-            {
-                if (_systemInstallId == default(string))
-                    _systemInstallId = (Win32_OperatingSystem.InstallDate?.ToString("F") ?? EnvironmentEx.MachineId.ToString()).Encrypt().Substring(24);
-                return _systemInstallId;
-            }
-        }
+        internal static string SystemInstallId => 
+            _systemInstallId ?? (_systemInstallId = (Win32_OperatingSystem.InstallDate?.ToString("F") ?? EnvironmentEx.MachineId.ToString()).Encrypt().Substring(24));
 
         internal static DateTime LastUpdateCheck
         {
@@ -203,6 +171,12 @@
             }
         }
 
+        internal static string VersionValidation
+        {
+            get => Ini.Read(Section, nameof(VersionValidation));
+            set => WriteValueDirect(Section, nameof(VersionValidation), value);
+        }
+
         internal static bool SkipUpdateSearch { get; set; }
 
         internal static bool WriteToFileInQueue { get; set; }
@@ -215,7 +189,7 @@
             if (!i.IsBetween(1, 9))
                 return;
             var lastCheck = LastUpdateCheck;
-            if (lastCheck != default(DateTime) &&
+            if (lastCheck != default &&
                 (i.IsBetween(1, 3) && (DateTime.Now - lastCheck).TotalHours < 1d ||
                  i.IsBetween(4, 6) && (DateTime.Now - lastCheck).TotalDays < 1d ||
                  i.IsBetween(7, 9) && (DateTime.Now - lastCheck).TotalDays < 30d))
@@ -262,19 +236,6 @@
 
         internal static void Initialize()
         {
-#if x86
-            if (Environment.Is64BitOperatingSystem)
-            {
-                var appsLauncher64 = Path.Combine(CorePaths.HomeDir, $"{ProcessEx.CurrentName}64.exe");
-                if (File.Exists(appsLauncher64))
-                {
-                    ProcessEx.Start(appsLauncher64, EnvironmentEx.CommandLine(false));
-                    Environment.ExitCode = 0;
-                    Environment.Exit(Environment.ExitCode);
-                }
-            }
-#endif
-
             Log.FileDir = Path.Combine(CorePaths.TempDir, "Logs");
 
             Ini.SetFile(PathEx.LocalDir, "Settings.ini");
@@ -295,7 +256,7 @@
 
             if (!CacheData.CurrentAppInfo.Any())
             {
-                using(var process = ProcessEx.Start(CorePaths.AppsDownloader, Elevation.IsAdministrator, false))
+                using (var process = ProcessEx.Start(CorePaths.AppsDownloader, Elevation.IsAdministrator, false))
                     if (process?.HasExited == false)
                         process.WaitForExit();
                 if (!CacheData.CurrentAppInfo.Any())
@@ -312,7 +273,7 @@
             Environment.Exit(Environment.ExitCode);
         }
 
-        internal static void WriteValue<TValue>(string section, string key, TValue value, TValue defValue = default(TValue), bool direct = false)
+        internal static void WriteValue<TValue>(string section, string key, TValue value, TValue defValue = default, bool direct = false)
         {
             CacheData.UpdateSettingsMerges(section);
             bool equals;
@@ -344,7 +305,7 @@
             WriteToFileInQueue = true;
         }
 
-        internal static void WriteValueDirect<TValue>(string section, string key, TValue value, TValue defValue = default(TValue)) =>
+        internal static void WriteValueDirect<TValue>(string section, string key, TValue value, TValue defValue = default) =>
             WriteValue(section, key, value, defValue, true);
 
         internal static void WriteToFile(bool forceMerge = false)
@@ -445,7 +406,7 @@
             {
                 get
                 {
-                    if (_animation != default(WinApi.AnimateWindowFlags))
+                    if (_animation != default)
                         return _animation;
                     if (FadeInEffect == FadeInEffectOptions.Blend)
                     {
@@ -518,7 +479,7 @@
                     var key = GetConfigKey(nameof(Window), nameof(CustomColors));
                     _customColors = FilterCostumColors(value);
                     var colors = _customColors?.Where(x => x != 0xffffff).ToArray();
-                    WriteValue(Section, key, colors?.Any() == true ? Json.Serialize(colors) : default(string));
+                    WriteValue(Section, key, colors?.Any() == true ? Json.Serialize(colors) : default);
                 }
             }
 
@@ -526,7 +487,7 @@
             {
                 get
                 {
-                    if (_defaultPosition != default(int))
+                    if (_defaultPosition != default)
                         return _defaultPosition;
                     var key = GetConfigKey(nameof(Window), nameof(DefaultPosition));
                     var value = Ini.Read(Section, key, default(int));
@@ -545,7 +506,7 @@
             {
                 get
                 {
-                    if (_fadeInDuration != default(int))
+                    if (_fadeInDuration != default)
                         return _fadeInDuration;
                     var key = GetConfigKey(nameof(Window), nameof(FadeInDuration));
                     var value = Ini.Read(Section, key, 100);
@@ -665,7 +626,7 @@
                 {
                     get
                     {
-                        if (_system != default(Color))
+                        if (_system != default)
                             return _system;
                         _system = WinApi.NativeHelper.GetSystemThemeColor();
                         if (_system != Color.Black && _system != Color.White)
@@ -691,7 +652,7 @@
                 {
                     get
                     {
-                        if (_base == default(Color))
+                        if (_base == default)
                             _base = GetColor(nameof(Base));
                         return _base;
                     }
@@ -712,7 +673,7 @@
                 {
                     get
                     {
-                        if (_baseText != default(Color))
+                        if (_baseText != default)
                             return _baseText;
                         if (BackgroundImage != default(Image))
                         {
@@ -728,7 +689,7 @@
                 {
                     get
                     {
-                        if (_control == default(Color))
+                        if (_control == default)
                             _control = GetColor(nameof(Control));
                         return _control;
                     }
@@ -743,7 +704,7 @@
                 {
                     get
                     {
-                        if (_controlText == default(Color))
+                        if (_controlText == default)
                             _controlText = GetColor(nameof(ControlText));
                         return _controlText;
                     }
@@ -758,7 +719,7 @@
                 {
                     get
                     {
-                        if (_button == default(Color))
+                        if (_button == default)
                             _button = GetColor(nameof(Button));
                         return _button;
                     }
@@ -773,7 +734,7 @@
                 {
                     get
                     {
-                        if (_buttonHover == default(Color))
+                        if (_buttonHover == default)
                             _buttonHover = GetColor(nameof(ButtonHover));
                         return _buttonHover;
                     }
@@ -788,7 +749,7 @@
                 {
                     get
                     {
-                        if (_buttonText == default(Color))
+                        if (_buttonText == default)
                             _buttonText = GetColor(nameof(ButtonText));
                         return _buttonText;
                     }
@@ -803,7 +764,7 @@
                 {
                     get
                     {
-                        if (_highlight == default(Color))
+                        if (_highlight == default)
                             _highlight = GetColor(nameof(Highlight));
                         return _highlight;
                     }
@@ -818,7 +779,7 @@
                 {
                     get
                     {
-                        if (_highlightText == default(Color))
+                        if (_highlightText == default)
                             _highlightText = GetColor(nameof(HighlightText));
                         return _highlightText;
                     }
@@ -879,24 +840,24 @@
             {
                 internal const int MinimumHeight = 320;
                 internal const int MinimumWidth = 346;
-                private static System.Drawing.Size _current, _maximum, _minimum;
+                private static DrawingSize _current, _maximum, _minimum;
                 private static int _width, _height;
 
-                internal static System.Drawing.Size Current
+                internal static DrawingSize Current
                 {
                     get
                     {
-                        if (_current == default(System.Drawing.Size))
-                            _current = new System.Drawing.Size(Width, Height);
+                        if (_current == default)
+                            _current = new DrawingSize(Width, Height);
                         return _current;
                     }
                 }
 
-                internal static System.Drawing.Size Maximum
+                internal static DrawingSize Maximum
                 {
                     get
                     {
-                        if (_maximum != default(System.Drawing.Size))
+                        if (_maximum != default)
                             return _maximum;
                         var curPos = WinApi.NativeHelper.GetCursorPos();
                         var screen = Screen.PrimaryScreen;
@@ -912,12 +873,12 @@
                     }
                 }
 
-                internal static System.Drawing.Size Minimum
+                internal static DrawingSize Minimum
                 {
                     get
                     {
-                        if (_minimum == default(System.Drawing.Size))
-                            _minimum = new System.Drawing.Size(MinimumWidth, MinimumHeight);
+                        if (_minimum == default)
+                            _minimum = new DrawingSize(MinimumWidth, MinimumHeight);
                         return _minimum;
                     }
                 }
@@ -932,7 +893,7 @@
                 {
                     get
                     {
-                        if (_width != default(int))
+                        if (_width != default)
                             return _width;
                         var key = GetConfigKey(nameof(Window), nameof(Size), nameof(Width));
                         var value = Ini.Read(Section, key, MinimumWidth);
@@ -943,7 +904,7 @@
                     {
                         var key = GetConfigKey(nameof(Window), nameof(Size), nameof(Width));
                         _width = ValidateValue(value, MinimumWidth, MaximumWidth);
-                        _current = default(System.Drawing.Size);
+                        _current = default;
                         WriteValue(Section, key, _width, MinimumWidth);
                     }
                 }
@@ -952,7 +913,7 @@
                 {
                     get
                     {
-                        if (_height != default(int))
+                        if (_height != default)
                             return _height;
                         var key = GetConfigKey(nameof(Window), nameof(Size), nameof(Height));
                         var value = Ini.Read(Section, key, MinimumHeight);
@@ -963,7 +924,7 @@
                     {
                         var key = GetConfigKey(nameof(Window), nameof(Size), nameof(Height));
                         _height = ValidateValue(value, MinimumHeight, MaximumHeight);
-                        _current = default(System.Drawing.Size);
+                        _current = default;
                         WriteValue(Section, key, _height, MinimumHeight);
                     }
                 }

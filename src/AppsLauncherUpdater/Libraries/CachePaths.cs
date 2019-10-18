@@ -11,7 +11,7 @@
         {
             get
             {
-                if (_updateDir != default(string))
+                if (_updateDir != default)
                     return _updateDir;
                 var dir = Path.Combine(CorePaths.TempDir, "UpdateData");
                 DirectoryEx.TryDelete(dir);
@@ -22,24 +22,10 @@
             }
         }
 
-        internal static string UpdateHelperPath
-        {
-            get
-            {
-                if (_updateHelperPath == default(string))
-                    _updateHelperPath = Path.Combine(UpdateDir, "UpdateHelper.bat");
-                return _updateHelperPath;
-            }
-        }
+        internal static string UpdateHelperPath => 
+            _updateHelperPath ?? (_updateHelperPath = Path.Combine(UpdateDir, "UpdateHelper.bat"));
 
-        internal static string UpdatePath
-        {
-            get
-            {
-                if (_updatePath == default(string))
-                    _updatePath = Path.Combine(UpdateDir, "Update.7z");
-                return _updatePath;
-            }
-        }
+        internal static string UpdatePath => 
+            _updatePath ?? (_updatePath = Path.Combine(UpdateDir, "Update.7z"));
     }
 }

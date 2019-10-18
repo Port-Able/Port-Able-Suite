@@ -306,7 +306,7 @@ namespace AppsLauncher.Windows
                     if (!string.IsNullOrEmpty(selectedItem))
                     {
                         var appData = CacheData.FindAppData(selectedItem);
-                        if (appData != default(LocalAppData))
+                        if (appData != default)
                         {
                             var iniPath = appData.AppInfoPath;
                             if (!File.Exists(iniPath))
@@ -401,7 +401,7 @@ namespace AppsLauncher.Windows
                 MessageBoxEx.Show(this, Language.GetText($"{owner.Name}Msg"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            if (SelectedAppData == default(LocalAppData) || FileTypesConflict())
+            if (SelectedAppData == default || FileTypesConflict())
             {
                 MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationCanceledMsg)), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -413,7 +413,7 @@ namespace AppsLauncher.Windows
 
         private void RestoreFileTypesBtn_Click(object sender, EventArgs e)
         {
-            if (SelectedAppData == default(LocalAppData))
+            if (SelectedAppData == default)
             {
                 MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationCanceledMsg)), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -475,7 +475,7 @@ namespace AppsLauncher.Windows
                     previewBg.BackgroundImage = bgImg.Redraw((int)Math.Round(bgImg.Width * .65f) + 1, (int)Math.Round(bgImg.Height * .65f) + 1);
                 }
                 else
-                    previewBg.BackgroundImage = default(Image);
+                    previewBg.BackgroundImage = default;
             }
             catch
             {
@@ -607,10 +607,10 @@ namespace AppsLauncher.Windows
         private void SaveBtn_Click(object sender, EventArgs e)
         {
             var appData = CacheData.FindAppData(appsBox.SelectedItem.ToString());
-            if (appData != default(LocalAppData))
+            if (appData != default)
             {
                 if (string.IsNullOrWhiteSpace(fileTypes.Text))
-                    appData.Settings.FileTypes = default(string[]);
+                    appData.Settings.FileTypes = default;
                 else
                 {
                     if (e == EventArgs.Empty || !FileTypesConflict())
@@ -664,7 +664,7 @@ namespace AppsLauncher.Windows
             {
                 if (CacheData.CurrentImageBg != default(Image))
                 {
-                    CacheData.CurrentImageBg = default(Image);
+                    CacheData.CurrentImageBg = default;
                     if (Result != DialogResult.Yes)
                         Result = DialogResult.Yes;
                 }

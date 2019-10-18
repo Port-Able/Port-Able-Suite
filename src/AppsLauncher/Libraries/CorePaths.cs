@@ -11,15 +11,8 @@
         private static string _appsDir, _appImages, _appsDownloader, _appsSuiteUpdater, _fileArchiver, _homeDir, _restorePointDir, _repositoryPath, _systemExplorer, _systemRestore, _tempDir;
         private static string[][] _fullAppsSuitePathMap;
 
-        internal static string AppsDir
-        {
-            get
-            {
-                if (_appsDir == default(string))
-                    _appsDir = Path.Combine(HomeDir, "Apps");
-                return _appsDir;
-            }
-        }
+        internal static string AppsDir =>
+            _appsDir ?? (_appsDir = Path.Combine(HomeDir, "Apps"));
 
         internal static string[] AppDirs
         {
@@ -38,51 +31,25 @@
             }
         }
 
-        internal static string AppImages
-        {
-            get
-            {
-                if (_appImages == default(string))
-                    _appImages = Path.Combine(HomeDir, "Assets", Settings.Window.LargeImages ? "AppImagesLarge.dat" : "AppImages.dat");
-                return _appImages;
-            }
-        }
+        internal static string AppImages =>
+            _appImages ?? (_appImages = Path.Combine(HomeDir, "Assets", Settings.Window.LargeImages ? "AppImagesLarge.dat" : "AppImages.dat"));
 
-        internal static string AppsDownloader
-        {
-            get
-            {
-                if (_appsDownloader == default(string))
-#if x86
-                    _appsDownloader = Path.Combine(HomeDir, "Binaries\\AppsDownloader.exe");
-#else
-                    _appsDownloader = Path.Combine(HomeDir, "Binaries\\AppsDownloader64.exe");
-#endif
-                return _appsDownloader;
-            }
-        }
+        internal static string AppsDownloader =>
+            _appsDownloader ?? (_appsDownloader = Path.Combine(HomeDir, "Binaries\\AppsDownloader.exe"));
 
-        internal static string AppsSuiteUpdater
-        {
-            get
-            {
-                if (_appsSuiteUpdater == default(string))
-                    _appsSuiteUpdater = Path.Combine(HomeDir, "Binaries\\Updater.exe");
-                return _appsSuiteUpdater;
-            }
-        }
+        internal static string AppsSuiteUpdater =>
+            _appsSuiteUpdater ?? (_appsSuiteUpdater = Path.Combine(HomeDir, "Binaries\\Updater.exe"));
 
         internal static string FileArchiver
         {
             get
             {
-                if (_fileArchiver != default(string))
+                if (_fileArchiver != default)
                     return _fileArchiver;
-#if x86
-                Compaction.SevenZipHelper.Location = Path.Combine(HomeDir, "Binaries\\Helper\\7z");
-#else
-                Compaction.SevenZipHelper.Location = Path.Combine(HomeDir, "Binaries\\Helper\\7z\\x64");
-#endif
+                var path = PathEx.Combine(HomeDir, "Binaries\\Helper\\7z");
+                if (Environment.Is64BitProcess)
+                    path = Path.Combine(path, "x64");
+                Compaction.SevenZipHelper.Location = path;
                 _fileArchiver = Compaction.SevenZipHelper.FilePath;
                 return _fileArchiver;
             }
@@ -121,61 +88,26 @@
             }
         }
 
-        internal static string HomeDir
-        {
-            get
-            {
-                if (_homeDir == default(string))
-                    _homeDir = PathEx.Combine(PathEx.LocalDir);
-                return _homeDir;
-            }
-        }
+        internal static string HomeDir =>
+            _homeDir ?? (_homeDir = PathEx.Combine(PathEx.LocalDir));
 
-        internal static string RepositoryUrl
-        {
-            get
-            {
-                if (_repositoryPath == default(string))
-                    _repositoryPath = "https://github.com/Port-Able/Port-Able-Suite";
-                return _repositoryPath;
-            }
-        }
+        internal static string RepositoryUrl =>
+            _repositoryPath ?? (_repositoryPath = "https://github.com/Port-Able/Port-Able-Suite");
 
-        internal static string RestorePointDir
-        {
-            get
-            {
-                if (_restorePointDir == default(string))
-                    _restorePointDir = Path.Combine(TempDir, "FileTypeAssoc", Settings.SystemInstallId);
-                return _restorePointDir;
-            }
-        }
+        internal static string RestorePointDir =>
+            _restorePointDir ?? (_restorePointDir = Path.Combine(TempDir, "FileTypeAssoc", Settings.SystemInstallId));
 
-        internal static string SystemExplorer
-        {
-            get
-            {
-                if (_systemExplorer == default(string))
-                    _systemExplorer = PathEx.Combine(Environment.SpecialFolder.Windows, "explorer.exe");
-                return _systemExplorer;
-            }
-        }
+        internal static string SystemExplorer =>
+            _systemExplorer ?? (_systemExplorer = PathEx.Combine(Environment.SpecialFolder.Windows, "explorer.exe"));
 
-        internal static string SystemRestore
-        {
-            get
-            {
-                if (_systemRestore == default(string))
-                    _systemRestore = PathEx.Combine(Environment.SpecialFolder.System, "rstrui.exe");
-                return _systemRestore;
-            }
-        }
+        internal static string SystemRestore =>
+            _systemRestore ?? (_systemRestore = PathEx.Combine(Environment.SpecialFolder.System, "rstrui.exe"));
 
         internal static string TempDir
         {
             get
             {
-                if (_tempDir != default(string))
+                if (_tempDir != default)
                     return _tempDir;
                 _tempDir = Path.Combine(UserDirs.First(), ".cache");
                 if (Directory.Exists(_tempDir))
@@ -191,12 +123,12 @@
         }
 
         internal static string[] UserDirs { get; } =
-        {
-            Path.Combine(HomeDir, "Documents"),
-            Path.Combine(HomeDir, "Documents\\Documents"),
-            Path.Combine(HomeDir, "Documents\\Music"),
-            Path.Combine(HomeDir, "Documents\\Pictures"),
-            Path.Combine(HomeDir, "Documents\\Videos")
-        };
+            {
+                Path.Combine(HomeDir, "Documents"),
+                Path.Combine(HomeDir, "Documents\\Documents"),
+                Path.Combine(HomeDir, "Documents\\Music"),
+                Path.Combine(HomeDir, "Documents\\Pictures"),
+                Path.Combine(HomeDir, "Documents\\Videos")
+            };
     }
 }

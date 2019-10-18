@@ -1,13 +1,8 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-#if x86
 [assembly: AssemblyTitle("Port-Able Apps Downloader")]
 [assembly: AssemblyProduct("AppsDownloader")]
-#else
-[assembly: AssemblyTitle("Port-Able Apps Downloader (64-bit)")]
-[assembly: AssemblyProduct("AppsDownloader64")]
-#endif
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Si13n7 Dev.™")]
@@ -19,4 +14,4 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("a3418f24-e739-45c2-b31e-f50f4124e600")]
 
-[assembly: AssemblyVersion("19.4.15.0")]
+[assembly: AssemblyVersion("19.10.18.0")]

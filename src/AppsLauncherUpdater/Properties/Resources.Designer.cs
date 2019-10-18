@@ -19,7 +19,7 @@ namespace Updater.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -63,21 +63,23 @@ namespace Updater.Properties {
         /// <summary>
         ///   Looks up a localized string similar to @echo off
         ///title &quot;{0}&quot;
-        ///
-        ///taskkill /f /im &quot;AppsDownloader.exe&quot; &gt;nul 2&gt;&amp;1
-        ///taskkill /f /im &quot;AppsDownloader64.exe&quot; &gt;nul 2&gt;&amp;1
-        ///taskkill /f /im &quot;AppsLauncher.exe&quot; &gt;nul 2&gt;&amp;1
-        ///taskkill /f /im &quot;AppsLauncher64.exe&quot; &gt;nul 2&gt;&amp;1
-        ///
-        ///if exist 7z.exe 7z.exe x Update.7z -o&quot;{1}\&quot; -y
-        ///if exist 7zG.exe 7zG.exe x Update.7z -o&quot;{1}\&quot; -y
+        ///for %%s in (
+        ///AppsDownloader
+        ///AppsDownloader64
+        ///AppsLauncher
+        ///AppsLauncher64 ) do taskkill /F /IM &quot;%%s.exe&quot; &gt;nul 2&gt;&amp;1
+        ///set &quot;extractor=7z.exe&quot;
+        ///if not exist %extractor% set &quot;extractor=7zG.exe&quot;
+        ///if exist %extractor% %extractor% x Update.7z -o&quot;{1}\&quot; -y
         ///ping localhost -n 5 &gt;nul
-        ///
-        ///if exist LICENSE.txt del /f /q LICENSE.txt
-        ///if exist Update.7z del /f /q Update.7z
-        ///if exist 7z.exe del /f /q 7z.exe
-        ///if exist 7zG.exe del /f /q 7zG.exe
-        ///if exist 7z. [rest of string was truncated]&quot;;.
+        ///for %%s in (
+        ///7z.dll
+        ///7z.exe
+        ///7zG.exe
+        ///LICENSE.txt
+        ///Update.7z ) do if exist &quot;%%s&quot; del /F /Q &quot;%%s&quot;
+        ///set path=%WinDir%\System32\cmd.exe
+        ///if exist %0 start &quot;{2}&quot; %path% /C del /F /Q %0 &amp;&amp; taskkill /FI &quot;{0}&quot; /IM cmd [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string BatchDummy {
             get {
@@ -103,7 +105,7 @@ namespace Updater.Properties {
         /// License: https://git.io/fmKti
         /// Sources: https://git.io/fmrjV
         /// Library: https://git.io/vb5Vg
-        /// Support: https://support.si13n7.com
+        /// Support: https://support.si13n7.de
         ///
         ///____________________________________________________________________________________
         ///

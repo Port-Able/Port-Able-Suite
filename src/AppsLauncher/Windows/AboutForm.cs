@@ -300,18 +300,14 @@ namespace AppsLauncher.Windows
                 if (process?.HasExited == false)
                     process.WaitForExit();
                 lock (BwLocker)
-                {
                     ExitCode = process?.ExitCode;
-                }
             }
             using (var process = ProcessEx.Start(CorePaths.AppsDownloader, ActionGuid.UpdateInstance, false, false))
             {
                 if (process?.HasExited == false)
                     process.WaitForExit();
                 lock (BwLocker)
-                {
                     ExitCode = process?.ExitCode;
-                }
             }
         }
 

@@ -130,24 +130,23 @@
   <data name="BatchDummy" xml:space="preserve">
     <value>@echo off
 title "{0}"
-
-taskkill /f /im "AppsDownloader.exe" &gt;nul 2&gt;&amp;1
-taskkill /f /im "AppsDownloader64.exe" &gt;nul 2&gt;&amp;1
-taskkill /f /im "AppsLauncher.exe" &gt;nul 2&gt;&amp;1
-taskkill /f /im "AppsLauncher64.exe" &gt;nul 2&gt;&amp;1
-
-if exist 7z.exe 7z.exe x Update.7z -o"{1}\" -y
-if exist 7zG.exe 7zG.exe x Update.7z -o"{1}\" -y
+for %%s in (
+AppsDownloader
+AppsDownloader64
+AppsLauncher
+AppsLauncher64 ) do taskkill /F /IM "%%s.exe" &gt;nul 2&gt;&amp;1
+set "extractor=7z.exe"
+if not exist %extractor% set "extractor=7zG.exe"
+if exist %extractor% %extractor% x Update.7z -o"{1}\" -y
 ping localhost -n 5 &gt;nul
-
-if exist LICENSE.txt del /f /q LICENSE.txt
-if exist Update.7z del /f /q Update.7z
-if exist 7z.exe del /f /q 7z.exe
-if exist 7zG.exe del /f /q 7zG.exe
-if exist 7z.dll del /f /q 7z.dll
-
+for %%s in (
+7z.dll
+7z.exe
+7zG.exe
+LICENSE.txt
+Update.7z ) do if exist "%%s" del /F /Q "%%s"
 set path=%WinDir%\System32\cmd.exe
-if exist %0 start "{2}" %path% /c del /f /q %0 &amp;&amp; taskkill /fi "{0}" /im cmd.exe /t
+if exist %0 start "{2}" %path% /C del /F /Q %0 &amp;&amp; taskkill /FI "{0}" /IM cmd.exe /T
 exit /b</value>
   </data>
   <data name="ChangeLogTemplate" xml:space="preserve">
@@ -158,7 +157,7 @@ exit /b</value>
  License: https://git.io/fmKti
  Sources: https://git.io/fmrjV
  Library: https://git.io/vb5Vg
- Support: https://support.si13n7.com
+ Support: https://support.si13n7.de
 
 ____________________________________________________________________________________
 

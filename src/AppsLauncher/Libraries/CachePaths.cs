@@ -10,7 +10,7 @@
         {
             get
             {
-                if (_appImages == default(string))
+                if (_appImages == default)
                     _appImages = Path.Combine(CorePaths.TempDir, Settings.Window.LargeImages ? "AppImagesLarge.dat" : "AppImages.dat");
                 if (!File.Exists(_appImages))
                     _appImages = CorePaths.AppImages;
@@ -18,54 +18,19 @@
             }
         }
 
-        internal static string CurrentImages
-        {
-            get
-            {
-                if (_currentImages == default(string))
-                    _currentImages = Path.Combine(CorePaths.TempDir, "CurrentImages.dat");
-                return _currentImages;
-            }
-        }
+        internal static string CurrentImages => 
+            _currentImages ?? (_currentImages = Path.Combine(CorePaths.TempDir, "CurrentImages.dat"));
 
-        internal static string CurrentImageBg
-        {
-            get
-            {
-                if (_currentimageBg == default(string))
-                    _currentimageBg = Path.Combine(CorePaths.TempDir, "CurrentImageBg.dat");
-                return _currentimageBg;
-            }
-        }
+        internal static string CurrentImageBg => 
+            _currentimageBg ?? (_currentimageBg = Path.Combine(CorePaths.TempDir, "CurrentImageBg.dat"));
 
-        internal static string CurrentAppInfo
-        {
-            get
-            {
-                if (_currentAppInfo == default(string))
-                    _currentAppInfo = Path.Combine(CorePaths.TempDir, "CurrentAppInfo.dat");
-                return _currentAppInfo;
-            }
-        }
+        internal static string CurrentAppInfo => 
+            _currentAppInfo ?? (_currentAppInfo = Path.Combine(CorePaths.TempDir, "CurrentAppInfo.dat"));
 
-        internal static string CurrentTypeData
-        {
-            get
-            {
-                if (_currentTypeData == default(string))
-                    _currentTypeData = Path.Combine(CorePaths.TempDir, "CurrentTypeData.dat");
-                return _currentTypeData;
-            }
-        }
+        internal static string CurrentTypeData => 
+            _currentTypeData ?? (_currentTypeData = Path.Combine(CorePaths.TempDir, "CurrentTypeData.dat"));
 
-        internal static string SettingsMerges
-        {
-            get
-            {
-                if (_settingsMerges == default(string))
-                    _settingsMerges = Path.Combine(CorePaths.TempDir, "SettingsMerges.dat");
-                return _settingsMerges;
-            }
-        }
+        internal static string SettingsMerges => 
+            _settingsMerges ?? (_settingsMerges = Path.Combine(CorePaths.TempDir, "SettingsMerges.dat"));
     }
 }

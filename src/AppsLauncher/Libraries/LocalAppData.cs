@@ -93,15 +93,8 @@
             private set => _appInfoPath = GetFullPath(value);
         }
 
-        public AppSettings Settings
-        {
-            get
-            {
-                if (_settings == default(AppSettings))
-                    _settings = new AppSettings(Key);
-                return _settings;
-            }
-        }
+        public AppSettings Settings => 
+            _settings ?? (_settings = new AppSettings(Key));
 
         [SecurityCritical]
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -191,7 +184,7 @@
                 Application.Exit();
         }
 
-        internal bool RemoveApplication(IWin32Window owner = default(IWin32Window))
+        internal bool RemoveApplication(IWin32Window owner = default)
         {
             CacheData.ResetCurrent();
             Retry:
@@ -270,18 +263,16 @@
                     if (_fileTypes != default(string[]))
                         return _fileTypes;
                     var types = Ini.Read<string>(_section, nameof(FileTypes));
-                    if (types != default(string))
+                    if (types != default)
                         _fileTypes = types.Contains(',') ? types.Split(',') : new[] { types };
-                    if (_fileTypes == default(string[]))
-                        _fileTypes = Array.Empty<string>();
-                    return _fileTypes;
+                    return _fileTypes ?? (_fileTypes = Array.Empty<string>());
                 }
                 set
                 {
                     if (_fileTypes == value)
                         return;
                     _fileTypes = value;
-                    _fileAboluteTypes = default(string[]);
+                    _fileAboluteTypes = default;
                     if (_fileTypes?.Any() != true)
                         WriteValue(nameof(FileTypes), default(string));
                     else
@@ -313,7 +304,7 @@
                 set
                 {
                     _fileTypeAssoc = value;
-                    WriteValue(nameof(FileTypeAssoc), _fileTypeAssoc?.ToString(), default(string), true);
+                    WriteValue(nameof(FileTypeAssoc), _fileTypeAssoc?.ToString(), default, true);
                 }
             }
 
@@ -351,7 +342,7 @@
             {
                 get
                 {
-                    if (_noUpdatesTime == default(DateTime))
+                    if (_noUpdatesTime == default)
                         _noUpdatesTime = Ini.Read(_section, nameof(NoUpdatesTime), default(DateTime));
                     return _noUpdatesTime;
                 }
@@ -394,39 +385,29 @@
 
             public string StartArgsFirst
             {
-                get
-                {
-                    if (_startArgsFirst == default(string))
-                        _startArgsFirst = Ini.Read<string>(_section, "StartArgs.First")?.DecodeString();
-                    return _startArgsFirst;
-                }
+                get => _startArgsFirst ?? (_startArgsFirst = Ini.Read<string>(_section, "StartArgs.First")?.DecodeString());
                 set
                 {
                     _startArgsFirst = value;
                     if (string.IsNullOrWhiteSpace(_startArgsFirst))
-                        _startArgsFirst = default(string);
+                        _startArgsFirst = default;
                     WriteValue("StartArgs.First", _startArgsFirst?.Encode());
                 }
             }
 
             public string StartArgsLast
             {
-                get
-                {
-                    if (_startArgsLast == default(string))
-                        _startArgsLast = Ini.Read<string>(_section, "StartArgs.Last")?.DecodeString();
-                    return _startArgsLast;
-                }
+                get => _startArgsLast ?? (_startArgsLast = Ini.Read<string>(_section, "StartArgs.Last")?.DecodeString());
                 set
                 {
                     _startArgsLast = value;
                     if (string.IsNullOrWhiteSpace(_startArgsLast))
-                        _startArgsLast = default(string);
+                        _startArgsLast = default;
                     WriteValue("StartArgs.Last", _startArgsLast?.Encode());
                 }
             }
 
-            internal void WriteValue<TValue>(string key, TValue value, TValue defValue = default(TValue), bool direct = false) =>
+            internal void WriteValue<TValue>(string key, TValue value, TValue defValue = default, bool direct = false) =>
                 GlobalSettings.WriteValue(_section, key, value, defValue, direct);
         }
     }

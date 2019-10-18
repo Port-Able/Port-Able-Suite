@@ -23,7 +23,7 @@ namespace AppsDownloader.Windows
                                        DownloadHandler = new object(),
                                        SearchHandler = new object();
 
-        public MainForm(NotifyBox notifyBox = default(NotifyBox))
+        public MainForm(NotifyBox notifyBox = default)
         {
             InitializeComponent();
 
@@ -439,7 +439,7 @@ namespace AppsDownloader.Windows
             }
         }
 
-        private void AppsListUpdate(List<AppData> appInfo = default(List<AppData>))
+        private void AppsListUpdate(List<AppData> appInfo = default)
         {
             var index = 0;
             var appImages = CacheData.AppImages ?? new Dictionary<string, Image>();
@@ -478,7 +478,7 @@ namespace AppsDownloader.Windows
 
             appsList.BeginUpdate();
             appsList.Items.Clear();
-            foreach (var appData in appInfo == default(List<AppData>) ? CacheData.AppInfo : appInfo)
+            foreach (var appData in appInfo ?? CacheData.AppInfo)
             {
                 if (!Shareware.Enabled && appData.ServerKey != null)
                     continue;
@@ -895,7 +895,7 @@ namespace AppsDownloader.Windows
             foreach (var item in appsList.CheckedItems.Cast<ListViewItem>())
             {
                 var appData = CacheData.AppInfo.FirstOrDefault(x => x.Key.EqualsEx(item.Name));
-                if (appData == default(AppData))
+                if (appData == default)
                     continue;
 
                 if (appData.DownloadCollection.Count > 1 && !appData.Settings.ArchiveLangConfirmed)
@@ -943,11 +943,11 @@ namespace AppsDownloader.Windows
                     (Settings.TransferDir.First(), totalDownloadSize, DirectoryEx.GetFreeSpace(Settings.TransferDir)),
                     (CorePaths.HomeDir.First(), totalInstallSize, DirectoryEx.GetFreeSpace(CorePaths.HomeDir))
                 };
-            foreach (var tuple in spaceData)
+            foreach (var (item1, item2, item3) in spaceData)
             {
-                if (tuple.Item2 < tuple.Item3)
+                if (item2 < item3)
                     continue;
-                var warning = string.Format(Language.GetText(nameof(en_US.NotEnoughSpaceMsg)), tuple.Item1, (tuple.Item2 - tuple.Item3).FormatSize());
+                var warning = string.Format(Language.GetText(nameof(en_US.NotEnoughSpaceMsg)), item1, (item2 - item3).FormatSize());
                 switch (MessageBoxEx.Show(this, warning, Settings.Title, MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Warning))
                 {
                     case DialogResult.Abort:
@@ -1098,7 +1098,7 @@ namespace AppsDownloader.Windows
                     TransferFails.AddRange(TransferManager.Values.Select(x => x.AppData));
 
                 TransferManager.Clear();
-                CurrentTransfer = default(KeyValuePair<ListViewItem, AppTransferor>);
+                CurrentTransfer = default;
 
                 Icon = Resources.Logo;
                 TopMost = true;

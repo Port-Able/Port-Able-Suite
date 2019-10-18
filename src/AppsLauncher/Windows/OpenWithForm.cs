@@ -1,7 +1,6 @@
 namespace AppsLauncher.Windows
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Drawing;
@@ -44,7 +43,7 @@ namespace AppsLauncher.Windows
                 btn.FlatAppearance.MouseOverBackColor = Settings.Window.Colors.ButtonHover;
             }
 
-            appMenu.EnableAnimation(ContextMenuStripEx.Animations.SlideVerPositive, 100);
+            appMenu.EnableAnimation(ContextMenuStripExAnimations.SlideVerPositive, 100);
             appMenu.SetFixedSingle();
             appMenuItem2.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Uac);
             appMenuItem3.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Directory);
@@ -176,7 +175,6 @@ namespace AppsLauncher.Windows
         private void RunCmdLine_Tick(object sender, EventArgs e)
         {
             lock (Locker)
-            {
                 try
                 {
                     var curTitle = Language.GetText($"{Name}Title");
@@ -225,7 +223,6 @@ namespace AppsLauncher.Windows
                 {
                     Log.Write(ex);
                 }
-            }
         }
 
         private void NotifyIcon_Click(object sender, EventArgs e)
@@ -274,7 +271,7 @@ namespace AppsLauncher.Windows
         private void AppsBoxUpdate(bool force)
         {
             if (force)
-                CacheData.CurrentAppInfo = default(List<LocalAppData>);
+                CacheData.CurrentAppInfo = default;
             if (CacheData.CurrentAppInfo?.Any() != true)
                 return;
 
@@ -324,7 +321,7 @@ namespace AppsLauncher.Windows
             if (string.IsNullOrEmpty(selectedItem))
                 return;
             var appData = CacheData.FindAppData(selectedItem);
-            if (appData == default(LocalAppData))
+            if (appData == default)
                 return;
             var owner = sender as ToolStripMenuItem;
             switch (owner?.Name)

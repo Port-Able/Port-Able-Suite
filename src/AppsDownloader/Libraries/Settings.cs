@@ -10,15 +10,12 @@
     using Properties;
     using SilDev;
     using SilDev.Drawing;
+    using DrawingSize = System.Drawing.Size;
 
     internal static class Settings
     {
         internal const string Section = "Downloader";
-#if x86
         internal const string Title = "Apps Downloader";
-#else
-        internal const string Title = "Apps Downloader (64-bit)";
-#endif
         private static bool? _forceTransferRedirection;
         private static string _machineId, _transferDir;
         private static string[] _nsisButtons;
@@ -33,15 +30,8 @@
             }
         }
 
-        internal static string MachineId
-        {
-            get
-            {
-                if (_machineId == default(string))
-                    _machineId = EnvironmentEx.MachineId.ToString().Encrypt().Substring(24);
-                return _machineId;
-            }
-        }
+        internal static string MachineId => 
+            _machineId ?? (_machineId = EnvironmentEx.MachineId.ToString().Encrypt().Substring(24));
 
         internal static string[] NsisButtons
         {
@@ -51,10 +41,10 @@
                     return _nsisButtons;
                 var buttonData = Resources.NsisData.Unzip().DeserializeObject<Dictionary<int, List<string>>>();
                 if (buttonData == default(Dictionary<int, List<string>>))
-                    return default(string[]);
+                    return default;
                 var langId = WinApi.NativeHelper.GetUserDefaultUILanguage();
                 if (!buttonData.TryGetValue(langId, out var btnData))
-                    return default(string[]);
+                    return default;
                 _nsisButtons = btnData.ToArray();
                 if (langId != 1033 && langId != 2057 && buttonData.TryGetValue(1033, out btnData))
                     _nsisButtons = _nsisButtons.Concat(btnData).ToArray();
@@ -66,7 +56,7 @@
         {
             get
             {
-                if (_transferDir != default(string))
+                if (_transferDir != default)
                     return _transferDir;
                 _transferDir = Ini.Read<string>(Section, nameof(TransferDir), CorePaths.TransferDir);
                 if (DirectoryEx.Create(_transferDir))
@@ -100,19 +90,6 @@
 
         internal static void Initialize()
         {
-#if x86
-            if (Environment.Is64BitOperatingSystem)
-            {
-                var appsDownloader64 = PathEx.Combine(PathEx.LocalDir, $"{ProcessEx.CurrentName}64.exe");
-                if (File.Exists(appsDownloader64))
-                {
-                    ProcessEx.Start(appsDownloader64, EnvironmentEx.CommandLine(false));
-                    Environment.ExitCode = 0;
-                    Environment.Exit(Environment.ExitCode);
-                }
-            }
-#endif
-
             Log.FileDir = Path.Combine(CorePaths.TempDir, "Logs");
 
             Ini.SetFile(PathEx.LocalDir, "..", "Settings.ini");
@@ -155,7 +132,7 @@
             return sb.ToString();
         }
 
-        internal static void WriteValue<TValue>(string section, string key, TValue value, TValue defValue = default(TValue))
+        internal static void WriteValue<TValue>(string section, string key, TValue value, TValue defValue = default)
         {
             bool equals;
             try
@@ -216,7 +193,7 @@
                     var key = GetConfigKey(nameof(Window), nameof(CustomColors));
                     _customColors = FilterCostumColors(value);
                     var colors = _customColors?.Where(x => x != 0xffffff).ToArray();
-                    WriteValue(Section, key, colors?.Any() == true ? Json.Serialize(colors) : default(string));
+                    WriteValue(Section, key, colors?.Any() == true ? Json.Serialize(colors) : default);
                 }
             }
 
@@ -333,14 +310,14 @@
                 {
                     get
                     {
-                        if (_groupColor1 == default(Color))
+                        if (_groupColor1 == default)
                             _groupColor1 = GetColor(nameof(GroupColor1));
                         return _groupColor1;
                     }
                     set
                     {
                         _groupColor1 = value;
-                        if (_groupColor1 == default(Color))
+                        if (_groupColor1 == default)
                             _groupColor1 = GetColor(nameof(GroupColor1));
                         WriteValue(nameof(GroupColor1), _groupColor1);
                     }
@@ -350,14 +327,14 @@
                 {
                     get
                     {
-                        if (_groupColor2 == default(Color))
+                        if (_groupColor2 == default)
                             _groupColor2 = GetColor(nameof(GroupColor2));
                         return _groupColor2;
                     }
                     set
                     {
                         _groupColor2 = value;
-                        if (_groupColor2 == default(Color))
+                        if (_groupColor2 == default)
                             _groupColor2 = GetColor(nameof(GroupColor1));
                         WriteValue(nameof(GroupColor2), _groupColor2);
                     }
@@ -367,14 +344,14 @@
                 {
                     get
                     {
-                        if (_groupColor3 == default(Color))
+                        if (_groupColor3 == default)
                             _groupColor3 = GetColor(nameof(GroupColor3));
                         return _groupColor3;
                     }
                     set
                     {
                         _groupColor3 = value;
-                        if (_groupColor3 == default(Color))
+                        if (_groupColor3 == default)
                             _groupColor3 = GetColor(nameof(GroupColor1));
                         WriteValue(nameof(GroupColor3), _groupColor3);
                     }
@@ -384,14 +361,14 @@
                 {
                     get
                     {
-                        if (_groupColor4 == default(Color))
+                        if (_groupColor4 == default)
                             _groupColor4 = GetColor(nameof(GroupColor4));
                         return _groupColor4;
                     }
                     set
                     {
                         _groupColor4 = value;
-                        if (_groupColor4 == default(Color))
+                        if (_groupColor4 == default)
                             _groupColor4 = GetColor(nameof(GroupColor1));
                         WriteValue(nameof(GroupColor4), _groupColor4);
                     }
@@ -401,14 +378,14 @@
                 {
                     get
                     {
-                        if (_groupColor5 == default(Color))
+                        if (_groupColor5 == default)
                             _groupColor5 = GetColor(nameof(GroupColor5));
                         return _groupColor5;
                     }
                     set
                     {
                         _groupColor5 = value;
-                        if (_groupColor5 == default(Color))
+                        if (_groupColor5 == default)
                             _groupColor5 = GetColor(nameof(GroupColor1));
                         WriteValue(nameof(GroupColor5), _groupColor5);
                     }
@@ -418,14 +395,14 @@
                 {
                     get
                     {
-                        if (_groupColor6 == default(Color))
+                        if (_groupColor6 == default)
                             _groupColor6 = GetColor(nameof(GroupColor6));
                         return _groupColor6;
                     }
                     set
                     {
                         _groupColor6 = value;
-                        if (_groupColor6 == default(Color))
+                        if (_groupColor6 == default)
                             _groupColor6 = GetColor(nameof(GroupColor1));
                         WriteValue(nameof(GroupColor6), _groupColor6);
                     }
@@ -435,14 +412,14 @@
                 {
                     get
                     {
-                        if (_groupColor7 == default(Color))
+                        if (_groupColor7 == default)
                             _groupColor7 = GetColor(nameof(GroupColor7));
                         return _groupColor7;
                     }
                     set
                     {
                         _groupColor7 = value;
-                        if (_groupColor7 == default(Color))
+                        if (_groupColor7 == default)
                             _groupColor7 = GetColor(nameof(GroupColor1));
                         WriteValue(nameof(GroupColor7), _groupColor7);
                     }
@@ -452,14 +429,14 @@
                 {
                     get
                     {
-                        if (_groupColor8 == default(Color))
+                        if (_groupColor8 == default)
                             _groupColor8 = GetColor(nameof(GroupColor8));
                         return _groupColor8;
                     }
                     set
                     {
                         _groupColor8 = value;
-                        if (_groupColor8 == default(Color))
+                        if (_groupColor8 == default)
                             _groupColor8 = GetColor(nameof(GroupColor1));
                         WriteValue(nameof(GroupColor8), _groupColor8);
                     }
@@ -469,14 +446,14 @@
                 {
                     get
                     {
-                        if (_groupColor9 == default(Color))
+                        if (_groupColor9 == default)
                             _groupColor9 = GetColor(nameof(GroupColor9));
                         return _groupColor9;
                     }
                     set
                     {
                         _groupColor9 = value;
-                        if (_groupColor9 == default(Color))
+                        if (_groupColor9 == default)
                             _groupColor9 = GetColor(nameof(GroupColor1));
                         WriteValue(nameof(GroupColor9), _groupColor9);
                     }
@@ -486,14 +463,14 @@
                 {
                     get
                     {
-                        if (_groupColor11 == default(Color))
+                        if (_groupColor11 == default)
                             _groupColor11 = GetColor(nameof(GroupColor11));
                         return _groupColor11;
                     }
                     set
                     {
                         _groupColor11 = value;
-                        if (_groupColor11 == default(Color))
+                        if (_groupColor11 == default)
                             _groupColor11 = GetColor(nameof(GroupColor1));
                         WriteValue(nameof(GroupColor11), _groupColor11);
                     }
@@ -503,14 +480,14 @@
                 {
                     get
                     {
-                        if (_groupColor12 == default(Color))
+                        if (_groupColor12 == default)
                             _groupColor12 = GetColor(nameof(GroupColor12));
                         return _groupColor12;
                     }
                     set
                     {
                         _groupColor12 = value;
-                        if (_groupColor12 == default(Color))
+                        if (_groupColor12 == default)
                             _groupColor12 = GetColor(nameof(GroupColor1));
                         WriteValue(nameof(GroupColor12), _groupColor12);
                     }
@@ -572,24 +549,24 @@
             {
                 internal const int MinimumHeight = 125;
                 internal const int MinimumWidth = 760;
-                private static System.Drawing.Size _default, _maximum, _minimum;
+                private static DrawingSize _default, _maximum, _minimum;
                 private static int _width, _height;
 
-                internal static System.Drawing.Size Default
+                internal static DrawingSize Default
                 {
                     get
                     {
-                        if (_default == default(System.Drawing.Size))
-                            _default = new System.Drawing.Size(MinimumWidth, (int)Math.Round(MaximumHeight / 1.5d));
+                        if (_default == default)
+                            _default = new DrawingSize(MinimumWidth, (int)Math.Round(MaximumHeight / 1.5d));
                         return _default;
                     }
                 }
 
-                internal static System.Drawing.Size Maximum
+                internal static DrawingSize Maximum
                 {
                     get
                     {
-                        if (_maximum != default(System.Drawing.Size))
+                        if (_maximum != default)
                             return _maximum;
                         var curPos = WinApi.NativeHelper.GetCursorPos();
                         var screen = Screen.PrimaryScreen;
@@ -605,12 +582,12 @@
                     }
                 }
 
-                internal static System.Drawing.Size Minimum
+                internal static DrawingSize Minimum
                 {
                     get
                     {
-                        if (_minimum == default(System.Drawing.Size))
-                            _minimum = new System.Drawing.Size(MinimumWidth, MinimumHeight);
+                        if (_minimum == default)
+                            _minimum = new DrawingSize(MinimumWidth, MinimumHeight);
                         return _minimum;
                     }
                 }
@@ -631,7 +608,7 @@
                 {
                     get
                     {
-                        if (_width != default(int))
+                        if (_width != default)
                             return _width;
                         var key = GetConfigKey(nameof(Window), nameof(Size), nameof(Width));
                         var value = Ini.Read(Section, key, DefaultWidth);
@@ -650,7 +627,7 @@
                 {
                     get
                     {
-                        if (_height != default(int))
+                        if (_height != default)
                             return _height;
                         var key = GetConfigKey(nameof(Window), nameof(Size), nameof(Height));
                         var value = Ini.Read(Section, key, DefaultHeight);

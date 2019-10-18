@@ -15,6 +15,7 @@
         internal const string RepairDirs = "{48FDE635-60E6-41B5-8F9D-674E9F535AC7}";
         internal const string RepairVariable = "{EA48C7DB-AD36-43D7-80A1-D6E81FB8BCAB}";
         internal const string UpdateInstance = "{F92DAD88-DA45-405A-B0EB-10A1E9B2ADDD}";
+        internal const string VersionValidation = "{C037A1FA-F2D5-4B7C-8438-F5953254884A}";
 
         internal static bool IsAllowNewInstance =>
             IsActive(AllowNewInstance);
@@ -42,6 +43,9 @@
 
         internal static bool IsRepairVariable =>
             IsActive(RepairVariable);
+
+        internal static bool IsVersionValidation =>
+            IsActive(VersionValidation);
 
         private static bool IsActive(string guid)
         {

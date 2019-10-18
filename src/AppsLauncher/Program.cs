@@ -32,71 +32,74 @@ namespace AppsLauncher
                     return;
                 }
 
-                if (newInstance || ActionGuid.IsAllowNewInstance)
+                if (EnvironmentEx.CommandLineArgs(false).Any())
                 {
-                    Application.Run(new MenuViewForm().Plus());
-                    return;
+                    var args = EnvironmentEx.CommandLineArgs(false);
+                    switch (EnvironmentEx.CommandLineArgs(false).Count)
+                    {
+                        case 1:
+                        {
+                            switch (args.First())
+                            {
+                                case ActionGuid.FileTypeAssociationAll:
+                                    foreach (var appData in CacheData.CurrentAppInfo)
+                                    {
+                                        var assocData = appData.Settings?.FileTypeAssoc;
+                                        assocData?.SystemRegistryAccess?.AssociateFileTypes(true);
+                                    }
+                                    return;
+                                case ActionGuid.RepairAppsSuite:
+                                    Recovery.RepairAppsSuite();
+                                    return;
+                                case ActionGuid.RepairDirs:
+                                    Recovery.RepairAppsSuiteDirs();
+                                    return;
+                                case ActionGuid.RepairVariable:
+                                    Recovery.RepairEnvironmentVariable();
+                                    return;
+                                case ActionGuid.VersionValidation:
+                                    Recovery.VersionValidation();
+                                    return;
+                            }
+                            break;
+                        }
+                        case 2:
+                        case 3:
+                        {
+                            var second = args.SecondOrDefault();
+                            var third = args.ThirdOrDefault().ToBoolean();
+                            switch (args.First())
+                            {
+                                case ActionGuid.FileTypeAssociation:
+                                    FileTypeAssoc.Associate(second, third);
+                                    return;
+                                case ActionGuid.RestoreFileTypes:
+                                    FileTypeAssoc.Restore(second, third);
+                                    return;
+                                case ActionGuid.SystemIntegration:
+                                    SystemIntegration.Enable(second.ToBoolean(), third);
+                                    return;
+                            }
+                            break;
+                        }
+                    }
+
+                    if (!Arguments.ValidPaths.Any())
+                        return;
+
+                    IntPtr hWnd;
+                    var stopwatch = new Stopwatch();
+                    stopwatch.Start();
+                    do
+                        hWnd = Reg.Read(Settings.RegistryPath, "Handle", IntPtr.Zero);
+                    while (hWnd == IntPtr.Zero && stopwatch.Elapsed.TotalSeconds <= 10);
+                    if (hWnd != IntPtr.Zero)
+                        WinApi.NativeHelper.SendArgs(hWnd, Arguments.ValidPathsStr);
                 }
 
-                if (!EnvironmentEx.CommandLineArgs(false).Any())
+                if (!newInstance && !ActionGuid.IsAllowNewInstance)
                     return;
-
-                switch (EnvironmentEx.CommandLineArgs(false).Count)
-                {
-                    case 1:
-                    {
-                        var first = EnvironmentEx.CommandLineArgs(false).First();
-                        switch (first)
-                        {
-                            case ActionGuid.FileTypeAssociationAll:
-                                foreach (var appData in CacheData.CurrentAppInfo)
-                                {
-                                    var assocData = appData.Settings?.FileTypeAssoc;
-                                    assocData?.SystemRegistryAccess?.AssociateFileTypes(true);
-                                }
-                                return;
-                            case ActionGuid.RepairAppsSuite:
-                                Recovery.RepairAppsSuite();
-                                return;
-                            case ActionGuid.RepairDirs:
-                                Recovery.RepairAppsSuiteDirs();
-                                return;
-                            case ActionGuid.RepairVariable:
-                                Recovery.RepairEnvironmentVariable();
-                                return;
-                        }
-                        break;
-                    }
-                    case 2:
-                    {
-                        var first = EnvironmentEx.CommandLineArgs(false).First();
-                        switch (first)
-                        {
-                            case ActionGuid.FileTypeAssociation:
-                                FileTypeAssoc.Associate(EnvironmentEx.CommandLineArgs(false).SecondOrDefault());
-                                return;
-                            case ActionGuid.RestoreFileTypes:
-                                FileTypeAssoc.Restore(EnvironmentEx.CommandLineArgs(false).SecondOrDefault());
-                                return;
-                            case ActionGuid.SystemIntegration:
-                                SystemIntegration.Enable(EnvironmentEx.CommandLineArgs(false).SecondOrDefault().ToBoolean());
-                                return;
-                        }
-                        break;
-                    }
-                }
-
-                if (!Arguments.ValidPaths.Any())
-                    return;
-
-                IntPtr hWnd;
-                var stopwatch = new Stopwatch();
-                stopwatch.Start();
-                do
-                    hWnd = Reg.Read(Settings.RegistryPath, "Handle", IntPtr.Zero);
-                while (hWnd == IntPtr.Zero && stopwatch.Elapsed.TotalSeconds <= 10);
-                if (hWnd != IntPtr.Zero)
-                    WinApi.NativeHelper.SendArgs(hWnd, Arguments.ValidPathsStr);
+                Application.Run(new MenuViewForm().Plus());
             }
         }
     }

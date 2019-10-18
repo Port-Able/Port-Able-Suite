@@ -13,14 +13,14 @@
     {
         public AppInfoForm(AppData appData)
         {
-            if (appData == default(AppData))
+            if (appData == default)
                 throw new ArgumentNullException(nameof(appData));
 
             InitializeComponent();
 
             Text = appData.Name;
             var text = appData.ToString(true);
-            if (text == default(string))
+            if (text == default)
                 return;
 
             if (!CacheData.AppImagesLarge.TryGetValue(appData.Key, out var image))

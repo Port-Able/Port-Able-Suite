@@ -29,9 +29,7 @@
                 if (_appImages != default(Dictionary<string, Image>))
                     return _appImages;
                 UpdateAppImagesFile(false);
-                _appImages = FileEx.Deserialize<Dictionary<string, Image>>(CachePaths.AppImages);
-                if (_appImages == default(Dictionary<string, Image>))
-                    _appImages = FileEx.Deserialize<Dictionary<string, Image>>(CorePaths.AppImages);
+                _appImages = FileEx.Deserialize<Dictionary<string, Image>>(CachePaths.AppImages) ?? FileEx.Deserialize<Dictionary<string, Image>>(CorePaths.AppImages);
                 _appImages = _appImages != default(Dictionary<string, Image>) ? _appImages.ToDictionary(x => x.Key, x => x.Value, StringComparer.OrdinalIgnoreCase) : new Dictionary<string, Image>(StringComparer.OrdinalIgnoreCase);
                 return _appImages;
             }
@@ -44,9 +42,7 @@
                 if (_appImagesLarge != default(Dictionary<string, Image>))
                     return _appImagesLarge;
                 UpdateAppImagesFile(true);
-                _appImagesLarge = FileEx.Deserialize<Dictionary<string, Image>>(CachePaths.AppImagesLarge);
-                if (_appImagesLarge == default(Dictionary<string, Image>))
-                    _appImagesLarge = FileEx.Deserialize<Dictionary<string, Image>>(CorePaths.AppImagesLarge);
+                _appImagesLarge = FileEx.Deserialize<Dictionary<string, Image>>(CachePaths.AppImagesLarge) ?? FileEx.Deserialize<Dictionary<string, Image>>(CorePaths.AppImagesLarge);
                 _appImagesLarge = _appImagesLarge != default(Dictionary<string, Image>) ? _appImagesLarge.ToDictionary(x => x.Key, x => x.Value, StringComparer.OrdinalIgnoreCase) : new Dictionary<string, Image>(StringComparer.OrdinalIgnoreCase);
                 return _appImagesLarge;
             }
@@ -69,9 +65,7 @@
             {
                 if (_settingsMerges != default(List<string>))
                     return _settingsMerges;
-                _settingsMerges = FileEx.Deserialize<List<string>>(CachePaths.SettingsMerges);
-                if (_settingsMerges == default(List<string>))
-                    _settingsMerges = new List<string>();
+                _settingsMerges = FileEx.Deserialize<List<string>>(CachePaths.SettingsMerges) ?? new List<string>();
                 return _settingsMerges;
             }
         }
@@ -295,11 +289,11 @@
                     ("jPortable", "Java (Runtime)"),
                     ("jdkPortable", "Java (Development)")
                 };
-                foreach (var filter in filters)
+                foreach (var (item1, item2) in filters)
                 {
-                    if (!name.StartsWithEx(filter.Item1))
+                    if (!name.StartsWithEx(item1))
                         continue;
-                    name = name.Replace(filter.Item1, filter.Item2);
+                    name = name.Replace(item1, item2);
                     break;
                 }
                 if (!name.StartsWithEx(AppSupplierHosts.PortableApps))
@@ -364,7 +358,7 @@
                 if (string.IsNullOrWhiteSpace(website))
                     website = Ini.Read(section, "URL", config).ToLower().Replace("https", "http");
                 if (string.IsNullOrWhiteSpace(website) || website.Any(char.IsUpper))
-                    website = default(string);
+                    website = default;
 
                 #endregion
 
@@ -409,7 +403,7 @@
                                 }
                         }
                     }
-                if (string.IsNullOrWhiteSpace(displayVersion) || packageVersion == default(Version))
+                if (string.IsNullOrWhiteSpace(displayVersion) || packageVersion == default)
                 {
                     displayVersion = Ini.Read(section, "DisplayVersion", config);
                     packageVersion = Ini.Read(section, "PackageVersion", default(Version), config);

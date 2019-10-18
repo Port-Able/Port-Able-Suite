@@ -37,6 +37,11 @@
                 case "Java":
                 case "Java64":
                 case "JDK":
+                case "JDK64":
+                case "OpenJDK":
+                case "OpenJDK64":
+                case "OpenJDKJRE":
+                case "OpenJDKJRE64":
                     dir = Path.Combine(dir, "bin");
                     if (DirectoryEx.EnumerateFiles(dir, pattern).Any())
                         return true;
@@ -82,10 +87,10 @@
             {
                 if (appData.Settings.NoUpdates)
                 {
-                    if (appData.Settings.NoUpdatesTime == default(DateTime) || Math.Abs((DateTime.Now - appData.Settings.NoUpdatesTime).TotalDays) <= 7d)
+                    if (appData.Settings.NoUpdatesTime == default || Math.Abs((DateTime.Now - appData.Settings.NoUpdatesTime).TotalDays) <= 7d)
                         continue;
                     appData.Settings.NoUpdates = false;
-                    appData.Settings.NoUpdatesTime = default(DateTime);
+                    appData.Settings.NoUpdatesTime = default;
                 }
 
                 if (appData.VersionData.Any())

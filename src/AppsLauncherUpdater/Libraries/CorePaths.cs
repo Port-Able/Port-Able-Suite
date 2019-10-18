@@ -13,7 +13,7 @@
             get
             {
                 if (_appsLauncher == default(string))
-                    _appsLauncher = Path.Combine(PathEx.LocalDir, Environment.Is64BitOperatingSystem ? "AppsLauncher64.exe" : "AppsLauncher.exe");
+                    _appsLauncher = Path.Combine(PathEx.LocalDir, "AppsLauncher.exe");
                 return _appsLauncher;
             }
         }
@@ -24,7 +24,10 @@
             {
                 if (_fileArchiver != default(string))
                     return _fileArchiver;
-                Compaction.SevenZipHelper.Location = Path.Combine(PathEx.LocalDir, Environment.Is64BitOperatingSystem ? "Helper\\7z\\x64" : "Helper\\7z");
+                var path = PathEx.Combine(PathEx.LocalDir, "Helper\\7z");
+                if (Environment.Is64BitProcess)
+                    path = Path.Combine(path, "x64");
+                Compaction.SevenZipHelper.Location = path;
                 if (string.IsNullOrEmpty(Compaction.SevenZipHelper.FilePath))
                     Network.DownloadArchiver();
                 else
@@ -33,7 +36,7 @@
                         var name = Path.GetFileName(file);
                         if (string.IsNullOrEmpty(name))
                             continue;
-                        var path = Path.Combine(CachePaths.UpdateDir, name);
+                        path = Path.Combine(CachePaths.UpdateDir, name);
                         FileEx.Copy(file, path);
                     }
                 Compaction.SevenZipHelper.Location = CachePaths.UpdateDir;
@@ -92,7 +95,7 @@
             {
                 if (_tempDir != default(string))
                     return _tempDir;
-                _tempDir = Path.Combine(HomeDir, "Documents", ".cache");
+                _tempDir = Path.Combine(HomeDir, "Documents\\.cache");
                 if (Directory.Exists(_tempDir))
                     return _tempDir;
                 if (DirectoryEx.Create(_tempDir))

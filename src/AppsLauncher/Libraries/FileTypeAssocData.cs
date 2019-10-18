@@ -62,7 +62,7 @@
             Json.Serialize(_assocData);
 
         private string GetData(string key) =>
-            _assocData.TryGetValue(key, out var value) ? value : default(string);
+            _assocData.TryGetValue(key, out var value) ? value : default;
 
         private void SetData(string key, string value) =>
             _assocData.Update(key, value);
@@ -76,15 +76,11 @@
 
             public void AssociateFileTypes(bool quiet)
             {
-                if (_parent == default(FileTypeAssocData) ||
-                    _parent.AppKey == default(string) ||
-                    _parent.IconId?.All(char.IsDigit) != true ||
-                    !FileEx.Exists(_parent.IconPath) ||
-                    !FileEx.Exists(_parent.StarterPath))
+                if (_parent?.AppKey == null || _parent.IconId?.All(char.IsDigit) != true || !FileEx.Exists(_parent.IconPath) || !FileEx.Exists(_parent.StarterPath))
                     goto Abort;
 
                 var appData = CacheData.FindAppData(_parent.AppKey);
-                if (appData == default(LocalAppData))
+                if (appData == default)
                     goto Abort;
 
                 if (!Elevation.IsAdministrator)
@@ -184,7 +180,7 @@
                 return;
 
                 Cancel:
-                appData.Settings.FileTypeAssoc = default(FileTypeAssocData);
+                appData.Settings.FileTypeAssoc = default;
 
                 Abort:
                 if (!quiet)
@@ -193,11 +189,11 @@
 
             public void LoadRestorePoint(bool quiet)
             {
-                if (_parent == default(FileTypeAssocData) || _parent.AppKey == default(string))
+                if (_parent?.AppKey == null)
                     goto Cancel;
 
                 var appData = CacheData.FindAppData(_parent.AppKey);
-                if (appData == default(LocalAppData))
+                if (appData == default)
                     goto Cancel;
 
                 if (!quiet)
@@ -230,7 +226,7 @@
                     DirectoryEx.TryDelete(restPointDir);
                 }
 
-                appData.Settings.FileTypeAssoc = default(FileTypeAssocData);
+                appData.Settings.FileTypeAssoc = default;
                 if (quiet)
                     return;
 

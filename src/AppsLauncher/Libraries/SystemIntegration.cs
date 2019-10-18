@@ -12,11 +12,17 @@
 
     internal static class SystemIntegration
     {
+        internal static bool IsEnabled =>
+            !Settings.DeveloperVersion && !string.IsNullOrEmpty(EnvironmentEx.GetVariableValue(Settings.EnvironmentVariable));
+
+        internal static bool IsAccurate =>
+            Settings.DeveloperVersion || !IsEnabled || EnvironmentEx.GetVariableValue(Settings.EnvironmentVariable).EqualsEx(PathEx.LocalDir);
+
         internal static void Enable(bool enabled, bool quiet = false)
         {
             if (!Elevation.IsAdministrator)
             {
-                using (var process = ProcessEx.Start(PathEx.LocalPath, $"{ActionGuid.SystemIntegration} {enabled}", true, false))
+                using (var process = ProcessEx.Start(PathEx.LocalPath, $"{ActionGuid.SystemIntegration} {enabled} {quiet}", true, false))
                     if (process?.HasExited == false)
                         process.WaitForExit();
                 return;
@@ -61,24 +67,11 @@
                         else
                             Reg.RemoveSubKey(Registry.ClassesRoot, varKey);
                     }
-                    if (enabled)
-                    {
-                        if (TaskBar.Pin(PathEx.LocalPath))
-                        {
-                            var pinnedDir = PathEx.Combine(Environment.SpecialFolder.ApplicationData, "Microsoft", "Internet Explorer", "Quick Launch", "User Pinned", "TaskBar");
-                            foreach (var file in Directory.GetFiles(pinnedDir, "*.lnk", SearchOption.TopDirectoryOnly))
-                            {
-                                if (!string.Equals(FileEx.GetShellLinkTarget(file), PathEx.LocalPath, StringComparison.CurrentCultureIgnoreCase))
-                                    continue;
-                                ProcessEx.SendHelper.Delete(file);
-                                Environment.SetEnvironmentVariable(Settings.EnvironmentVariable, curDir, EnvironmentVariableTarget.Process);
-                                FileEx.CreateShellLink(curPath, file);
-                                break;
-                            }
-                        }
-                    }
+                    var desktopPath = PathEx.Combine(Environment.SpecialFolder.Desktop, "Apps Launcher.lnk");
+                    if (enabled) 
+                        FileEx.CreateShellLink(curPath, desktopPath);
                     else
-                        TaskBar.Unpin(PathEx.LocalPath);
+                        PathEx.ForceDelete(sendToPath);
 
                     if (enabled)
                         using (var process = ProcessEx.Start(PathEx.LocalPath, ActionGuid.FileTypeAssociationAll, true, false))
@@ -102,11 +95,7 @@
             try
             {
                 var startMenuDir = PathEx.Combine(Environment.SpecialFolder.StartMenu, "Programs");
-#if x86
                 var shortcutPath = Path.Combine(startMenuDir, "Apps Launcher.lnk");
-#else
-                var shortcutPath = Path.Combine(startMenuDir, "Apps Launcher (64-bit).lnk");
-#endif
                 if (Directory.Exists(startMenuDir))
                 {
                     var shortcuts = Directory.GetFiles(startMenuDir, "Apps Launcher*.lnk", SearchOption.TopDirectoryOnly);

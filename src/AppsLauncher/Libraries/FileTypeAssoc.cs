@@ -9,11 +9,14 @@
 
     internal static class FileTypeAssoc
     {
-        internal static void Associate(LocalAppData appData, bool quiet = false, Form owner = default(Form))
+        private static BackgroundWorker _bw;
+
+        internal static void Associate(LocalAppData appData, bool quiet = false, Form owner = default)
         {
             if (appData?.Settings?.FileTypes?.Any() != true)
             {
-                MessageBoxEx.Show(owner, Language.GetText(nameof(en_US.associateBtnMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (!quiet)
+                    MessageBoxEx.Show(owner, Language.GetText(nameof(en_US.associateBtnMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -25,14 +28,15 @@
                     owner.Enabled = false;
                     TaskBarProgress.SetState(owner.Handle, TaskBarProgressFlags.Indeterminate);
                 }
-                var bw = new BackgroundWorker();
-                bw.DoWork += (sender, args) =>
+                _bw?.Dispose();
+                _bw = new BackgroundWorker();
+                _bw.DoWork += (sender, args) =>
                 {
                     using (var process = ProcessEx.Start(PathEx.LocalPath, $"{ActionGuid.FileTypeAssociation} \"{appData.Key}\"", true, false))
                         if (!process?.HasExited == true)
                             process.WaitForExit();
                 };
-                bw.RunWorkerCompleted += (sender, args) =>
+                _bw.RunWorkerCompleted += (sender, args) =>
                 {
                     if (owner == default(Form))
                         return;
@@ -42,7 +46,7 @@
                     owner.Enabled = true;
                     owner.TopMost = true;
                 };
-                bw.RunWorkerAsync();
+                _bw.RunWorkerAsync();
                 return;
             }
 
@@ -71,7 +75,7 @@
             MessageBoxEx.ButtonText.Yes = "App";
             MessageBoxEx.ButtonText.No = "Launcher";
             MessageBoxEx.ButtonText.Cancel = Language.GetText(nameof(en_US.Cancel));
-            var result = MessageBoxEx.Show(Language.GetText(nameof(en_US.AssociateAppWayQuestion)), Settings.Title, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+            var result = !quiet ? MessageBoxEx.Show(Language.GetText(nameof(en_US.AssociateAppWayQuestion)), Settings.Title, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) : DialogResult.Yes;
             switch (result)
             {
                 case DialogResult.Yes:
@@ -94,21 +98,22 @@
             return;
 
             Cancel:
-            MessageBoxEx.Show(owner, Language.GetText(nameof(en_US.OperationCanceledMsg)), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (!quiet)
+                MessageBoxEx.Show(owner, Language.GetText(nameof(en_US.OperationCanceledMsg)), MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         internal static void Associate(LocalAppData appData, Form owner) =>
             Associate(appData, false, owner);
 
-        internal static void Associate(string appName, bool quiet = false, Form owner = default(Form)) =>
+        internal static void Associate(string appName, bool quiet = false, Form owner = default) =>
             Associate(CacheData.FindAppData(appName), quiet, owner);
 
         internal static void Associate(string appName, Form owner) =>
             Associate(CacheData.FindAppData(appName), false, owner);
 
-        internal static void Restore(LocalAppData appData, bool quiet = false, Form owner = default(Form))
+        internal static void Restore(LocalAppData appData, bool quiet = false, Form owner = default)
         {
-            if (appData == default(LocalAppData))
+            if (appData == default)
                 return;
             if (owner != default(Form))
             {
@@ -128,10 +133,10 @@
             owner.TopMost = true;
         }
 
-        internal static void Restore(LocalAppData appData, Form owner = default(Form)) =>
+        internal static void Restore(LocalAppData appData, Form owner = default) =>
             Restore(appData, false, owner);
 
-        internal static void Restore(string appName, bool quiet = false, Form owner = default(Form)) =>
+        internal static void Restore(string appName, bool quiet = false, Form owner = default) =>
             Restore(CacheData.FindAppData(appName), quiet, owner);
 
         internal static void Restore(string appName, Form owner) =>

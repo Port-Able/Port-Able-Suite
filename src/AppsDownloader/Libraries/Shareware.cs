@@ -40,10 +40,10 @@
             Data?.Any() == true;
 
         internal static string Decrypt(string data) =>
-            !string.IsNullOrWhiteSpace(data) ? data.Decode(BinaryToTextEncodings.Base85)?.Decrypt(CacheData.SwDataKey).ToStringDefault() : default(string);
+            !string.IsNullOrWhiteSpace(data) ? data.Decode(BinaryToTextEncodings.Base85)?.Decrypt(CacheData.SwDataKey).ToStringDefault() : default;
 
         internal static string Encrypt(string data) =>
-            !string.IsNullOrWhiteSpace(data) ? data.Encrypt(CacheData.SwDataKey)?.Encode(BinaryToTextEncodings.Base85) : default(string);
+            !string.IsNullOrWhiteSpace(data) ? data.Encrypt(CacheData.SwDataKey)?.Encode(BinaryToTextEncodings.Base85) : default;
 
         internal static string FindAddressKey(string address) =>
             Data.Keys.FirstOrDefault(key => address.EqualsEx(Decrypt(key)));
@@ -52,9 +52,9 @@
             Data.Keys.Select(Decrypt);
 
         internal static string GetUser(string address) =>
-            Data.TryGetValue(FindAddressKey(address), out var value) ? Decrypt(value.Item1) : default(string);
+            Data.TryGetValue(FindAddressKey(address), out var value) ? Decrypt(value.Item1) : default;
 
         internal static string GetPassword(string address) =>
-            Data.TryGetValue(FindAddressKey(address), out var value) ? Decrypt(value.Item2) : default(string);
+            Data.TryGetValue(FindAddressKey(address), out var value) ? Decrypt(value.Item2) : default;
     }
 }

@@ -18,7 +18,7 @@ namespace AppsDownloader.Windows
         public LangSelectionForm(AppData appData)
         {
             _appData = appData;
-            if (_appData == default(AppData))
+            if (_appData == default)
                 throw new ArgumentNullException(nameof(appData));
 
             InitializeComponent();

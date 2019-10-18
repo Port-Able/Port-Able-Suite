@@ -72,7 +72,6 @@ namespace AppsLauncher.Windows
 
             appMenuItem2.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Uac);
             appMenuItem3.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Directory);
-            appMenuItem5.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Pin);
             appMenuItem7.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.RecycleBinEmpty);
             appMenuItem8.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.SystemControl);
             for (var i = 0; i < appMenu.Items.Count; i++)
@@ -164,7 +163,7 @@ namespace AppsLauncher.Windows
                 appsListView.Scrollable = true;
             BackColor = Settings.Window.Colors.Base;
             if (BackgroundImage != default(Image))
-                BackgroundImage = default(Image);
+                BackgroundImage = default;
             this.SetChildVisibility(false, appsListViewPanel);
         }
 
@@ -226,8 +225,7 @@ namespace AppsLauncher.Windows
             try
             {
                 appsListView.Items.Clear();
-                if (appsListView.SmallImageList != default(ImageList))
-                    appsListView.SmallImageList.Images.Clear();
+                appsListView.SmallImageList?.Images.Clear();
                 if (!appsListView.Scrollable)
                     appsListView.Scrollable = true;
 
@@ -275,7 +273,7 @@ namespace AppsLauncher.Windows
                             if (largeImages)
                             {
                                 var sizes = new[] { 32, 40, 48, 64, 96, 128, 256 };
-                                foreach(var size in sizes)
+                                foreach (var size in sizes)
                                 {
                                     imgPath = Path.Combine(imgDir, $"appicon_{size}.png");
                                     if (File.Exists(imgPath))
@@ -393,7 +391,7 @@ namespace AppsLauncher.Windows
             if (selectedItem == default(ListViewItem))
                 return;
             var appData = CacheData.FindAppData(selectedItem.Text);
-            if (appData == default(LocalAppData))
+            if (appData == default)
                 return;
             appData.StartApplication(true);
         }
@@ -499,7 +497,7 @@ namespace AppsLauncher.Windows
                 if (selectedItem == default(ListViewItem))
                     throw new ArgumentNullException(nameof(selectedItem));
                 var appData = CacheData.FindAppData(selectedItem.Text);
-                if (appData == default(LocalAppData))
+                if (appData == default)
                     throw new ArgumentNullException(nameof(appData));
                 if (appData.Name.Equals(e.Label))
                     throw new ArgumentException();
@@ -518,27 +516,6 @@ namespace AppsLauncher.Windows
                 owner.LabelEdit = false;
         }
 
-        private void AppMenu_Opening(object sender, CancelEventArgs e)
-        {
-            e.Cancel = appsListView.SelectedItems.Count == 0;
-            if (e.Cancel)
-                return;
-            var selectedItem = appsListView.SelectedItems.Cast<ListViewItem>().FirstOrDefault();
-            if (selectedItem == default(ListViewItem))
-                return;
-            var appData = CacheData.FindAppData(selectedItem.Text);
-            if (appData == default(LocalAppData))
-                return;
-            if (TaskBar.IsPinned(appData.FilePath))
-            {
-                appMenuItem5.Text = Language.GetText(nameof(en_US.appMenuItem5b));
-                appMenuItem5.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Unpin);
-                return;
-            }
-            appMenuItem5.Text = Language.GetText(nameof(en_US.appMenuItem5));
-            appMenuItem5.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Pin);
-        }
-
         private void AppMenuItem_Click(object sender, EventArgs e)
         {
             if (appsListView.SelectedItems.Count == 0)
@@ -547,7 +524,7 @@ namespace AppsLauncher.Windows
             if (selectedItem == default(ListViewItem))
                 return;
             var appData = CacheData.FindAppData(selectedItem.Text);
-            if (appData == default(LocalAppData))
+            if (appData == default)
                 return;
             var owner = sender as ToolStripMenuItem;
             switch (owner?.Name)
@@ -576,24 +553,6 @@ namespace AppsLauncher.Windows
                     var created = FileEx.CreateShellLink(appData.FilePath, linkPath);
                     MessageBoxEx.CenterMousePointer = !ClientRectangle.Contains(PointToClient(MousePosition));
                     MessageBoxEx.Show(this, Language.GetText(created ? nameof(en_US.appMenuItem4Msg0) : nameof(en_US.appMenuItem4Msg1)), Settings.Title, MessageBoxButtons.OK, created ? MessageBoxIcon.Asterisk : MessageBoxIcon.Warning);
-                    break;
-                }
-                case nameof(appMenuItem5):
-                {
-                    bool applied;
-                    string message;
-                    if (TaskBar.IsPinned(appData.FilePath))
-                    {
-                        applied = TaskBar.Unpin(appData.FilePath);
-                        message = Language.GetText(applied ? nameof(en_US.appMenuItem4Msg2) : nameof(en_US.appMenuItem4Msg3));
-                    }
-                    else
-                    {
-                        applied = TaskBar.Pin(appData.FilePath);
-                        message = Language.GetText(applied ? nameof(en_US.appMenuItem4Msg0) : nameof(en_US.appMenuItem4Msg1));
-                    }
-                    MessageBoxEx.CenterMousePointer = !ClientRectangle.Contains(PointToClient(MousePosition));
-                    MessageBoxEx.Show(this, message, Settings.Title, MessageBoxButtons.OK, applied ? MessageBoxIcon.Asterisk : MessageBoxIcon.Warning);
                     break;
                 }
                 case nameof(appMenuItem6):
@@ -728,7 +687,7 @@ namespace AppsLauncher.Windows
 
         private void SettingsBtn_Click(object sender, EventArgs e)
         {
-            if (!OpenForm(new SettingsForm(default(LocalAppData))))
+            if (!OpenForm(new SettingsForm(default)))
                 return;
             ProcessEx.Start(PathEx.LocalPath, ActionGuid.AllowNewInstance);
             Application.Exit();

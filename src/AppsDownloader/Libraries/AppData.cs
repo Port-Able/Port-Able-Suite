@@ -26,7 +26,7 @@
                        string displayVersion, Version packageVersion, VersionCollection versionData,
                        DownloadCollection downloadCollection, DownloadCollection updateCollection,
                        long downloadSize, long installSize, DataCollection requirements,
-                       bool advanced, byte[] serverKey = default(byte[]))
+                       bool advanced, byte[] serverKey = default)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
@@ -49,7 +49,7 @@
             if (string.IsNullOrWhiteSpace(displayVersion))
                 displayVersion = "1.0.0.0";
 
-            if (packageVersion == default(Version))
+            if (packageVersion == default)
                 packageVersion = new Version("1.0.0.0");
 
             if (versionData == default(VersionCollection))
@@ -114,7 +114,7 @@
             Requirements = (DataCollection)info.GetValue(nameof(Requirements), typeof(DataCollection));
             Advanced = info.GetBoolean(nameof(Advanced));
 
-            ServerKey = default(byte[]);
+            ServerKey = default;
         }
 
         public string Key { get; }
@@ -149,7 +149,7 @@
         {
             get
             {
-                if (_installDir != default(string))
+                if (_installDir != default)
                     return _installDir;
                 var appDir = CorePaths.AppsDir;
                 switch (Key)
@@ -169,7 +169,7 @@
                     return _installDir;
                 }
                 if (!DownloadCollection.Any())
-                    return default(string);
+                    return default;
                 var downloadUrl = DownloadCollection.First().Value.FirstOrDefault()?.Item1;
                 if (downloadUrl?.Any() == true && NetEx.GetShortHost(downloadUrl)?.EqualsEx(AppSupplierHosts.Internal) == true)
                     appDir = downloadUrl.ContainsEx("/.repack/") ? CorePaths.AppDirs.Third() : CorePaths.AppDirs.Second();
@@ -184,15 +184,8 @@
 
         public byte[] ServerKey { get; }
 
-        public AppSettings Settings
-        {
-            get
-            {
-                if (_settings == default(AppSettings))
-                    _settings = new AppSettings(this);
-                return _settings;
-            }
-        }
+        public AppSettings Settings => 
+            _settings ?? (_settings = new AppSettings(this));
 
         [SecurityCritical]
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -209,7 +202,7 @@
                 DownloadCollection?.Any() != true ||
                 DownloadCollection.Values.FirstOrDefault()?.Any() != true ||
                 DownloadCollection.SelectMany(x => x.Value).Any(x => x?.Item1?.StartsWithEx("http") != true ||
-                                                                     x.Item2 == default(string) ||
+                                                                     x.Item2 == default ||
                                                                      x.Item2.Length != Crypto.Md5.HashLength &&
                                                                      x.Item2.Length != Crypto.Sha1.HashLength &&
                                                                      x.Item2.Length != Crypto.Sha256.HashLength &&
@@ -454,7 +447,7 @@
             {
                 get
                 {
-                    if (_archiveLang == default(string))
+                    if (_archiveLang == default)
                         _archiveLang = ReadValue(nameof(ArchiveLang), _parent.DefaultLanguage);
                     if (_parent.DownloadCollection?.ContainsKey(_archiveLang) != true)
                         _archiveLang = _parent.DefaultLanguage;
@@ -501,7 +494,7 @@
             {
                 get
                 {
-                    if (_noUpdatesTime == default(DateTime))
+                    if (_noUpdatesTime == default)
                         _noUpdatesTime = ReadValue(nameof(NoUpdatesTime), default(DateTime));
                     return _noUpdatesTime;
                 }
@@ -512,10 +505,10 @@
                 }
             }
 
-            private TValue ReadValue<TValue>(string key, TValue defValue = default(TValue)) =>
+            private TValue ReadValue<TValue>(string key, TValue defValue = default) =>
                 Ini.Read(_parent.Key, key, defValue);
 
-            private void WriteValue<TValue>(string key, TValue value, TValue defValue = default(TValue))
+            private void WriteValue<TValue>(string key, TValue value, TValue defValue = default)
             {
                 var skipWriteValue = GlobalSettings.SkipWriteValue;
                 GlobalSettings.SkipWriteValue = false;

@@ -118,9 +118,7 @@
                     return _settingsMerges;
                 if (File.Exists(CachePaths.SettingsMerges))
                     _settingsMerges = FileEx.Deserialize<List<string>>(CachePaths.SettingsMerges);
-                if (_settingsMerges == default(List<string>))
-                    _settingsMerges = new List<string>();
-                return _settingsMerges;
+                return _settingsMerges ?? (_settingsMerges = new List<string>());
             }
         }
 
@@ -163,7 +161,7 @@
         internal static LocalAppData FindAppData(string appKeyOrName)
         {
             if (!CurrentAppInfo.Any() || string.IsNullOrWhiteSpace(appKeyOrName))
-                return default(LocalAppData);
+                return default;
             return CurrentAppInfo.FirstOrDefault(x => appKeyOrName.EqualsEx(x.Key, x.Name));
         }
 
@@ -199,7 +197,7 @@
                     continue;
 
                 var current = currentAppInfo.FirstOrDefault(x => x.Key.EqualsEx(key));
-                if (current != default(LocalAppData) && File.Exists(current.FilePath))
+                if (current != default && File.Exists(current.FilePath))
                 {
                     _currentAppInfo.Add(current);
                     continue;
@@ -313,7 +311,7 @@
         {
             FileEx.TryDelete(CachePaths.CurrentImages);
             FileEx.TryDelete(CachePaths.CurrentAppInfo);
-            CurrentAppInfo = default(List<LocalAppData>);
+            CurrentAppInfo = default;
         }
 
         internal static void RemoveInvalidFiles()

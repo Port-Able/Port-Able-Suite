@@ -12,55 +12,31 @@ internal static class Language
     private static string _baseName, _currentLang, _systemLang, _userLang;
     private static Assembly _currentAssembly;
 
-    internal static string BaseName
-    {
-        get
-        {
-            if (_baseName == default(string))
-                _baseName = ResourcesNamespace != default(string) ? ResourcesNamespace + ".LangResources." : default(string);
-            return _baseName;
-        }
-    }
+    internal static string BaseName =>
+        _baseName ?? (_baseName = ResourcesNamespace != default ? ResourcesNamespace + ".LangResources." : default);
 
     internal static Assembly CurrentAssembly
     {
         get
         {
-            if (_currentAssembly == default(Assembly))
-                _currentAssembly = Assembly.Load(Assembly.GetEntryAssembly().GetName().Name);
+            if (_currentAssembly == default)
+                _currentAssembly = Assembly.Load(Assembly.GetEntryAssembly()?.GetName().Name ?? throw new InvalidOperationException());
             return _currentAssembly;
         }
     }
 
     internal static string CurrentLang
     {
-        get
-        {
-            if (_currentLang == default(string))
-                _currentLang = SystemLang;
-            return _currentLang;
-        }
+        get => _currentLang ?? (_currentLang = SystemLang);
         set => _currentLang = value;
     }
 
-    internal static string SystemLang
-    {
-        get
-        {
-            if (_systemLang == default(string))
-                _systemLang = CultureInfo.InstalledUICulture.Name;
-            return _systemLang;
-        }
-    }
+    internal static string SystemLang =>
+        _systemLang ?? (_systemLang = CultureInfo.InstalledUICulture.Name);
 
     internal static string UserLang
     {
-        get
-        {
-            if (_userLang == default(string))
-                _userLang = Ini.Read<string>("Launcher", "Language", SystemLang);
-            return _userLang;
-        }
+        get => _userLang ?? (_userLang = Ini.Read<string>("Launcher", "Language", SystemLang));
         set => _userLang = value;
     }
 

@@ -17,7 +17,7 @@
         public AppTransferor(AppData appData)
         {
             AppData = appData;
-            DestPath = default(string);
+            DestPath = default;
             SrcData = new List<Tuple<string, string, string, bool>>();
             UserData = Tuple.Create(default(string), default(string));
 
@@ -39,19 +39,19 @@
                 if (!pair.Key.EqualsEx(AppData.Settings.ArchiveLang) && (string.IsNullOrEmpty(packageVersion) || !pair.Key.EqualsEx(packageVersion)))
                     continue;
 
-                foreach (var tuple in pair.Value)
+                foreach (var (item1, item2) in pair.Value)
                 {
-                    if (DestPath == default(string))
+                    if (DestPath == default)
                     {
                         if (!DirectoryEx.Create(Settings.TransferDir))
                             continue;
-                        var fileName = Path.GetFileName(tuple.Item1);
+                        var fileName = Path.GetFileName(item1);
                         if (string.IsNullOrEmpty(fileName))
                             continue;
                         DestPath = PathEx.Combine(Settings.TransferDir, fileName);
                     }
 
-                    var shortHost = NetEx.GetShortHost(tuple.Item1);
+                    var shortHost = NetEx.GetShortHost(item1);
                     var redirect = Settings.ForceTransferRedirection || !NetEx.IPv4IsAvalaible && !string.IsNullOrWhiteSpace(shortHost) && !shortHost.EqualsEx(AppSupplierHosts.Internal);
                     string userAgent;
                     List<string> mirrors;
@@ -71,7 +71,7 @@
                             break;
                         default:
                             userAgent = UserAgents.Default;
-                            var srcUrl = tuple.Item1;
+                            var srcUrl = item1;
                             if (AppData.ServerKey != default(byte[]))
                                 foreach (var srv in Shareware.GetAddresses())
                                 {
@@ -82,17 +82,17 @@
                                     UserData = Tuple.Create(Shareware.GetUser(srv), Shareware.GetPassword(srv));
                                     break;
                                 }
-                            SrcData.Add(Tuple.Create(srcUrl, tuple.Item2, userAgent, false));
+                            SrcData.Add(Tuple.Create(srcUrl, item2, userAgent, false));
                             continue;
                     }
 
-                    var sHost = NetEx.GetShortHost(tuple.Item1);
-                    var fhost = tuple.Item1.Substring(0, tuple.Item1.IndexOf(sHost, StringComparison.OrdinalIgnoreCase) + sHost.Length);
+                    var sHost = NetEx.GetShortHost(item1);
+                    var fhost = item1.Substring(0, item1.IndexOf(sHost, StringComparison.OrdinalIgnoreCase) + sHost.Length);
                     foreach (var mirror in mirrors)
                     {
-                        var srcUrl = tuple.Item1;
+                        var srcUrl = item1;
                         if (!fhost.EqualsEx(mirror))
-                            srcUrl = tuple.Item1.Replace(fhost, mirror);
+                            srcUrl = item1.Replace(fhost, mirror);
                         if (SrcData.Any(x => x.Item1.EqualsEx(srcUrl)))
                             continue;
                         if (redirect)
@@ -100,7 +100,7 @@
                             userAgent = UserAgents.Internal;
                             srcUrl = CorePaths.RedirectUrl + srcUrl.Encode();
                         }
-                        SrcData.Add(Tuple.Create(srcUrl, tuple.Item2, userAgent, false));
+                        SrcData.Add(Tuple.Create(srcUrl, item2, userAgent, false));
                         if (Log.DebugMode > 1)
                             Log.Write($"Transfer: '{srcUrl}' has been added.");
                     }
@@ -137,28 +137,28 @@
             }
             for (var i = 0; i < SrcData.Count; i++)
             {
-                var data = SrcData[i];
-                if (data.Item4)
+                var (item1, item2, item3, item4) = SrcData[i];
+                if (item4)
                     continue;
                 if (!FileEx.Delete(DestPath))
                     throw new InvalidOperationException();
 
-                SrcData[i] = Tuple.Create(data.Item1, data.Item2, data.Item3, true);
-                var userAgent = data.Item3;
-                if (!NetEx.FileIsAvailable(data.Item1, UserData.Item1, UserData.Item2, 60000, userAgent))
+                SrcData[i] = Tuple.Create(item1, item2, item3, true);
+                var userAgent = item3;
+                if (!NetEx.FileIsAvailable(item1, UserData.Item1, UserData.Item2, 60000, userAgent))
                 {
                     userAgent = UserAgents.WindowsChrome;
-                    if (!NetEx.FileIsAvailable(data.Item1, UserData.Item1, UserData.Item2, 60000, userAgent))
+                    if (!NetEx.FileIsAvailable(item1, UserData.Item1, UserData.Item2, 60000, userAgent))
                     {
                         if (Log.DebugMode > 0)
-                            Log.Write($"Transfer: Could not find target '{data.Item1}'.");
+                            Log.Write($"Transfer: Could not find target '{item1}'.");
                         continue;
                     }
                 }
                 if (Log.DebugMode > 0)
-                    Log.Write($"Transfer{(!string.IsNullOrEmpty(userAgent) ? $" [{userAgent}]" : string.Empty)}: '{data.Item1}' has been found.");
+                    Log.Write($"Transfer{(!string.IsNullOrEmpty(userAgent) ? $" [{userAgent}]" : string.Empty)}: '{item1}' has been found.");
 
-                Transfer.DownloadFile(data.Item1, DestPath, UserData.Item1, UserData.Item2, true, 60000, userAgent, false);
+                Transfer.DownloadFile(item1, DestPath, UserData.Item1, UserData.Item2, true, 60000, userAgent, false);
                 DownloadStarted = true;
             }
         }
@@ -171,13 +171,13 @@
 
             const string nonHash = "None";
             var fileHash = default(string);
-            foreach (var data in SrcData)
+            foreach (var (_, item2, _, item4) in SrcData)
             {
-                if (!data.Item4)
+                if (!item4)
                     continue;
 
-                if (fileHash == default(string) || fileHash == nonHash)
-                    switch (data.Item2.Length)
+                if (fileHash == default || fileHash == nonHash)
+                    switch (item2.Length)
                     {
                         case Crypto.Md5.HashLength:
                             fileHash = DestPath.EncryptFile();
@@ -199,7 +199,7 @@
                             break;
                     }
 
-                if (fileHash != nonHash && !fileHash.EqualsEx(data.Item2))
+                if (fileHash != nonHash && !fileHash.EqualsEx(item2))
                     switch (MessageBoxEx.Show(string.Format(Language.GetText(nameof(en_US.ChecksumErrorMsg)), Path.GetFileName(DestPath)), Settings.Title, MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button3))
                     {
                         case DialogResult.Ignore:
