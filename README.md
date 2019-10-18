@@ -32,7 +32,7 @@ But to be honest, my focus isn't only to get applications for my portable device
 
 ### Requirements (Developer):
 - Microsoft Windows 7 or higher (64-bit)
-- [Microsoft Visual Studio 2017 + .NET Framework 4.7 SDK](https://www.visualstudio.com/downloads/)
+- [Microsoft Visual Studio 2019 + .NET Framework 4.7 SDK](https://www.visualstudio.com/downloads/)
 - [Si13n7 Dev.™ CSharp Library Binaries](https://github.com/Si13n7/SilDev.CSharpLib/)
 
 ## Would you like to help?
