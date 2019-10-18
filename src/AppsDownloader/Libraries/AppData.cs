@@ -159,6 +159,11 @@
                     case "Java":
                     case "Java64":
                     case "JDK":
+                    case "JDK64":
+                    case "OpenJDK":
+                    case "OpenJDK64":
+                    case "OpenJDKJRE":
+                    case "OpenJDKJRE64":
                         _installDir = Path.Combine(appDir, "CommonFiles", Key);
                         return _installDir;
                 }
@@ -304,7 +309,7 @@
 
                         for (var i = 0; i < item.Count; i++)
                         {
-                            var tuple = item[i];
+                            var (item1, item2) = item[i];
 
                             sb.Append(' ', width * 2);
                             if (item.Count > 10 && i < 10)
@@ -316,11 +321,11 @@
                             sb.AppendLine("{");
 
                             sb.Append(' ', width * 3);
-                            sb.AppendFormat("Item1: '{0}',", tuple.Item1);
+                            sb.AppendFormat("Item1: '{0}',", item1);
                             sb.AppendLine();
 
                             sb.Append(' ', width * 3);
-                            sb.AppendFormat("Item2: '{0}'", tuple.Item2);
+                            sb.AppendFormat("Item2: '{0}'", item2);
                             sb.AppendLine();
 
                             sb.Append(' ', width * 2);
@@ -362,7 +367,7 @@
 
                                 for (var j = 0; j < value.Count; j++)
                                 {
-                                    var tuple = value[j];
+                                    var (item1, item2) = value[j];
 
                                     sb.Append(' ', width * 3);
                                     sb.AppendFormat("{0}:", j);
@@ -372,11 +377,11 @@
                                     sb.AppendLine("{");
 
                                     sb.Append(' ', width * 4);
-                                    sb.AppendFormat("Item1: '{0}',", tuple.Item1);
+                                    sb.AppendFormat("Item1: '{0}',", item1);
                                     sb.AppendLine();
 
                                     sb.Append(' ', width * 4);
-                                    sb.AppendFormat("Item2: '{0}'", tuple.Item2);
+                                    sb.AppendFormat("Item2: '{0}'", item2);
                                     sb.AppendLine();
 
                                     sb.Append(' ', width * 3);

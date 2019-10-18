@@ -531,8 +531,21 @@
                 #region Misc
 
                 var requires = Ini.Read(section, "Requires", default(string), config);
-                if (string.IsNullOrEmpty(requires) && section.EqualsEx("jPortableBrowserSwitch"))
-                    requires = "Java|Java64";
+                if (string.IsNullOrEmpty(requires))
+                {
+                    switch (section)
+                    {
+                        case "FirefoxPortablePrivateWindow":
+                            requires = "FirefoxPortable";
+                            break;
+                        case "GoogleChromePortableIncognito":
+                            requires = "GoogleChromePortable";
+                            break;
+                        case "jPortableBrowserSwitch":
+                            requires = "Java|Java64";
+                            break;
+                    }
+                }
                 var requiresList = new List<string>();
                 if (!string.IsNullOrEmpty(requires))
                 {
