@@ -139,4 +139,16 @@
   <data name="Logo256px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Logo256px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ConfigSection" xml:space="preserve">
+    <value>Launcher</value>
+  </data>
+  <data name="GlobalTitle" xml:space="preserve">
+    <value>Apps Launcher</value>
+  </data>
+  <data name="LeftArrow" xml:space="preserve">
+    <value>&lt;=</value>
+  </data>
+  <data name="Separator" xml:space="preserve">
+    <value>|</value>
+  </data>
 </root>

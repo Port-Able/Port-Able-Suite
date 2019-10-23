@@ -119,12 +119,30 @@ namespace Updater.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Launcher.
+        /// </summary>
+        internal static string ConfigSection {
+            get {
+                return ResourceManager.GetString("ConfigSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap diagonal_pattern {
             get {
                 object obj = ResourceManager.GetObject("diagonal_pattern", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Port-Able Suite Updater.
+        /// </summary>
+        internal static string GlobalTitle {
+            get {
+                return ResourceManager.GetString("GlobalTitle", resourceCulture);
             }
         }
         
