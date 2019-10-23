@@ -263,11 +263,12 @@
                 var appInfo = NetEx.Transfer.DownloadString(url, usr, pwd, 60000, UserAgents.Default);
                 if (string.IsNullOrWhiteSpace(appInfo))
                     continue;
-                UpdateAppInfoData(appInfo, null, key.Decode(BinaryToTextEncoding.Base85));
+                var srvKey = key?.Decode(BinaryToTextEncoding.Base85);
+                UpdateAppInfoData(appInfo, null, srvKey?.Any() == true ? new ReadOnlyCollection<byte>(srvKey) : default);
             }
         }
 
-        private static void UpdateAppInfoData(string config, string[] blacklist = null, byte[] serverKey = null)
+        private static void UpdateAppInfoData(string config, string[] blacklist = null, ReadOnlyCollection<byte> serverKey = default)
         {
             var sectionContainsFilter = new[]
             {
@@ -337,7 +338,7 @@
                 #region Category
 
                 var category = Ini.Read(section, "Category", config)?.ReduceWhiteSpace().Replace("&", "and");
-                if (serverKey != null)
+                if (serverKey != default)
                 {
                     var custom = Language.GetText(nameof(en_US.listViewGroup12));
                     category = category.Trim('*', '#');

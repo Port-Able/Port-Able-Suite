@@ -1,7 +1,6 @@
 ﻿namespace AppsDownloader.Libraries
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Globalization;
     using System.IO;
@@ -13,6 +12,7 @@
     using SilDev;
     using DataCollection = System.Collections.ObjectModel.ReadOnlyCollection<string>;
     using DownloadCollection = System.Collections.ObjectModel.ReadOnlyDictionary<string, System.Collections.ObjectModel.ReadOnlyCollection<System.Tuple<string, string>>>;
+    using KeyCollection = System.Collections.ObjectModel.ReadOnlyCollection<byte>;
     using VersionCollection = System.Collections.ObjectModel.ReadOnlyCollection<System.Tuple<string, string>>;
     using GlobalSettings = Settings;
 
@@ -29,7 +29,7 @@
                        string displayVersion, Version packageVersion, VersionCollection versionData,
                        DownloadCollection downloadCollection, DownloadCollection updateCollection,
                        long downloadSize, long installSize, DataCollection requirements,
-                       bool advanced, IList<byte> serverKey = default)
+                       bool advanced, KeyCollection serverKey = default)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
@@ -88,7 +88,7 @@
             Requirements = requirements;
             Advanced = advanced;
 
-            ServerKey = serverKey != null ? new ReadOnlyCollection<byte>(serverKey) : default;
+            ServerKey = serverKey;
         }
 
         private AppData(SerializationInfo info, StreamingContext context)
@@ -97,7 +97,7 @@
                 throw new ArgumentNullException(nameof(info));
 
             if (Log.DebugMode > 1)
-                Log.Write($"{nameof(AppData)} - {nameof(StreamingContext)} : {Json.Serialize(context)}");
+                Log.Write($"{nameof(AppData)}.ctor({nameof(SerializationInfo)}, {nameof(StreamingContext)}) => info: {Json.Serialize(context)}, context: {Json.Serialize(context)}");
 
             Key = info.GetString(nameof(Key));
             Name = info.GetString(nameof(Name));
@@ -204,8 +204,8 @@
             if (info == null)
                 throw new ArgumentNullException(nameof(info));
 
-            if ((context.State & StreamingContextStates.CrossMachine) != 0)
-                throw new SerializationException();
+            if (Log.DebugMode > 1)
+                Log.Write($"{nameof(AppData)}.get({nameof(SerializationInfo)}, {nameof(StreamingContext)}) => info: {Json.Serialize(context)}, context: {Json.Serialize(context)}");
 
             // used for custom servers, custom server data should never be serialized
             if (ServerKey != null)

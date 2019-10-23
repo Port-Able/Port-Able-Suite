@@ -59,7 +59,7 @@
                 throw new ArgumentNullException(nameof(info));
 
             if (Log.DebugMode > 1)
-                Log.Write($"{nameof(LocalAppData)} - {nameof(StreamingContext)} : {Json.Serialize(context)}");
+                Log.Write($"{nameof(LocalAppData)}.ctor({nameof(SerializationInfo)}, {nameof(StreamingContext)}) => info: {Json.Serialize(context)}, context: {Json.Serialize(context)}");
 
             Key = info.GetString(nameof(Key));
             Name = info.GetString(nameof(Name));
@@ -107,6 +107,9 @@
         {
             if (info == null)
                 throw new ArgumentNullException(nameof(info));
+
+            if (Log.DebugMode > 1)
+                Log.Write($"{nameof(LocalAppData)}.ctor({nameof(SerializationInfo)}, {nameof(StreamingContext)}) => info: {Json.Serialize(context)}, context: {Json.Serialize(context)}");
 
             info.AddValue(nameof(Key), Key);
             info.AddValue(nameof(Name), Name);
