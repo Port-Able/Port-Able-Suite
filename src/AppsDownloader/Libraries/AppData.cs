@@ -95,8 +95,9 @@
         {
             if (info == null)
                 throw new ArgumentNullException(nameof(info));
-            if ((context.State & StreamingContextStates.CrossMachine) != 0)
-                throw new SerializationException();
+
+            if (Log.DebugMode > 1)
+                Log.Write($"{nameof(AppData)} - {nameof(StreamingContext)} : {Json.Serialize(context)}");
 
             Key = info.GetString(nameof(Key));
             Name = info.GetString(nameof(Name));
