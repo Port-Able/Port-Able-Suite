@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Port-Able Suite Updater")]
@@ -14,4 +15,6 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("a0969572-f61a-453b-9043-e9d1fa8e8240")]
 
-[assembly: AssemblyVersion("19.10.18.0")]
+[assembly: AssemblyVersion("19.10.23.0")]
+
+[assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.MainAssembly)]
