@@ -78,7 +78,7 @@ namespace Updater.Windows
                     var changes = new Dictionary<string, List<string>>();
                     foreach (var entry in document.Descendants($"{nspace}feed").Descendants($"{nspace}entry"))
                     {
-                        var time = DateTime.Parse(entry.Descendants($"{nspace}updated").Single().Value);
+                        var time = DateTime.Parse(entry.Descendants($"{nspace}updated").Single().Value, CultureInfo.InvariantCulture);
                         var timeStr = time.ToString("dd MMMM yyyy", CultureInfo.CreateSpecificCulture("en-US"));
                         if (!changes.ContainsKey(timeStr))
                             changes.Add(timeStr, new List<string>());
@@ -110,10 +110,10 @@ namespace Updater.Windows
                         }
                         builder.AppendLine();
                     }
-                    if (SetChangeLogText(string.Format(Resources.ChangeLogTemplate, builder)))
+                    if (SetChangeLogText(string.Format(CultureInfo.InvariantCulture, Resources.ChangeLogTemplate, builder)))
                         return;
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ex.IsCaught())
                 {
                     Log.Write(ex);
                 }
@@ -220,7 +220,7 @@ namespace Updater.Windows
                     else
                         LastStamp = lastStamp;
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ex.IsCaught())
                 {
                     Log.Write(ex);
                 }
@@ -295,13 +295,13 @@ namespace Updater.Windows
                     var file = PathEx.Combine(PathEx.LocalDir, $"{key}.exe");
                     if (!File.Exists(file))
                         file = Path.Combine(CorePaths.HomeDir, $"{key}.exe");
-                    if (Ini.Read("SHA256", key, HashInfo).EqualsEx(file.EncryptFile(ChecksumAlgorithms.Sha256)))
+                    if (Ini.Read("SHA256", key, HashInfo).EqualsEx(file.EncryptFile(ChecksumAlgorithm.Sha256)))
                         continue;
                     updateAvailable = true;
                     break;
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
                 Environment.ExitCode = 1;
@@ -372,7 +372,7 @@ namespace Updater.Windows
                 Process.Start(e.LinkText);
                 WindowState = FormWindowState.Minimized;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }
@@ -392,7 +392,7 @@ namespace Updater.Windows
                     if (!NetEx.FileIsAvailable(downloadPath, 60000, UserAgents.Default))
                         throw new PathNotFoundException(downloadPath);
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ex.IsCaught())
                 {
                     Log.Write(ex);
                     downloadPath = null;
@@ -412,7 +412,7 @@ namespace Updater.Windows
                     if (!exist)
                         throw new PathNotFoundException(downloadPath);
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ex.IsCaught())
                 {
                     Log.Write(ex);
                     downloadPath = null;
@@ -425,7 +425,7 @@ namespace Updater.Windows
                 Transferor.DownloadFile(downloadPath, CachePaths.UpdatePath, 60000, !string.IsNullOrWhiteSpace(LastStamp) ? UserAgents.Default : UserAgents.Internal);
                 checkDownload.Enabled = true;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex, true);
             }
@@ -454,10 +454,10 @@ namespace Updater.Windows
                 if (!Ini.Read("MD5", lastStamp, HashInfo).EqualsEx(CachePaths.UpdatePath.EncryptFile()))
                     throw new InvalidOperationException();
 
-                var helper = string.Format(Resources.BatchDummy, ActionGuid.CurrentAction.RemoveChar('{', '}'), CorePaths.HomeDir.TrimEnd('\\'), Guid.NewGuid());
+                var helper = string.Format(CultureInfo.InvariantCulture, Resources.BatchDummy, ActionGuid.CurrentAction.RemoveChar('{', '}'), CorePaths.HomeDir.TrimEnd('\\'), Guid.NewGuid());
                 File.WriteAllText(CachePaths.UpdateHelperPath, helper);
 
-                var regPath = Path.Combine(Settings.RegistryPath, CorePaths.HomeDir.Encrypt(ChecksumAlgorithms.Adler32));
+                var regPath = Path.Combine(Settings.RegistryPath, CorePaths.HomeDir.Encrypt(ChecksumAlgorithm.Adler32));
                 var elevated = Reg.SubKeyExists(regPath) && Reg.GetSubKeys(regPath)?.Any() == true;
                 if (elevated)
                     Reg.RemoveSubKey(regPath);
@@ -465,7 +465,7 @@ namespace Updater.Windows
                 ProcessEx.Start(CachePaths.UpdateHelperPath, elevated, ProcessWindowStyle.Hidden);
                 Application.Exit();
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
                 MessageBoxEx.Show(this, Language.GetText(nameof(en_US.InstallErrorMsg)), MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -482,7 +482,7 @@ namespace Updater.Windows
                     Transferor.CancelAsync();
                 DirectoryEx.Delete(CachePaths.UpdateDir);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }
@@ -495,7 +495,7 @@ namespace Updater.Windows
             {
                 statusTableLayoutPanel.ColumnStyles[0].Width = progressLabel.Width + 8;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }
@@ -510,11 +510,11 @@ namespace Updater.Windows
             {
                 foreach (var key in Ini.GetKeys("SHA256", HashInfo))
                 {
-                    Process.Start(string.Format(CorePaths.VirusTotalUrl, Ini.Read("SHA256", key, HashInfo)));
+                    Process.Start(string.Format(CultureInfo.InvariantCulture, CorePaths.VirusTotalUrl, Ini.Read("SHA256", key, HashInfo)));
                     Thread.Sleep(200);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }

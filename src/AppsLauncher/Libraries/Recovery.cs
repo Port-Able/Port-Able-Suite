@@ -7,6 +7,7 @@
     using System.Windows.Forms;
     using LangResources;
     using Microsoft.Win32;
+    using Properties;
     using SilDev;
 
     internal static class Recovery
@@ -37,9 +38,8 @@
 
                 try
                 {
-                    foreach (var dir in CorePaths.AppDirs)
-                        if (!Directory.Exists(dir))
-                            throw new PathNotFoundException(dir);
+                    foreach (var dir in CorePaths.AppDirs.Where(dir => !Directory.Exists(dir)))
+                        throw new PathNotFoundException(dir);
                 }
                 catch (PathNotFoundException ex)
                 {
@@ -53,9 +53,9 @@
                 {
                     var envDir = EnvironmentEx.GetVariableValue(Settings.EnvironmentVariable);
                     if (!Settings.DeveloperVersion && !string.IsNullOrWhiteSpace(envDir) && !envDir.EqualsEx(PathEx.LocalDir))
-                        throw new ArgumentException();
+                        throw new ArgumentInvalidException(nameof(envDir));
                 }
-                catch (ArgumentException ex)
+                catch (ArgumentInvalidException ex)
                 {
                     Log.Write(ex);
                     if (!repair)
@@ -76,7 +76,7 @@
             else
             {
                 Language.ResourcesNamespace = typeof(Program).Namespace;
-                if (MessageBox.Show(Language.GetText(nameof(en_US.RequirementsErrorMsg)), Settings.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+                if (MessageBox.Show(Language.GetText(nameof(en_US.RequirementsErrorMsg)), Resources.GlobalTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
                 {
                     var path = PathEx.AltCombine(CorePaths.RepositoryUrl, "releases/latest");
                     Process.Start(path);
@@ -249,7 +249,7 @@
                 if (subKeys.Select(x => Path.Combine(x, "shell\\portableapps")).Any(varKey => Reg.SubKeyExists(Registry.ClassesRoot, varKey)))
                     SystemIntegration.Enable(true, true);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }

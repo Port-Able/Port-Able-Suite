@@ -1,6 +1,9 @@
 ﻿namespace AppsDownloader.Libraries
 {
     using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Net;
@@ -26,7 +29,7 @@
                        string displayVersion, Version packageVersion, VersionCollection versionData,
                        DownloadCollection downloadCollection, DownloadCollection updateCollection,
                        long downloadSize, long installSize, DataCollection requirements,
-                       bool advanced, byte[] serverKey = default)
+                       bool advanced, IList<byte> serverKey = default)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
@@ -85,13 +88,15 @@
             Requirements = requirements;
             Advanced = advanced;
 
-            ServerKey = serverKey;
+            ServerKey = serverKey != null ? new ReadOnlyCollection<byte>(serverKey) : default;
         }
 
         private AppData(SerializationInfo info, StreamingContext context)
         {
             if (info == null)
                 throw new ArgumentNullException(nameof(info));
+            if ((context.State & StreamingContextStates.CrossMachine) != 0)
+                throw new SerializationException();
 
             Key = info.GetString(nameof(Key));
             Name = info.GetString(nameof(Name));
@@ -167,7 +172,7 @@
                         _installDir = Path.Combine(appDir, "CommonFiles", Key);
                         return _installDir;
                 }
-                if (ServerKey != default(byte[]))
+                if (ServerKey != default)
                 {
                     appDir = CorePaths.AppDirs.Last();
                     _installDir = Path.Combine(appDir, Key.TrimEnd('#'));
@@ -187,9 +192,9 @@
 
         public bool Advanced { get; set; }
 
-        public byte[] ServerKey { get; }
+        public ReadOnlyCollection<byte> ServerKey { get; }
 
-        public AppSettings Settings => 
+        public AppSettings Settings =>
             _settings ?? (_settings = new AppSettings(this));
 
         [SecurityCritical]
@@ -197,6 +202,9 @@
         {
             if (info == null)
                 throw new ArgumentNullException(nameof(info));
+
+            if ((context.State & StreamingContextStates.CrossMachine) != 0)
+                throw new SerializationException();
 
             // used for custom servers, custom server data should never be serialized
             if (ServerKey != null)
@@ -240,7 +248,7 @@
         }
 
         public bool Equals(AppData appData) =>
-            Equals(GetHashCode(), appData.GetHashCode());
+            Equals(GetHashCode(), appData?.GetHashCode());
 
         public override bool Equals(object obj)
         {
@@ -250,7 +258,7 @@
         }
 
         public override int GetHashCode() =>
-            ServerKey != default(byte[]) ? Tuple.Create(Key.ToLower(), ServerKey).GetHashCode() : Key.ToLower().GetHashCode();
+            ServerKey != default ? Tuple.Create(Key.ToUpperInvariant(), ServerKey.ToArray().Encode()).GetHashCode() : Key.ToUpperInvariant().GetHashCode();
 
         public void ToString(StringBuilder sb)
         {
@@ -264,10 +272,10 @@
                 {
                     case AppSettings _:
                         continue;
-                    case byte[] item:
+                    case ReadOnlyCollection<byte> item:
                     {
                         sb.Append(' ', width);
-                        sb.AppendFormat("{0}: '{1}'", pi.Name, item.Encode());
+                        sb.AppendFormat(CultureInfo.InvariantCulture, "{0}: '{1}'", pi.Name, item.ToArray().Encode());
                         break;
                     }
                     case DataCollection item:
@@ -276,7 +284,7 @@
                             continue;
 
                         sb.Append(' ', width);
-                        sb.AppendFormat("{0}:", pi.Name);
+                        sb.AppendFormat(CultureInfo.InvariantCulture, "{0}:", pi.Name);
                         sb.AppendLine();
 
                         sb.Append(' ', width);
@@ -286,7 +294,7 @@
                             sb.Append(' ', width * 2);
                             if (item.Count > 10 && i < 10)
                                 sb.Append(" ");
-                            sb.AppendFormat("{0}: '{1}'", i, item[i]);
+                            sb.AppendFormat(CultureInfo.InvariantCulture, "{0}: '{1}'", i, item[i]);
                             if (i < item.Count - 1)
                                 sb.AppendLine(",");
                         }
@@ -301,7 +309,7 @@
                             continue;
 
                         sb.Append(' ', width);
-                        sb.AppendFormat("{0}:", pi.Name);
+                        sb.AppendFormat(CultureInfo.InvariantCulture, "{0}:", pi.Name);
                         sb.AppendLine();
 
                         sb.Append(' ', width);
@@ -314,18 +322,18 @@
                             sb.Append(' ', width * 2);
                             if (item.Count > 10 && i < 10)
                                 sb.Append(" ");
-                            sb.AppendFormat("{0}:", i);
+                            sb.AppendFormat(CultureInfo.InvariantCulture, "{0}:", i);
                             sb.AppendLine();
 
                             sb.Append(' ', width * 2);
                             sb.AppendLine("{");
 
                             sb.Append(' ', width * 3);
-                            sb.AppendFormat("Item1: '{0}',", item1);
+                            sb.AppendFormat(CultureInfo.InvariantCulture, "Item1: '{0}',", item1);
                             sb.AppendLine();
 
                             sb.Append(' ', width * 3);
-                            sb.AppendFormat("Item2: '{0}'", item2);
+                            sb.AppendFormat(CultureInfo.InvariantCulture, "Item2: '{0}'", item2);
                             sb.AppendLine();
 
                             sb.Append(' ', width * 2);
@@ -345,7 +353,7 @@
                             continue;
 
                         sb.Append(' ', width);
-                        sb.AppendFormat("{0}:", pi.Name);
+                        sb.AppendFormat(CultureInfo.InvariantCulture, "{0}:", pi.Name);
                         sb.AppendLine();
 
                         sb.Append(' ', width);
@@ -357,7 +365,7 @@
                             var key = keys.Just(i);
 
                             sb.Append(' ', width * 2);
-                            sb.AppendFormat("'{0}':", key);
+                            sb.AppendFormat(CultureInfo.InvariantCulture, "'{0}':", key);
                             if (item.TryGetValue(key, out var value) && value.Any())
                             {
                                 sb.AppendLine();
@@ -370,18 +378,18 @@
                                     var (item1, item2) = value[j];
 
                                     sb.Append(' ', width * 3);
-                                    sb.AppendFormat("{0}:", j);
+                                    sb.AppendFormat(CultureInfo.InvariantCulture, "{0}:", j);
                                     sb.AppendLine();
 
                                     sb.Append(' ', width * 3);
                                     sb.AppendLine("{");
 
                                     sb.Append(' ', width * 4);
-                                    sb.AppendFormat("Item1: '{0}',", item1);
+                                    sb.AppendFormat(CultureInfo.InvariantCulture, "Item1: '{0}',", item1);
                                     sb.AppendLine();
 
                                     sb.Append(' ', width * 4);
-                                    sb.AppendFormat("Item2: '{0}'", item2);
+                                    sb.AppendFormat(CultureInfo.InvariantCulture, "Item2: '{0}'", item2);
                                     sb.AppendLine();
 
                                     sb.Append(' ', width * 3);
@@ -409,10 +417,10 @@
                             continue;
                         var value = obj;
                         if (value is long num)
-                            value = num.FormatSize(SizeOptions.Trim);
+                            value = num.FormatSize(SizeOption.Trim);
                         sb.Append(' ', width);
-                        sb.AppendFormat("{0}: '{1}'", pi.Name, value);
-                        if (pi.Name != nameof(Advanced) || ServerKey != default(byte[]))
+                        sb.AppendFormat(CultureInfo.InvariantCulture, "{0}: '{1}'", pi.Name, value);
+                        if (pi.Name != nameof(Advanced) || ServerKey != default)
                             sb.AppendLine(",");
                         break;
                     }

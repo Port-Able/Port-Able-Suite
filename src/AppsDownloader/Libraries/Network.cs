@@ -2,6 +2,7 @@
 {
     using System.Windows.Forms;
     using LangResources;
+    using Properties;
     using SilDev;
     using SilDev.Forms;
 
@@ -19,7 +20,7 @@
                     return (bool)_internetIsAvailable;
                 _internetIsAvailable = NetEx.IPv6IsAvalaible;
                 if (_internetIsAvailable == true)
-                    MessageBoxEx.Show(Language.GetText(nameof(en_US.InternetProtocolWarningMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBoxEx.Show(Language.GetText(nameof(en_US.InternetProtocolWarningMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return (bool)_internetIsAvailable;
             }
         }

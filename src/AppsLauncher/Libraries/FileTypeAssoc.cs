@@ -1,9 +1,11 @@
 ﻿namespace AppsLauncher.Libraries
 {
     using System.ComponentModel;
+    using System.Globalization;
     using System.Linq;
     using System.Windows.Forms;
     using LangResources;
+    using Properties;
     using SilDev;
     using SilDev.Forms;
 
@@ -16,17 +18,17 @@
             if (appData?.Settings?.FileTypes?.Any() != true)
             {
                 if (!quiet)
-                    MessageBoxEx.Show(owner, Language.GetText(nameof(en_US.associateBtnMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBoxEx.Show(owner, Language.GetText(nameof(en_US.associateBtnMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (!Elevation.IsAdministrator)
             {
-                if (owner != default(Form))
+                if (owner != default)
                 {
                     owner.TopMost = false;
                     owner.Enabled = false;
-                    TaskBarProgress.SetState(owner.Handle, TaskBarProgressFlags.Indeterminate);
+                    TaskBarProgress.SetState(owner.Handle, TaskBarProgressState.Indeterminate);
                 }
                 _bw?.Dispose();
                 _bw = new BackgroundWorker();
@@ -38,9 +40,9 @@
                 };
                 _bw.RunWorkerCompleted += (sender, args) =>
                 {
-                    if (owner == default(Form))
+                    if (owner == default)
                         return;
-                    TaskBarProgress.SetState(owner.Handle, TaskBarProgressFlags.NoProgress);
+                    TaskBarProgress.SetState(owner.Handle, TaskBarProgressState.NoProgress);
                     if (WinApi.NativeHelper.GetForegroundWindow() != owner.Handle)
                         WinApi.NativeHelper.SetForegroundWindow(owner.Handle);
                     owner.Enabled = true;
@@ -64,7 +66,7 @@
                 if (!string.IsNullOrEmpty(dialog.IconPath))
                 {
                     assocData.IconPath = dialog.IconPath;
-                    assocData.IconId = dialog.IconId.ToString();
+                    assocData.IconId = dialog.IconId.ToString(CultureInfo.InvariantCulture);
                 }
             }
 
@@ -75,7 +77,7 @@
             MessageBoxEx.ButtonText.Yes = "App";
             MessageBoxEx.ButtonText.No = "Launcher";
             MessageBoxEx.ButtonText.Cancel = Language.GetText(nameof(en_US.Cancel));
-            var result = !quiet ? MessageBoxEx.Show(Language.GetText(nameof(en_US.AssociateAppWayQuestion)), Settings.Title, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) : DialogResult.Yes;
+            var result = !quiet ? MessageBoxEx.Show(Language.GetText(nameof(en_US.AssociateAppWayQuestion)), Resources.GlobalTitle, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) : DialogResult.Yes;
             switch (result)
             {
                 case DialogResult.Yes:
@@ -115,18 +117,18 @@
         {
             if (appData == default)
                 return;
-            if (owner != default(Form))
+            if (owner != default)
             {
                 owner.TopMost = false;
                 owner.Enabled = false;
-                TaskBarProgress.SetState(owner.Handle, TaskBarProgressFlags.Indeterminate);
+                TaskBarProgress.SetState(owner.Handle, TaskBarProgressState.Indeterminate);
                 Settings.WriteToFile(true);
             }
             var assocData = appData.Settings.FileTypeAssoc;
             assocData?.SystemRegistryAccess?.LoadRestorePoint(quiet);
-            if (owner == default(Form))
+            if (owner == default)
                 return;
-            TaskBarProgress.SetState(owner.Handle, TaskBarProgressFlags.NoProgress);
+            TaskBarProgress.SetState(owner.Handle, TaskBarProgressState.NoProgress);
             if (WinApi.NativeHelper.GetForegroundWindow() != owner.Handle)
                 WinApi.NativeHelper.SetForegroundWindow(owner.Handle);
             owner.Enabled = true;

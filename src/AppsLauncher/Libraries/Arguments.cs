@@ -24,7 +24,7 @@
                 if (_fileTypes.Any() || !ValidPaths.Any())
                     return _fileTypes;
                 var comparer = new Comparison.AlphanumericComparer();
-                _fileTypes = ValidPaths.Where(x => !PathEx.IsDir(x)).Select(x => Path.GetExtension(x)?.TrimStart('.').ToLower())
+                _fileTypes = ValidPaths.Where(x => !PathEx.IsDir(x)).Select(x => Path.GetExtension(x)?.TrimStart('.').ToLowerInvariant())
                                        .Where(Comparison.IsNotEmpty).Distinct().OrderBy(x => x, comparer).ToList();
                 return _fileTypes;
             }
@@ -39,7 +39,7 @@
                 if (_savedFileTypes.Count > 0)
                     return _savedFileTypes;
                 var comparer = new Comparison.AlphanumericComparer();
-                var types = CacheData.CurrentAppSections.Aggregate(string.Empty, (x, y) => x + $"{Ini.Read(y, "FileTypes").RemoveChar('*', '.')},").ToLower();
+                var types = CacheData.CurrentAppSections.Aggregate(string.Empty, (x, y) => x + $"{Ini.Read(y, "FileTypes").RemoveChar('*', '.')},").ToLowerInvariant();
                 _savedFileTypes = types.Split(',').Where(Comparison.IsNotEmpty).Distinct().OrderBy(x => x, comparer).ToList();
                 return _savedFileTypes;
             }
@@ -124,7 +124,7 @@
                         continue;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ex.IsCaught())
                 {
                     Log.Write(ex);
                     continue;

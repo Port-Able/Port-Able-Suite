@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -14,8 +15,6 @@
 
     internal static class Settings
     {
-        internal const string Section = "Downloader";
-        internal const string Title = "Apps Downloader";
         private static bool? _forceTransferRedirection;
         private static string _machineId, _transferDir;
         private static string[] _nsisButtons;
@@ -25,22 +24,22 @@
             get
             {
                 if (!_forceTransferRedirection.HasValue)
-                    _forceTransferRedirection = Ini.Read(Section, nameof(ForceTransferRedirection), false);
+                    _forceTransferRedirection = Ini.Read(Resources.ConfigSection, nameof(ForceTransferRedirection), false);
                 return (bool)_forceTransferRedirection;
             }
         }
 
-        internal static string MachineId => 
-            _machineId ?? (_machineId = EnvironmentEx.MachineId.ToString().Encrypt().Substring(24));
+        internal static string MachineId =>
+            _machineId ?? (_machineId = EnvironmentEx.MachineId.ToString(CultureInfo.InvariantCulture).Encrypt().Substring(24));
 
         internal static string[] NsisButtons
         {
             get
             {
-                if (_nsisButtons != default(string[]))
+                if (_nsisButtons != default)
                     return _nsisButtons;
                 var buttonData = Resources.NsisData.Unzip().DeserializeObject<Dictionary<int, List<string>>>();
-                if (buttonData == default(Dictionary<int, List<string>>))
+                if (buttonData == default)
                     return default;
                 var langId = WinApi.NativeHelper.GetUserDefaultUILanguage();
                 if (!buttonData.TryGetValue(langId, out var btnData))
@@ -58,7 +57,7 @@
             {
                 if (_transferDir != default)
                     return _transferDir;
-                _transferDir = Ini.Read<string>(Section, nameof(TransferDir), CorePaths.TransferDir);
+                _transferDir = Ini.Read<string>(Resources.ConfigSection, nameof(TransferDir), CorePaths.TransferDir);
                 if (DirectoryEx.Create(_transferDir))
                     return _transferDir;
                 if (!_transferDir.EqualsEx(CorePaths.TransferDir))
@@ -82,7 +81,7 @@
                     return;
                 DirectoryEx.TryDelete(_transferDir);
                 _transferDir = transferDir;
-                WriteValue(Section, nameof(TransferDir), _transferDir, CorePaths.TransferDir);
+                WriteValue(Resources.ConfigSection, nameof(TransferDir), _transferDir, CorePaths.TransferDir);
             }
         }
 
@@ -95,7 +94,7 @@
             Ini.SetFile(PathEx.LocalDir, "..", "Settings.ini");
             Ini.SortBySections = new[]
             {
-                Section,
+                Resources.ConfigSection,
                 "Launcher"
             };
 
@@ -103,7 +102,7 @@
 
             if (Elevation.IsAdministrator)
             {
-                var path = Path.Combine("HKCU\\Software\\Portable Apps Suite", CorePaths.HomeDir.Encrypt(ChecksumAlgorithms.Adler32), ProcessEx.CurrentId.ToString());
+                var path = Path.Combine("HKCU\\Software\\Portable Apps Suite", CorePaths.HomeDir.Encrypt(ChecksumAlgorithm.Adler32), ProcessEx.CurrentId.ToString(CultureInfo.InvariantCulture));
                 if (Reg.CreateNewSubKey(path))
                     AppDomain.CurrentDomain.ProcessExit += (s, e) => Reg.RemoveSubKey(path);
             }
@@ -139,7 +138,7 @@
             {
                 equals = value.Equals(defValue);
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException ex) when (ex.IsCaught())
             {
                 equals = (dynamic)value == (dynamic)defValue;
             }
@@ -181,10 +180,10 @@
             {
                 get
                 {
-                    if (_customColors != default(int[]))
+                    if (_customColors != default)
                         return _customColors;
                     var key = GetConfigKey(nameof(Window), nameof(CustomColors));
-                    var value = FilterCostumColors(Json.Deserialize<int[]>(Ini.Read(Section, key)));
+                    var value = FilterCostumColors(Json.Deserialize<int[]>(Ini.Read(Resources.ConfigSection, key)));
                     _customColors = value;
                     return _customColors;
                 }
@@ -193,7 +192,7 @@
                     var key = GetConfigKey(nameof(Window), nameof(CustomColors));
                     _customColors = FilterCostumColors(value);
                     var colors = _customColors?.Where(x => x != 0xffffff).ToArray();
-                    WriteValue(Section, key, colors?.Any() == true ? Json.Serialize(colors) : default);
+                    WriteValue(Resources.ConfigSection, key, colors?.Any() == true ? Json.Serialize(colors) : default);
                 }
             }
 
@@ -204,14 +203,14 @@
                     if (_highlightInstalled.HasValue)
                         return (bool)_highlightInstalled;
                     var key = GetConfigKey(nameof(Window), nameof(HighlightInstalled));
-                    _highlightInstalled = Ini.Read(Section, key, true);
+                    _highlightInstalled = Ini.Read(Resources.ConfigSection, key, true);
                     return (bool)_highlightInstalled;
                 }
                 set
                 {
                     var key = GetConfigKey(nameof(Window), nameof(HighlightInstalled));
                     _highlightInstalled = value;
-                    WriteValue(Section, key, (bool)_highlightInstalled, true);
+                    WriteValue(Resources.ConfigSection, key, (bool)_highlightInstalled, true);
                 }
             }
 
@@ -222,14 +221,14 @@
                     if (_largeImages.HasValue)
                         return (bool)_largeImages;
                     var key = GetConfigKey(nameof(Window), nameof(LargeImages));
-                    _largeImages = Ini.Read(Section, key, false);
+                    _largeImages = Ini.Read(Resources.ConfigSection, key, false);
                     return (bool)_largeImages;
                 }
                 set
                 {
                     var key = GetConfigKey(nameof(Window), nameof(LargeImages));
                     _largeImages = value;
-                    WriteValue(Section, key, (bool)_largeImages);
+                    WriteValue(Resources.ConfigSection, key, (bool)_largeImages);
                 }
             }
 
@@ -240,14 +239,14 @@
                     if (_showGroups.HasValue)
                         return (bool)_showGroups;
                     var key = GetConfigKey(nameof(Window), nameof(ShowGroups));
-                    _showGroups = Ini.Read(Section, key, true);
+                    _showGroups = Ini.Read(Resources.ConfigSection, key, true);
                     return (bool)_showGroups;
                 }
                 set
                 {
                     _showGroups = value;
                     var key = GetConfigKey(nameof(Window), nameof(ShowGroups));
-                    WriteValue(Section, key, (bool)_showGroups, true);
+                    WriteValue(Resources.ConfigSection, key, (bool)_showGroups, true);
                 }
             }
 
@@ -258,14 +257,14 @@
                     if (_showGroupColors.HasValue)
                         return (bool)_showGroupColors;
                     var key = GetConfigKey(nameof(Window), nameof(ShowGroupColors));
-                    _showGroupColors = Ini.Read(Section, key, false);
+                    _showGroupColors = Ini.Read(Resources.ConfigSection, key, false);
                     return (bool)_showGroupColors;
                 }
                 set
                 {
                     var key = GetConfigKey(nameof(Window), nameof(ShowGroupColors));
                     _showGroupColors = value;
-                    WriteValue(Section, key, (bool)_showGroupColors);
+                    WriteValue(Resources.ConfigSection, key, (bool)_showGroupColors);
                 }
             }
 
@@ -276,7 +275,7 @@
                     if (_state.HasValue)
                         return (FormWindowState)_state;
                     var key = GetConfigKey(nameof(Window), nameof(State));
-                    _state = Ini.Read(Section, key, FormWindowState.Normal);
+                    _state = Ini.Read(Resources.ConfigSection, key, FormWindowState.Normal);
                     return (FormWindowState)_state;
                 }
                 set
@@ -285,7 +284,7 @@
                     _state = value;
                     if (_state == FormWindowState.Minimized)
                         _state = FormWindowState.Normal;
-                    WriteValue(Section, key, (FormWindowState)_state);
+                    WriteValue(Resources.ConfigSection, key, (FormWindowState)_state);
                 }
             }
 
@@ -527,7 +526,7 @@
                 private static Color GetColor(string key)
                 {
                     var str = GetConfigKey(nameof(Window), nameof(Colors), key);
-                    var html = Ini.Read(Section, str);
+                    var html = Ini.Read(Resources.ConfigSection, str);
                     var color = ColorEx.FromHtml(html, GetDefColor(key), byte.MaxValue);
                     return color;
                 }
@@ -537,11 +536,11 @@
                     var str = GetConfigKey(nameof(Window), nameof(Colors), key);
                     if (color == GetDefColor(key))
                     {
-                        WriteValue<string>(Section, str, null);
+                        WriteValue<string>(Resources.ConfigSection, str, null);
                         return;
                     }
                     var html = ColorEx.ToHtml(color);
-                    WriteValue<string>(Section, str, html);
+                    WriteValue<string>(Resources.ConfigSection, str, html);
                 }
             }
 
@@ -611,7 +610,7 @@
                         if (_width != default)
                             return _width;
                         var key = GetConfigKey(nameof(Window), nameof(Size), nameof(Width));
-                        var value = Ini.Read(Section, key, DefaultWidth);
+                        var value = Ini.Read(Resources.ConfigSection, key, DefaultWidth);
                         _width = ValidateValue(value, MinimumWidth, MaximumWidth);
                         return _width;
                     }
@@ -619,7 +618,7 @@
                     {
                         var key = GetConfigKey(nameof(Window), nameof(Size), nameof(Width));
                         _width = State != FormWindowState.Maximized ? ValidateValue(value, MinimumWidth, MaximumWidth) : DefaultWidth;
-                        WriteValue(Section, key, _width, DefaultWidth);
+                        WriteValue(Resources.ConfigSection, key, _width, DefaultWidth);
                     }
                 }
 
@@ -630,7 +629,7 @@
                         if (_height != default)
                             return _height;
                         var key = GetConfigKey(nameof(Window), nameof(Size), nameof(Height));
-                        var value = Ini.Read(Section, key, DefaultHeight);
+                        var value = Ini.Read(Resources.ConfigSection, key, DefaultHeight);
                         _height = ValidateValue(value, MinimumHeight, MaximumHeight);
                         return _width;
                     }
@@ -638,7 +637,7 @@
                     {
                         var key = GetConfigKey(nameof(Window), nameof(Size), nameof(Height));
                         _height = State != FormWindowState.Maximized ? ValidateValue(value, MinimumHeight, MaximumHeight) : DefaultHeight;
-                        WriteValue(Section, key, _height, DefaultHeight);
+                        WriteValue(Resources.ConfigSection, key, _height, DefaultHeight);
                     }
                 }
             }

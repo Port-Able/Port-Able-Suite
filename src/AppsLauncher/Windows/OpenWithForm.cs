@@ -4,6 +4,7 @@ namespace AppsLauncher.Windows
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Drawing;
+    using System.Globalization;
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Threading;
@@ -43,7 +44,7 @@ namespace AppsLauncher.Windows
                 btn.FlatAppearance.MouseOverBackColor = Settings.Window.Colors.ButtonHover;
             }
 
-            appMenu.EnableAnimation(ContextMenuStripExAnimations.SlideVerPositive, 100);
+            appMenu.EnableAnimation(ContextMenuStripExAnimation.SlideVerPositive, 100);
             appMenu.SetFixedSingle();
             appMenuItem2.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Uac);
             appMenuItem3.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Directory);
@@ -65,7 +66,7 @@ namespace AppsLauncher.Windows
 
         private void OpenWithForm_Load(object sender, EventArgs e)
         {
-            var notifyBox = NotifyBoxEx.Show(Language.GetText(nameof(en_US.FileSystemAccessMsg)), Settings.Title, NotifyBoxStartPosition.Center, 0u, false);
+            var notifyBox = NotifyBoxEx.Show(Language.GetText(nameof(en_US.FileSystemAccessMsg)), Resources.GlobalTitle, NotifyBoxStartPosition.Center, 0u, false);
             Arguments.DefineAppName();
             notifyBox.Close();
 
@@ -157,14 +158,14 @@ namespace AppsLauncher.Windows
             TopMost = false;
             try
             {
-                using (Form dialog = new AboutForm())
+                using (var dialog = new AboutForm())
                 {
                     dialog.TopMost = true;
                     dialog.Plus();
                     dialog.ShowDialog();
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }
@@ -200,11 +201,12 @@ namespace AppsLauncher.Windows
                         runCmdLine.Enabled = false;
                         Opacity = 1f;
                     }
-                    catch (InvalidOperationException)
+                    catch (InvalidOperationException ex) when (ex.IsCaught())
                     {
-                        // ignored
+                        if (Log.DebugMode > 1)
+                            Log.Write(ex);
                     }
-                    catch (Exception ex)
+                    catch (Exception ex) when (ex.IsCaught())
                     {
                         Log.Write(ex);
                     }
@@ -215,11 +217,12 @@ namespace AppsLauncher.Windows
                             p?.Dispose();
                     }
                 }
-                catch (Win32Exception)
+                catch (Win32Exception ex) when (ex.IsCaught())
                 {
-                    // ignored
+                    if (Log.DebugMode > 1)
+                        Log.Write(ex);
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ex.IsCaught())
                 {
                     Log.Write(ex);
                 }
@@ -339,10 +342,10 @@ namespace AppsLauncher.Windows
                     var linkPath = PathEx.Combine(Environment.SpecialFolder.Desktop, selectedItem);
                     var created = FileEx.CreateShellLink(appData.FilePath, linkPath);
                     MessageBoxEx.CenterMousePointer = !ClientRectangle.Contains(PointToClient(MousePosition));
-                    MessageBoxEx.Show(this, Language.GetText(created ? nameof(en_US.appMenuItem4Msg0) : nameof(en_US.appMenuItem4Msg1)), Settings.Title, MessageBoxButtons.OK, created ? MessageBoxIcon.Asterisk : MessageBoxIcon.Warning);
+                    MessageBoxEx.Show(this, Language.GetText(created ? nameof(en_US.appMenuItem4Msg0) : nameof(en_US.appMenuItem4Msg1)), Resources.GlobalTitle, MessageBoxButtons.OK, created ? MessageBoxIcon.Asterisk : MessageBoxIcon.Warning);
                     break;
                 case nameof(appMenuItem7):
-                    if (MessageBoxEx.Show(this, string.Format(Language.GetText(nameof(en_US.appMenuItem7Msg)), selectedItem), Settings.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    if (MessageBoxEx.Show(this, string.Format(CultureInfo.InvariantCulture, Language.GetText(nameof(en_US.appMenuItem7Msg)), selectedItem), Resources.GlobalTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
                         MessageBoxEx.CenterMousePointer = !ClientRectangle.Contains(PointToClient(MousePosition));
                         if (appData.RemoveApplication(this))
@@ -355,7 +358,7 @@ namespace AppsLauncher.Windows
                     else
                     {
                         MessageBoxEx.CenterMousePointer = !ClientRectangle.Contains(PointToClient(MousePosition));
-                        MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationCanceledMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationCanceledMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     }
                     break;
             }
@@ -399,7 +402,7 @@ namespace AppsLauncher.Windows
                 return;
             var itemList = appsBox.Items.Cast<object>().Select(item => item.ToString()).ToList();
             foreach (var item in appsBox.Items)
-                if (item.ToString().Equals(itemList.SearchItem(owner.Text)))
+                if (item.ToString().Equals(itemList.SearchItem(owner.Text), StringComparison.Ordinal))
                 {
                     appsBox.SelectedItem = item;
                     break;
@@ -437,7 +440,7 @@ namespace AppsLauncher.Windows
             try
             {
                 var appData = CacheData.FindAppData(appsBox.SelectedItem.ToString());
-                using (Form dialog = new SettingsForm(appData))
+                using (var dialog = new SettingsForm(appData))
                 {
                     dialog.TopMost = true;
                     dialog.Plus();
@@ -447,7 +450,7 @@ namespace AppsLauncher.Windows
                     AppsBoxUpdate(true);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }

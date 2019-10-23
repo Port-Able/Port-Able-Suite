@@ -68,7 +68,7 @@
                             Reg.RemoveSubKey(Registry.ClassesRoot, varKey);
                     }
                     var desktopPath = PathEx.Combine(Environment.SpecialFolder.Desktop, "Apps Launcher.lnk");
-                    if (enabled) 
+                    if (enabled)
                         FileEx.CreateShellLink(curPath, desktopPath);
                     else
                         PathEx.ForceDelete(sendToPath);
@@ -118,7 +118,7 @@
                     Directory.CreateDirectory(startMenuDir);
                 Parallel.ForEach(appNames, x => FileEx.CreateShellLink(EnvironmentEx.GetVariablePathFull(CacheData.FindAppData(x)?.FilePath, false, false), Path.Combine(startMenuDir, x)));
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }

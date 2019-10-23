@@ -1,6 +1,7 @@
 namespace Updater
 {
     using System;
+    using System.Globalization;
     using System.Threading;
     using System.Windows.Forms;
     using Windows;
@@ -14,7 +15,7 @@ namespace Updater
         private static void Main()
         {
             Settings.Initialize();
-            var instanceKey = PathEx.LocalPath.GetHashCode().ToString();
+            var instanceKey = PathEx.LocalPath.GetHashCode().ToString(CultureInfo.InvariantCulture);
             using (new Mutex(true, instanceKey, out var newInstance))
             {
                 if (!newInstance)
@@ -23,7 +24,8 @@ namespace Updater
                 Language.ResourcesNamespace = typeof(Program).Namespace;
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new MainForm().Plus());
+                using (var form = new MainForm())
+                    Application.Run(form.Plus());
             }
         }
     }

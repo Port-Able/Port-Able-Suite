@@ -12,7 +12,7 @@ internal static class Language
     private static string _baseName, _currentLang, _systemLang, _userLang;
     private static Assembly _currentAssembly;
 
-    internal static string BaseName => 
+    internal static string BaseName =>
         _baseName ?? (_baseName = ResourcesNamespace != default ? ResourcesNamespace + ".LangResources." : default);
 
     internal static Assembly CurrentAssembly
@@ -31,7 +31,8 @@ internal static class Language
         set => _currentLang = value;
     }
 
-    internal static string SystemLang => _systemLang ?? (_systemLang = CultureInfo.InstalledUICulture.Name);
+    internal static string SystemLang =>
+        _systemLang ?? (_systemLang = CultureInfo.InstalledUICulture.Name);
 
     internal static string UserLang
     {
@@ -51,9 +52,9 @@ internal static class Language
                 try
                 {
                     var rm = new ResourceManager(BaseName + lang, CurrentAssembly);
-                    text = rm.GetString(key);
+                    text = rm.GetString(key, CultureInfo.CurrentUICulture);
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ex.IsCaught())
                 {
                     Log.Write(ex);
                     text = key;
@@ -75,7 +76,7 @@ internal static class Language
 
     internal static string GetText(string key)
     {
-        if (!CurrentLang.Equals(UserLang))
+        if (!CurrentLang.Equals(UserLang, StringComparison.Ordinal))
             CurrentLang = UserLang;
         return GetText(CurrentLang, key);
     }
@@ -84,7 +85,7 @@ internal static class Language
     {
         if (!(control is Control c))
             return string.Empty;
-        if (!CurrentLang.Equals(UserLang))
+        if (!CurrentLang.Equals(UserLang, StringComparison.Ordinal))
             CurrentLang = UserLang;
         return GetText(CurrentLang, c.Name);
     }

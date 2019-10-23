@@ -3,19 +3,18 @@
     using System;
     using System.Drawing;
     using System.IO;
+    using Properties;
     using SilDev;
 
     internal static class Settings
     {
-        internal const string Section = "Launcher";
-        internal const string Title = "Port-Able Suite Updater";
         private static string _language, _registryPath;
         private static int? _updateChannel;
 
-        internal static string Language => 
-            _language ?? (_language = Ini.Read<string>(Section, nameof(Language), global::Language.SystemLang));
+        internal static string Language =>
+            _language ?? (_language = Ini.Read<string>(Resources.ConfigSection, nameof(Language), global::Language.SystemLang));
 
-        internal static string RegistryPath => 
+        internal static string RegistryPath =>
             _registryPath ?? (_registryPath = "HKCU\\Software\\Portable Apps Suite");
 
         internal static int ScreenDpi
@@ -23,9 +22,9 @@
             get
             {
                 int dpi;
-                using (var graphics = Graphics.FromHwnd(IntPtr.Zero))
+                using (var g = Graphics.FromHwnd(IntPtr.Zero))
                 {
-                    var max = Math.Max(graphics.DpiX, graphics.DpiY);
+                    var max = Math.Max(g.DpiX, g.DpiY);
                     dpi = (int)Math.Ceiling(max);
                 }
                 return dpi;
@@ -33,7 +32,7 @@
         }
 
         internal static DateTime LastUpdateCheck =>
-            Ini.Read<DateTime>(Section, nameof(LastUpdateCheck));
+            Ini.Read<DateTime>(Resources.ConfigSection, nameof(LastUpdateCheck));
 
         internal static UpdateChannelOptions UpdateChannel
         {
@@ -41,7 +40,7 @@
             {
                 if (_updateChannel.HasValue)
                     return (UpdateChannelOptions)_updateChannel;
-                _updateChannel = Ini.Read(Section, nameof(UpdateChannel), (int)UpdateChannelOptions.Release);
+                _updateChannel = Ini.Read(Resources.ConfigSection, nameof(UpdateChannel), (int)UpdateChannelOptions.Release);
                 return (UpdateChannelOptions)_updateChannel;
             }
         }
@@ -54,7 +53,7 @@
             Ini.SortBySections = new[]
             {
                 "Downloader",
-                Section
+                Resources.ConfigSection
             };
 
             Log.AllowLogging(Ini.FilePath, "DebugMode", Ini.GetRegex(false));

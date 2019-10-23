@@ -16,7 +16,7 @@
         {
             get
             {
-                if (_appDirs != default(string[]))
+                if (_appDirs != default)
                     return _appDirs;
                 _appDirs = new[]
                 {

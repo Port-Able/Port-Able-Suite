@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using SilDev;
 
     internal struct ActionGuid
     {
@@ -54,7 +55,7 @@
                 var args = Environment.GetCommandLineArgs().Skip(1);
                 return args.Contains(guid);
             }
-            catch
+            catch (Exception ex) when (ex.IsCaught())
             {
                 return false;
             }

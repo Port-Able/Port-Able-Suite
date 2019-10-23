@@ -14,7 +14,7 @@
         {
             get
             {
-                if (_data != default(Dictionary<string, Tuple<string, string>>))
+                if (_data != default)
                     return _data;
                 if (File.Exists(CachePaths.SwData))
                     _data = FileEx.Deserialize<Dictionary<string, Tuple<string, string>>>(CachePaths.SwData, true);
@@ -40,10 +40,10 @@
             Data?.Any() == true;
 
         internal static string Decrypt(string data) =>
-            !string.IsNullOrWhiteSpace(data) ? data.Decode(BinaryToTextEncodings.Base85)?.Decrypt(CacheData.SwDataKey).ToStringDefault() : default;
+            !string.IsNullOrWhiteSpace(data) ? data.Decode(BinaryToTextEncoding.Base85)?.Decrypt(CacheData.SwDataKey).ToStringDefault() : default;
 
         internal static string Encrypt(string data) =>
-            !string.IsNullOrWhiteSpace(data) ? data.Encrypt(CacheData.SwDataKey)?.Encode(BinaryToTextEncodings.Base85) : default;
+            !string.IsNullOrWhiteSpace(data) ? data.Encrypt(CacheData.SwDataKey)?.Encode(BinaryToTextEncoding.Base85) : default;
 
         internal static string FindAddressKey(string address) =>
             Data.Keys.FirstOrDefault(key => address.EqualsEx(Decrypt(key)));

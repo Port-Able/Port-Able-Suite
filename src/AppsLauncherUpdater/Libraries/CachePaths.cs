@@ -15,17 +15,17 @@
                     return _updateDir;
                 var dir = Path.Combine(CorePaths.TempDir, "UpdateData");
                 DirectoryEx.TryDelete(dir);
-                dir = Path.Combine(dir, ActionGuid.CurrentAction.Encrypt(ChecksumAlgorithms.Adler32));
+                dir = Path.Combine(dir, ActionGuid.CurrentAction.Encrypt(ChecksumAlgorithm.Adler32));
                 if (DirectoryEx.Create(dir))
                     _updateDir = dir;
                 return _updateDir;
             }
         }
 
-        internal static string UpdateHelperPath => 
+        internal static string UpdateHelperPath =>
             _updateHelperPath ?? (_updateHelperPath = Path.Combine(UpdateDir, "UpdateHelper.bat"));
 
-        internal static string UpdatePath => 
+        internal static string UpdatePath =>
             _updatePath ?? (_updatePath = Path.Combine(UpdateDir, "Update.7z"));
     }
 }

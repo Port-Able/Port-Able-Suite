@@ -4,6 +4,7 @@ namespace AppsLauncher.Windows
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Windows.Forms;
@@ -26,10 +27,10 @@ namespace AppsLauncher.Windows
             InitializeComponent();
 
             Language.SetControlLang(this);
-            Text = Settings.Title;
+            Text = Resources.GlobalTitle;
 
             BackColor = Settings.Window.Colors.BaseDark;
-            if (Settings.Window.BackgroundImage != default(Image))
+            if (Settings.Window.BackgroundImage != default)
             {
                 BackgroundImage = Settings.Window.BackgroundImage;
                 BackgroundImageLayout = Settings.Window.BackgroundImageLayout;
@@ -162,7 +163,7 @@ namespace AppsLauncher.Windows
             if (!appsListView.Scrollable)
                 appsListView.Scrollable = true;
             BackColor = Settings.Window.Colors.Base;
-            if (BackgroundImage != default(Image))
+            if (BackgroundImage != default)
                 BackgroundImage = default;
             this.SetChildVisibility(false, appsListViewPanel);
         }
@@ -172,7 +173,7 @@ namespace AppsLauncher.Windows
             if (!appsListView.Focus())
                 appsListView.Select();
             BackColor = Settings.Window.Colors.BaseDark;
-            if (Settings.Window.BackgroundImage != default(Image))
+            if (Settings.Window.BackgroundImage != default)
                 BackgroundImage = Settings.Window.BackgroundImage;
             this.SetChildVisibility(true, appsListViewPanel);
             Settings.Window.Size.Width = Width;
@@ -207,7 +208,7 @@ namespace AppsLauncher.Windows
                 var appNames = appsListView.Items.OfType<ListViewItem>().Select(x => x.Text).Where(x => !x.EqualsEx("Portable"));
                 SystemIntegration.UpdateStartMenuShortcuts(appNames);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }
@@ -286,7 +287,7 @@ namespace AppsLauncher.Windows
                         if (File.Exists(imgPath))
                         {
                             image = Image.FromFile(imgPath);
-                            if (image != default(Image))
+                            if (image != default)
                             {
                                 if (image.Width != image.Height || image.Width != indicator)
                                     image = image.Redraw(indicator, indicator);
@@ -302,17 +303,17 @@ namespace AppsLauncher.Windows
                         using (var ico = ResourcesEx.GetIconFromFile(exePath, 0, largeImages))
                         {
                             image = ico?.ToBitmap()?.Redraw(indicator, indicator);
-                            if (image != default(Image))
+                            if (image != default)
                                 goto UpdateCache;
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception ex) when (ex.IsCaught())
                     {
                         Log.Write(ex);
                     }
 
                     image = CacheData.GetSystemImage(ResourcesEx.IconIndex.ExeFile, largeImages);
-                    if (image == default(Image))
+                    if (image == default)
                         continue;
 
                     UpdateCache:
@@ -372,7 +373,7 @@ namespace AppsLauncher.Windows
             finally
             {
                 appsListView.EndUpdate();
-                appsCount.Text = string.Format(Language.GetText(appsCount), appsListView.Items.Count, appsListView.Items.Count == 1 ? Language.GetText(nameof(en_US.App)) : Language.GetText(nameof(en_US.Apps)));
+                appsCount.Text = string.Format(CultureInfo.InvariantCulture, Language.GetText(appsCount), appsListView.Items.Count, appsListView.Items.Count == 1 ? Language.GetText(nameof(en_US.App)) : Language.GetText(nameof(en_US.Apps)));
                 if (!appsListView.Focus())
                     appsListView.Select();
             }
@@ -388,7 +389,7 @@ namespace AppsLauncher.Windows
             if (Opacity > 0)
                 Opacity = 0;
             var selectedItem = appsListView.SelectedItems.Cast<ListViewItem>().FirstOrDefault();
-            if (selectedItem == default(ListViewItem))
+            if (selectedItem == default)
                 return;
             var appData = CacheData.FindAppData(selectedItem.Text);
             if (appData == default)
@@ -469,7 +470,7 @@ namespace AppsLauncher.Windows
                     {
                         if (!searchBox.Focus())
                             searchBox.Select();
-                        var key = Enum.GetName(typeof(Keys), e.KeyCode)?.ToLower();
+                        var key = Enum.GetName(typeof(Keys), e.KeyCode)?.ToLowerInvariant();
                         searchBox.Text += key?.Last();
                         searchBox.SelectionStart = searchBox.TextLength;
                         searchBox.ScrollToCaret();
@@ -499,7 +500,7 @@ namespace AppsLauncher.Windows
                 var appData = CacheData.FindAppData(selectedItem.Text);
                 if (appData == default)
                     throw new ArgumentNullException(nameof(appData));
-                if (appData.Name.Equals(e.Label))
+                if (appData.Name.Equals(e.Label, StringComparison.Ordinal))
                     throw new ArgumentException();
                 if (!File.Exists(appData.ConfigPath))
                     File.Create(appData.ConfigPath).Close();
@@ -508,7 +509,7 @@ namespace AppsLauncher.Windows
                 CacheData.ResetCurrent();
                 MenuViewFormUpdate(false);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }
@@ -521,7 +522,7 @@ namespace AppsLauncher.Windows
             if (appsListView.SelectedItems.Count == 0)
                 return;
             var selectedItem = appsListView.SelectedItems.Cast<ListViewItem>().FirstOrDefault();
-            if (selectedItem == default(ListViewItem))
+            if (selectedItem == default)
                 return;
             var appData = CacheData.FindAppData(selectedItem.Text);
             if (appData == default)
@@ -552,7 +553,7 @@ namespace AppsLauncher.Windows
                     var linkPath = PathEx.Combine(Environment.SpecialFolder.Desktop, selectedItem.Text);
                     var created = FileEx.CreateShellLink(appData.FilePath, linkPath);
                     MessageBoxEx.CenterMousePointer = !ClientRectangle.Contains(PointToClient(MousePosition));
-                    MessageBoxEx.Show(this, Language.GetText(created ? nameof(en_US.appMenuItem4Msg0) : nameof(en_US.appMenuItem4Msg1)), Settings.Title, MessageBoxButtons.OK, created ? MessageBoxIcon.Asterisk : MessageBoxIcon.Warning);
+                    MessageBoxEx.Show(this, Language.GetText(created ? nameof(en_US.appMenuItem4Msg0) : nameof(en_US.appMenuItem4Msg1)), Resources.GlobalTitle, MessageBoxButtons.OK, created ? MessageBoxIcon.Asterisk : MessageBoxIcon.Warning);
                     break;
                 }
                 case nameof(appMenuItem6):
@@ -565,7 +566,7 @@ namespace AppsLauncher.Windows
                     break;
                 case nameof(appMenuItem7):
                     MessageBoxEx.CenterMousePointer = !ClientRectangle.Contains(PointToClient(MousePosition));
-                    if (MessageBoxEx.Show(this, string.Format(Language.GetText(nameof(en_US.appMenuItem7Msg)), selectedItem.Text), Settings.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    if (MessageBoxEx.Show(this, string.Format(CultureInfo.InvariantCulture, Language.GetText(nameof(en_US.appMenuItem7Msg)), selectedItem.Text), Resources.GlobalTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
                         MessageBoxEx.CenterMousePointer = !ClientRectangle.Contains(PointToClient(MousePosition));
                         PreventClosure = true;
@@ -576,7 +577,7 @@ namespace AppsLauncher.Windows
                     else
                     {
                         MessageBoxEx.CenterMousePointer = !ClientRectangle.Contains(PointToClient(MousePosition));
-                        MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationCanceledMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationCanceledMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     }
                     break;
                 case nameof(appMenuItem8):
@@ -618,7 +619,7 @@ namespace AppsLauncher.Windows
                 case Keys.Up:
                     if (!appsListView.Focus())
                         appsListView.Select();
-                    SendKeys.SendWait($"{{{Enum.GetName(typeof(Keys), e.KeyCode)?.ToUpper()}}}");
+                    SendKeys.SendWait($"{{{Enum.GetName(typeof(Keys), e.KeyCode)?.ToUpperInvariant()}}}");
                     e.Handled = true;
                     break;
                 case Keys.Enter:
@@ -645,7 +646,7 @@ namespace AppsLauncher.Windows
                 if (string.IsNullOrWhiteSpace(owner.Text) || owner.Font.Italic)
                     return;
                 foreach (ListViewItem item in appsListView.Items)
-                    if (item.Text.Equals(itemList.SearchItem(owner.Text)))
+                    if (item.Text.Equals(itemList.SearchItem(owner.Text), StringComparison.Ordinal))
                     {
                         item.ForeColor = Settings.Window.Colors.HighlightText;
                         item.BackColor = Settings.Window.Colors.Highlight;
@@ -720,7 +721,7 @@ namespace AppsLauncher.Windows
                     result = dialog.ShowDialog() == DialogResult.Yes;
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }

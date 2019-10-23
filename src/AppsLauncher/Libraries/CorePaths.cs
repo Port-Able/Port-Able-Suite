@@ -18,7 +18,7 @@
         {
             get
             {
-                if (_appDirs != default(string[]))
+                if (_appDirs != default)
                     return _appDirs;
                 _appDirs = new[]
                 {
@@ -59,22 +59,19 @@
         {
             get
             {
-                if (_fullAppsSuitePathMap != default(string[][]))
+                if (_fullAppsSuitePathMap != default)
                     return _fullAppsSuitePathMap;
                 _fullAppsSuitePathMap = new[]
                 {
                     new[]
                     {
                         Path.Combine(HomeDir, "AppsLauncher.exe"),
-                        Path.Combine(HomeDir, "AppsLauncher64.exe"),
                         Path.Combine(HomeDir, "Binaries\\AppsDownloader.exe"),
-                        Path.Combine(HomeDir, "Binaries\\AppsDownloader64.exe"),
                         Path.Combine(HomeDir, "Binaries\\Updater.exe")
                     },
                     new[]
                     {
                         Path.Combine(HomeDir, "Binaries\\SilDev.CSharpLib.dll"),
-                        Path.Combine(HomeDir, "Binaries\\SilDev.CSharpLib64.dll")
                     },
                     new[]
                     {

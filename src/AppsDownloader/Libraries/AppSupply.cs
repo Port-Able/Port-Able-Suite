@@ -75,7 +75,7 @@
 
         internal static List<AppData> FindInstalledApps(bool force = false)
         {
-            if (force || _installedApps == default(List<AppData>))
+            if (force || _installedApps == default)
                 _installedApps = CacheData.AppInfo.Where(AppIsInstalled).ToList();
             return _installedApps;
         }
@@ -112,16 +112,16 @@
                                            fileHash = tuple.path.EncryptFile();
                                            break;
                                        case Crypto.Sha1.HashLength:
-                                           fileHash = tuple.path.EncryptFile(ChecksumAlgorithms.Sha1);
+                                           fileHash = tuple.path.EncryptFile(ChecksumAlgorithm.Sha1);
                                            break;
                                        case Crypto.Sha256.HashLength:
-                                           fileHash = tuple.path.EncryptFile(ChecksumAlgorithms.Sha256);
+                                           fileHash = tuple.path.EncryptFile(ChecksumAlgorithm.Sha256);
                                            break;
                                        case Crypto.Sha384.HashLength:
-                                           fileHash = tuple.path.EncryptFile(ChecksumAlgorithms.Sha384);
+                                           fileHash = tuple.path.EncryptFile(ChecksumAlgorithm.Sha384);
                                            break;
                                        case Crypto.Sha512.HashLength:
-                                           fileHash = tuple.path.EncryptFile(ChecksumAlgorithms.Sha512);
+                                           fileHash = tuple.path.EncryptFile(ChecksumAlgorithm.Sha512);
                                            break;
                                        default:
                                            return false;
@@ -159,7 +159,7 @@
 
         internal static List<string> GetMirrors(AppSuppliers supplier)
         {
-            if (_mirrors == default(Dictionary<AppSuppliers, List<string>>))
+            if (_mirrors == default)
                 _mirrors = new Dictionary<AppSuppliers, List<string>>();
 
             if (!_mirrors.ContainsKey(supplier))

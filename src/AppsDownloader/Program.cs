@@ -1,11 +1,13 @@
 namespace AppsDownloader
 {
     using System;
+    using System.Globalization;
     using System.Threading;
     using System.Windows.Forms;
     using Windows;
     using LangResources;
     using Libraries;
+    using Properties;
     using SilDev;
     using SilDev.Forms;
 
@@ -16,7 +18,7 @@ namespace AppsDownloader
         {
             Settings.Initialize();
 
-            var instanceKey = PathEx.LocalPath.GetHashCode().ToString();
+            var instanceKey = PathEx.LocalPath.GetHashCode().ToString(CultureInfo.InvariantCulture);
             using (new Mutex(true, instanceKey, out var newInstance))
             {
                 var allowInstance = newInstance;
@@ -44,12 +46,14 @@ namespace AppsDownloader
                 if (!ActionGuid.IsUpdateInstance)
                 {
                     var notifyBox = new NotifyBox();
-                    notifyBox.Show(Language.GetText(nameof(en_US.InitializingMsg)), Settings.Title, NotifyBoxStartPosition.Center);
-                    Application.Run(new MainForm(notifyBox).Plus());
+                    notifyBox.Show(Language.GetText(nameof(en_US.InitializingMsg)), Resources.GlobalTitle, NotifyBoxStartPosition.Center);
+                    using (var form = new MainForm(notifyBox))
+                        Application.Run(form.Plus());
                     return;
                 }
 
-                Application.Run(new MainForm().Plus());
+                using (var form = new MainForm())
+                    Application.Run(form.Plus());
             }
         }
     }

@@ -3,11 +3,13 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Threading;
     using System.Windows.Forms;
     using LangResources;
+    using Properties;
     using SilDev;
     using SilDev.Forms;
     using SilDev.Investment;
@@ -16,7 +18,7 @@
     {
         public AppTransferor(AppData appData)
         {
-            AppData = appData;
+            AppData = appData ?? throw new ArgumentNullException(nameof(appData));
             DestPath = default;
             SrcData = new List<Tuple<string, string, string, bool>>();
             UserData = Tuple.Create(default(string), default(string));
@@ -72,16 +74,16 @@
                         default:
                             userAgent = UserAgents.Default;
                             var srcUrl = item1;
-                            if (AppData.ServerKey != default(byte[]))
-                                foreach (var srv in Shareware.GetAddresses())
+                            if (AppData.ServerKey != default)
+                            {
+                                var srv = Shareware.GetAddresses().FirstOrDefault(x => Shareware.FindAddressKey(x) == AppData.ServerKey.ToArray().Encode(BinaryToTextEncoding.Base85));
+                                if (srv != default)
                                 {
-                                    if (Shareware.FindAddressKey(srv) != AppData.ServerKey.Encode(BinaryToTextEncodings.Base85))
-                                        continue;
                                     if (!srcUrl.StartsWithEx("http://", "https://"))
                                         srcUrl = PathEx.AltCombine(srv, srcUrl);
                                     UserData = Tuple.Create(Shareware.GetUser(srv), Shareware.GetPassword(srv));
-                                    break;
                                 }
+                            }
                             SrcData.Add(Tuple.Create(srcUrl, item2, userAgent, false));
                             continue;
                     }
@@ -183,16 +185,16 @@
                             fileHash = DestPath.EncryptFile();
                             break;
                         case Crypto.Sha1.HashLength:
-                            fileHash = DestPath.EncryptFile(ChecksumAlgorithms.Sha1);
+                            fileHash = DestPath.EncryptFile(ChecksumAlgorithm.Sha1);
                             break;
                         case Crypto.Sha256.HashLength:
-                            fileHash = DestPath.EncryptFile(ChecksumAlgorithms.Sha256);
+                            fileHash = DestPath.EncryptFile(ChecksumAlgorithm.Sha256);
                             break;
                         case Crypto.Sha384.HashLength:
-                            fileHash = DestPath.EncryptFile(ChecksumAlgorithms.Sha384);
+                            fileHash = DestPath.EncryptFile(ChecksumAlgorithm.Sha384);
                             break;
                         case Crypto.Sha512.HashLength:
-                            fileHash = DestPath.EncryptFile(ChecksumAlgorithms.Sha512);
+                            fileHash = DestPath.EncryptFile(ChecksumAlgorithm.Sha512);
                             break;
                         default:
                             fileHash = nonHash;
@@ -200,7 +202,7 @@
                     }
 
                 if (fileHash != nonHash && !fileHash.EqualsEx(item2))
-                    switch (MessageBoxEx.Show(string.Format(Language.GetText(nameof(en_US.ChecksumErrorMsg)), Path.GetFileName(DestPath)), Settings.Title, MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button3))
+                    switch (MessageBoxEx.Show(string.Format(CultureInfo.InvariantCulture, Language.GetText(nameof(en_US.ChecksumErrorMsg)), Path.GetFileName(DestPath)), Resources.GlobalTitle, MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button3))
                     {
                         case DialogResult.Ignore:
                             break;
@@ -214,7 +216,7 @@
                 if (Directory.Exists(AppData.InstallDir))
                     if (!BreakFileLocks(AppData.InstallDir, false))
                     {
-                        MessageBoxEx.Show(string.Format(Language.GetText(nameof(en_US.InstallSkippedMsg)), AppData.Name), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxEx.Show(string.Format(CultureInfo.InvariantCulture, Language.GetText(nameof(en_US.InstallSkippedMsg)), AppData.Name), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                         continue;
                     }
 
@@ -273,7 +275,7 @@
                                     }
                                 }
                             }
-                            catch (Exception ex)
+                            catch (Exception ex) when (ex.IsCaught())
                             {
                                 Log.Write(ex);
                             }
@@ -290,7 +292,7 @@
                                         WinApi.NativeHelper.SetWindowPos(hWnd, new IntPtr(-1), 0, 0, 0, 0, WinApi.SetWindowPosFlags.NoMove | WinApi.SetWindowPosFlags.NoSize);
                                     }
                                 }
-                                catch (Exception ex)
+                                catch (Exception ex) when (ex.IsCaught())
                                 {
                                     Log.Write(ex);
                                 }
@@ -316,17 +318,8 @@
                             else
                             {
                                 BreakFileLocks(AppData.InstallDir);
-                                foreach (var dirName in new[]
-                                {
-                                    "App",
-                                    "Other"
-                                })
-                                {
-                                    var dir = Path.Combine(AppData.InstallDir, dirName);
-                                    if (!Directory.Exists(dir))
-                                        continue;
+                                foreach (var dir in new[] { "App", "Other" }.Select(name => Path.Combine(AppData.InstallDir, name)).Where(Directory.Exists))
                                     Directory.Delete(dir, true);
-                                }
                                 foreach (var file in Directory.EnumerateFiles(AppData.InstallDir, "*.*", SearchOption.TopDirectoryOnly))
                                     File.Delete(file);
                             }
@@ -359,7 +352,7 @@
                             }
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception ex) when (ex.IsCaught())
                     {
                         Log.Write(ex);
                         if (retries >= 15)
@@ -394,16 +387,11 @@
             if (!force)
             {
                 var lockData = locks.Select(p => $"ID: {p.Id:d5}; Name: '{p.ProcessName}.exe'").ToArray();
-                var information = string.Format(Language.GetText(lockData.Length == 1 ? nameof(en_US.FileLockMsg) : nameof(en_US.FileLocksMsg)), lockData.Join(Environment.NewLine));
-                if (MessageBoxEx.Show(information, Settings.Title, MessageBoxButtons.OKCancel, MessageBoxIcon.Information) != DialogResult.OK)
+                var information = string.Format(CultureInfo.InvariantCulture, Language.GetText(lockData.Length == 1 ? nameof(en_US.FileLockMsg) : nameof(en_US.FileLocksMsg)), lockData.Join(Environment.NewLine));
+                if (MessageBoxEx.Show(information, Resources.GlobalTitle, MessageBoxButtons.OKCancel, MessageBoxIcon.Information) != DialogResult.OK)
                     return false;
             }
-            foreach (var process in locks)
-            {
-                if (process.ProcessName.EndsWithEx("64Portable", "Portable64", "Portable"))
-                    continue;
-                ProcessEx.Close(process);
-            }
+            locks.Where(process => !process.ProcessName.EndsWithEx("64Portable", "Portable64", "Portable")).ForEach(process => ProcessEx.Close(process));
             Thread.Sleep(400);
             doubleTap = true;
             goto Check;

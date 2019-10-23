@@ -2,11 +2,13 @@ namespace AppsLauncher.Windows
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Drawing.Imaging;
     using System.Drawing.Text;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Windows.Forms;
@@ -45,17 +47,17 @@ namespace AppsLauncher.Windows
                     g.DrawImage(CacheData.GetSystemImage(ResourcesEx.IconIndex.Undo), 12, 0);
                 }
             }
-            catch
+            catch (Exception ex) when (ex.IsCaught())
             {
                 restoreFileTypesBtn.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Uac);
                 restoreFileTypesBtn.ImageAlign = ContentAlignment.MiddleLeft;
-                restoreFileTypesBtn.Text = @"<=";
+                restoreFileTypesBtn.Text = Resources.LeftArrow;
                 if (restoreFileTypesBtn.Image != null)
                     restoreFileTypesBtn.TextAlign = ContentAlignment.MiddleRight;
             }
 
             previewBg.BackColor = Settings.Window.Colors.BaseDark;
-            if (Settings.Window.BackgroundImage != default(Image))
+            if (Settings.Window.BackgroundImage != default)
             {
                 var width = (int)Math.Round(Settings.Window.BackgroundImage.Width * .65d) + 1;
                 var height = (int)Math.Round(Settings.Window.BackgroundImage.Height * .65d) + 1;
@@ -371,7 +373,7 @@ namespace AppsLauncher.Windows
                 {
                     appName = CacheData.CurrentAppInfo.First(x => x.Key.EqualsEx(entry.Key)).Name;
                 }
-                catch
+                catch (Exception ex) when (ex.IsCaught())
                 {
                     Ini.RemoveSection(entry.Key);
                     Ini.WriteAll();
@@ -383,7 +385,7 @@ namespace AppsLauncher.Windows
             if (string.IsNullOrEmpty(msg))
                 return false;
             msg += sep;
-            return MessageBoxEx.Show(this, string.Format(Language.GetText(nameof(en_US.AssociateConflictMsg)), msg), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes;
+            return MessageBoxEx.Show(this, string.Format(CultureInfo.InvariantCulture, Language.GetText(nameof(en_US.AssociateConflictMsg)), msg), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes;
         }
 
         private void AssociateBtn_Click(object sender, EventArgs e)
@@ -393,9 +395,9 @@ namespace AppsLauncher.Windows
             var isNull = string.IsNullOrWhiteSpace(fileTypes.Text);
             if (!isNull)
                 if (fileTypes.Text.Contains(","))
-                    isNull = fileTypes.Text.Split(',').Where(s => !s.StartsWith(".")).ToArray().Length == 0;
+                    isNull = fileTypes.Text.Split(',').Where(s => !s.StartsWith(".", StringComparison.Ordinal)).ToArray().Length == 0;
                 else
-                    isNull = fileTypes.Text.StartsWith(".");
+                    isNull = fileTypes.Text.StartsWith(".", StringComparison.Ordinal);
             if (isNull)
             {
                 MessageBoxEx.Show(this, Language.GetText($"{owner.Name}Msg"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -432,12 +434,12 @@ namespace AppsLauncher.Windows
                 var extensions = new List<string>();
                 for (var i = 0; i < imageEncoders.Length; i++)
                 {
-                    extensions.Add(imageEncoders[i].FilenameExtension.ToLower());
+                    extensions.Add(imageEncoders[i].FilenameExtension.ToLowerInvariant());
                     var description = imageEncoders[i].CodecName.Substring(8).Replace("Codec", "Files").Trim();
                     var pattern = extensions[extensions.Count - 1];
-                    dialog.Filter = string.Format("{0}{1}{2} ({3})|{3}", dialog.Filter, i > 0 ? "|" : string.Empty, description, pattern);
+                    dialog.Filter = string.Format(CultureInfo.InvariantCulture, "{0}{1}{2} ({3})|{3}", dialog.Filter, i > 0 ? "|" : string.Empty, description, pattern);
                 }
-                dialog.Filter = string.Format("{0}|Image Files ({1})|{1}", dialog.Filter, extensions.Join(";"));
+                dialog.Filter = string.Format(CultureInfo.InvariantCulture, "{0}|Image Files ({1})|{1}", dialog.Filter, extensions.Join(";"));
                 dialog.FilterIndex = imageEncoders.Length + 1;
                 dialog.ShowDialog();
                 if (!File.Exists(dialog.FileName))
@@ -455,7 +457,7 @@ namespace AppsLauncher.Windows
                     Result = DialogResult.Yes;
                     MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationCompletedMsg)), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ex.IsCaught())
                 {
                     Log.Write(ex);
                     MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationFailedMsg)), MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -477,7 +479,7 @@ namespace AppsLauncher.Windows
                 else
                     previewBg.BackgroundImage = default;
             }
-            catch
+            catch (Exception ex) when (ex.IsCaught())
             {
                 if (!owner.Checked)
                     owner.Checked = true;
@@ -512,7 +514,7 @@ namespace AppsLauncher.Windows
             {
                 title = Controls.Find(owner.Name + "Label", true).First().Text;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }
@@ -565,7 +567,8 @@ namespace AppsLauncher.Windows
                 g.RotateTransform(-70);
                 g.TextRenderingHint = TextRenderingHint.AntiAlias;
                 using (var b = new SolidBrush(Color.FromArgb(50, (byte)~owner.BackColor.R, (byte)~owner.BackColor.G, (byte)~owner.BackColor.B)))
-                    g.DrawString("Preview", new Font("Comic Sans MS", 24f), b, 0f, 0f);
+                    using (var f = new Font("Comic Sans MS", 24f))
+                        g.DrawString("Preview", f, b, 0f, 0f);
             }
         }
 
@@ -623,7 +626,7 @@ namespace AppsLauncher.Windows
                             var type = new string(item.ToCharArray().Where(c => !Path.GetInvalidFileNameChars().Contains(c) && !char.IsWhiteSpace(c)).ToArray());
                             if (string.IsNullOrWhiteSpace(type) || type.Length < 1)
                                 continue;
-                            if (type.StartsWith("."))
+                            if (type.StartsWith(".", StringComparison.Ordinal))
                             {
                                 while (type.Contains(".."))
                                     type = type.Replace("..", ".");
@@ -635,7 +638,7 @@ namespace AppsLauncher.Windows
                                 if (typesList.ContainsEx(type) || typesList.ContainsEx($".{type}"))
                                     continue;
                             }
-                            if (type.Length == 1 && type.StartsWith("."))
+                            if (type.Length == 1 && type.StartsWith(".", StringComparison.Ordinal))
                                 continue;
                             typesList.Add(type);
                         }
@@ -644,7 +647,7 @@ namespace AppsLauncher.Windows
                             var comparer = new Comparison.AlphanumericComparer();
                             typesList = typesList.OrderBy(x => x, comparer).ToList();
                             fileTypes.Text = typesList.Join(",");
-                            appData.Settings.FileTypes = typesList.ToArray();
+                            appData.Settings.FileTypes = new Collection<string>(typesList);
                         }
                     }
                     else
@@ -662,7 +665,7 @@ namespace AppsLauncher.Windows
 
             if (defBgCheck.Checked)
             {
-                if (CacheData.CurrentImageBg != default(Image))
+                if (CacheData.CurrentImageBg != default)
                 {
                     CacheData.CurrentImageBg = default;
                     if (Result != DialogResult.Yes)
@@ -704,7 +707,7 @@ namespace AppsLauncher.Windows
                         if (!dirList.ContainsEx(dir))
                             dirList.Add(dir);
                     }
-                    catch (Exception ex)
+                    catch (Exception ex) when (ex.IsCaught())
                     {
                         Log.Write(ex);
                     }
@@ -729,15 +732,14 @@ namespace AppsLauncher.Windows
                     foreach (var dir in shortcutDirs)
                     {
                         var shortcuts = Directory.GetFiles(dir, "Apps Launcher*.lnk", SearchOption.TopDirectoryOnly);
-                        foreach (var shortcut in shortcuts)
-                            if (File.Exists(shortcut))
-                                File.Delete(shortcut);
+                        foreach (var shortcut in shortcuts.Where(File.Exists))
+                            File.Delete(shortcut);
                     }
                     var startMenuDir = Path.Combine(shortcutDirs.Last(), "Portable Apps");
                     if (Directory.Exists(startMenuDir))
                         Directory.Delete(startMenuDir, true);
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ex.IsCaught())
                 {
                     Log.Write(ex);
                 }

@@ -5,6 +5,7 @@ namespace AppsDownloader.Windows
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Drawing;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace AppsDownloader.Windows
             InitializeComponent();
 
             Language.SetControlLang(this);
-            Text = Settings.Title;
+            Text = Resources.GlobalTitle;
             for (var i = 0; i < appsList.Columns.Count; i++)
                 appsList.Columns[i].Text = Language.GetText($"columnHeader{i + 1}");
             for (var i = 0; i < appsList.Groups.Count; i++)
@@ -128,7 +129,7 @@ namespace AppsDownloader.Windows
                 return;
             notifyBox?.Close();
             NotifyBox = new NotifyBox();
-            NotifyBox.Show(Language.GetText(nameof(en_US.DatabaseAccessMsg)), Settings.Title, NotifyBoxStartPosition.Center);
+            NotifyBox.Show(Language.GetText(nameof(en_US.DatabaseAccessMsg)), Resources.GlobalTitle, NotifyBoxStartPosition.Center);
         }
 
         private bool AutoRetry { get; set; }
@@ -168,14 +169,14 @@ namespace AppsDownloader.Windows
             if (!Network.InternetIsAvailable)
             {
                 if (!ActionGuid.IsUpdateInstance)
-                    MessageBoxEx.Show(Language.GetText(nameof(en_US.InternetIsNotAvailableMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBoxEx.Show(Language.GetText(nameof(en_US.InternetIsNotAvailableMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 ApplicationExit(1);
                 return;
             }
 
             if (!ActionGuid.IsUpdateInstance && !AppSupply.GetMirrors(AppSuppliers.Internal).Any())
             {
-                MessageBoxEx.Show(Language.GetText(nameof(en_US.NoServerAvailableMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBoxEx.Show(Language.GetText(nameof(en_US.NoServerAvailableMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 ApplicationExit(1);
                 return;
             }
@@ -183,27 +184,27 @@ namespace AppsDownloader.Windows
             try
             {
                 if (!CacheData.AppImages.Any())
-                    throw new InvalidOperationException("No small app image found.");
+                    throw new InvalidOperationException(ExceptionMessages.NoSmallAppImagesFound);
 
                 if (!CacheData.AppImagesLarge.Any())
-                    throw new InvalidOperationException("No large app image found.");
+                    throw new InvalidOperationException(ExceptionMessages.NoLargeAppImagesFound);
 
                 if (!CacheData.AppInfo.Any())
-                    throw new InvalidOperationException("No app data found.");
+                    throw new InvalidOperationException(ExceptionMessages.NoAppDataFound);
 
                 if (ActionGuid.IsUpdateInstance)
                 {
                     var appUpdates = AppSupply.FindOutdatedApps();
                     if (!appUpdates.Any())
-                        throw new WarningException("No updates available.");
+                        throw new WarningException(ExceptionMessages.NoUpdatesFound);
 
                     AppsListUpdate(appUpdates);
                     if (appsList.Items.Count == 0)
-                        throw new InvalidOperationException("No apps available.");
+                        throw new InvalidOperationException(ExceptionMessages.NoAppsFound);
 
-                    var asterisk = string.Format(Language.GetText(appsList.Items.Count == 1 ? nameof(en_US.AppUpdateAvailableMsg) : nameof(en_US.AppUpdatesAvailableMsg)), appsList.Items.Count);
-                    if (MessageBoxEx.Show(asterisk, Settings.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) != DialogResult.Yes)
-                        throw new WarningException("Update canceled.");
+                    var asterisk = string.Format(CultureInfo.InvariantCulture, Language.GetText(appsList.Items.Count == 1 ? nameof(en_US.AppUpdateAvailableMsg) : nameof(en_US.AppUpdatesAvailableMsg)), appsList.Items.Count);
+                    if (MessageBoxEx.Show(asterisk, Resources.GlobalTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) != DialogResult.Yes)
+                        throw new WarningException(ExceptionMessages.UpdateCanceled);
 
                     foreach (var item in appsList.Items.Cast<ListViewItem>())
                         item.Checked = true;
@@ -214,7 +215,7 @@ namespace AppsDownloader.Windows
                         AppsListUpdate();
 
                     if (appsList.Items.Count == 0)
-                        throw new InvalidOperationException("No apps available.");
+                        throw new InvalidOperationException(ExceptionMessages.NoAppsFound);
                 }
             }
             catch (WarningException ex)
@@ -222,11 +223,11 @@ namespace AppsDownloader.Windows
                 Log.Write(ex.Message);
                 ApplicationExit(2);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
                 if (!ActionGuid.IsUpdateInstance)
-                    MessageBoxEx.Show(Language.GetText(nameof(en_US.NoServerAvailableMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBoxEx.Show(Language.GetText(nameof(en_US.NoServerAvailableMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 ApplicationExit(1);
             }
         }
@@ -271,7 +272,7 @@ namespace AppsDownloader.Windows
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (TransferManager.Any() && MessageBoxEx.Show(this, Language.GetText(nameof(en_US.AreYouSureMsg)), Settings.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (TransferManager.Any() && MessageBoxEx.Show(this, Language.GetText(nameof(en_US.AreYouSureMsg)), Resources.GlobalTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             {
                 e.Cancel = true;
                 return;
@@ -298,7 +299,7 @@ namespace AppsDownloader.Windows
 
         private void AppsList_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            var appData = CacheData.AppInfo?.FirstOrDefault(x => x.Key.Equals(appsList.Items[e.Index].Name));
+            var appData = CacheData.AppInfo?.FirstOrDefault(x => x.Key.Equals(appsList.Items[e.Index].Name, StringComparison.Ordinal));
             if (appData?.Requirements?.Any() != true)
                 return;
             var checkedNames = appsList.CheckedItems.Cast<ListViewItem>().Where(x => !x.Name.EqualsEx(appData.Key)).Select(x => x.Name).ToArray();
@@ -316,7 +317,7 @@ namespace AppsDownloader.Windows
                     continue;
                 foreach (var item in appsList.Items.Cast<ListViewItem>())
                 {
-                    if (!item.Name.Equals(requirement))
+                    if (!item.Name.Equals(requirement, StringComparison.Ordinal))
                         continue;
                     item.Checked = e.NewValue == CheckState.Checked;
                     break;
@@ -343,9 +344,9 @@ namespace AppsDownloader.Windows
                 var item = appsList.Items[i];
                 var clone = AppsListClone.Items[i];
                 foreach (var group in appsList.Groups.Cast<ListViewGroup>())
-                    if (clone.Group.Name.Equals(group.Name))
+                    if (clone.Group.Name.Equals(group.Name, StringComparison.Ordinal))
                     {
-                        if (!clone.Group.Name.Equals(item.Group.Name))
+                        if (!clone.Group.Name.Equals(item.Group.Name, StringComparison.Ordinal))
                             group.Items.Add(item);
                         break;
                     }
@@ -384,7 +385,7 @@ namespace AppsDownloader.Windows
                 foreach (var item in appsList.Items.Cast<ListViewItem>())
                 {
                     var groupName = item.Group.Name;
-                    if (searchResultColor && groupName.Equals(nameof(en_US.listViewGroup0)))
+                    if (searchResultColor && groupName.Equals(nameof(en_US.listViewGroup0), StringComparison.Ordinal))
                     {
                         item.BackColor = SystemColors.Highlight;
                         item.ForeColor = SystemColors.HighlightText;
@@ -502,7 +503,7 @@ namespace AppsDownloader.Windows
                     if (appData.ServerKey != null)
                         foreach (var srv in Shareware.GetAddresses())
                         {
-                            if (Shareware.FindAddressKey(srv) != appData.ServerKey.Encode(BinaryToTextEncodings.Base85))
+                            if (Shareware.FindAddressKey(srv) != appData.ServerKey.ToArray().Encode(BinaryToTextEncoding.Base85))
                                 continue;
                             src = NetEx.GetFullHost(srv);
                             break;
@@ -515,8 +516,8 @@ namespace AppsDownloader.Windows
                 };
                 item.SubItems.Add(appData.Description);
                 item.SubItems.Add(appData.DisplayVersion);
-                item.SubItems.Add(appData.DownloadSize.FormatSize(SizeOptions.Trim));
-                item.SubItems.Add(appData.InstallSize.FormatSize(SizeOptions.Trim));
+                item.SubItems.Add(appData.DownloadSize.FormatSize(SizeOption.Trim));
+                item.SubItems.Add(appData.InstallSize.FormatSize(SizeOption.Trim));
                 item.SubItems.Add(src);
                 item.ImageIndex = index;
 
@@ -690,7 +691,7 @@ namespace AppsDownloader.Windows
                     result = dialog.ShowDialog();
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }
@@ -796,12 +797,12 @@ namespace AppsDownloader.Windows
                 {
                     foreach (var group in appsList.Groups.Cast<ListViewGroup>())
                     {
-                        if (!group.Name.Equals(nameof(en_US.listViewGroup0)))
+                        if (!group.Name.Equals(nameof(en_US.listViewGroup0), StringComparison.Ordinal))
                             continue;
                         if (group.Items.Count > 0)
                             foreach (var item in appsList.Items.Cast<ListViewItem>())
                             {
-                                if (!item.Group.Name.Equals(group.Name))
+                                if (!item.Group.Name.Equals(group.Name, StringComparison.Ordinal))
                                     continue;
                                 if (!owner.Enabled || item.BackColor != SystemColors.Highlight)
                                 {
@@ -910,14 +911,14 @@ namespace AppsDownloader.Windows
                                 if (result == DialogResult.OK)
                                     break;
                                 TopMost = true;
-                                if (MessageBoxEx.Show(this, Language.GetText(nameof(en_US.AreYouSureMsg)), Settings.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                                if (MessageBoxEx.Show(this, Language.GetText(nameof(en_US.AreYouSureMsg)), Resources.GlobalTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                                     continue;
                                 TransferManager.Clear();
                                 ApplicationExit();
                                 return;
                             }
                     }
-                    catch (Exception ex)
+                    catch (Exception ex) when (ex.IsCaught())
                     {
                         Log.Write(ex);
                     }
@@ -947,8 +948,8 @@ namespace AppsDownloader.Windows
             {
                 if (item2 < item3)
                     continue;
-                var warning = string.Format(Language.GetText(nameof(en_US.NotEnoughSpaceMsg)), item1, (item2 - item3).FormatSize());
-                switch (MessageBoxEx.Show(this, warning, Settings.Title, MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Warning))
+                var warning = string.Format(CultureInfo.InvariantCulture, Language.GetText(nameof(en_US.NotEnoughSpaceMsg)), item1, (item2 - item3).FormatSize());
+                switch (MessageBoxEx.Show(this, warning, Resources.GlobalTitle, MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Warning))
                 {
                     case DialogResult.Abort:
                         TransferManager.Clear();
@@ -998,7 +999,7 @@ namespace AppsDownloader.Windows
                 {
                     CurrentTransfer = TransferManager.First(x => !TransferFails.Contains(x.Value.AppData) && (x.Key.Checked || x.Value.Transfer.HasCanceled));
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ex.IsCaught())
                 {
                     Log.Write(ex);
                     ApplicationExit(1);
@@ -1008,7 +1009,7 @@ namespace AppsDownloader.Windows
                 var listViewItem = CurrentTransfer.Key;
                 appStatus.Text = listViewItem.Text;
                 urlStatus.Text = $@"{listViewItem.SubItems[listViewItem.SubItems.Count - 1].Text} ";
-                Text = $@"{string.Format(Language.GetText(nameof(en_US.titleStatus)), TransferManager.Keys.Count(x => !x.Checked), TransferManager.Keys.Count)} - {appStatus.Text}";
+                Text = $@"{string.Format(CultureInfo.InvariantCulture, Language.GetText(nameof(en_US.titleStatus)), TransferManager.Keys.Count(x => !x.Checked), TransferManager.Keys.Count)} - {appStatus.Text}";
 
                 if (!TransferStopwatch.IsRunning)
                     TransferStopwatch.Start();
@@ -1052,7 +1053,7 @@ namespace AppsDownloader.Windows
                 downloadSpeed.Text = appTransferor.Transfer.TransferSpeedAd;
                 if (downloadSpeed.Text.EqualsEx("0.00 bit/s"))
                     downloadSpeed.Text = Language.GetText(nameof(en_US.InitStatusText));
-                timeStatus.Text = TransferStopwatch.Elapsed.ToString("mm\\:ss\\.fff");
+                timeStatus.Text = TransferStopwatch.Elapsed.ToString("mm\\:ss\\.fff", CultureInfo.InvariantCulture);
                 statusAreaRightPanel.ResumeLayout();
 
                 if (TransferTask?.Status == TaskStatus.Running || appTransferor.Transfer.IsBusy)
@@ -1084,9 +1085,9 @@ namespace AppsDownloader.Windows
                 var windowState = WindowState;
                 WindowState = FormWindowState.Minimized;
 
-                Text = Settings.Title;
+                Text = Resources.GlobalTitle;
                 TransferStopwatch.Stop();
-                TaskBarProgress.SetState(Handle, TaskBarProgressFlags.Indeterminate);
+                TaskBarProgress.SetState(Handle, TaskBarProgressState.Indeterminate);
 
                 Icon = CacheData.GetSystemIcon(ResourcesEx.IconIndex.Install, true);
                 var installed = new List<ListViewItem>();
@@ -1106,10 +1107,10 @@ namespace AppsDownloader.Windows
 
                 if (TransferFails.Any())
                 {
-                    TaskBarProgress.SetState(Handle, TaskBarProgressFlags.Error);
+                    TaskBarProgress.SetState(Handle, TaskBarProgressState.Error);
                     var fails = TransferFails.Select(x => x.Name).Distinct().ToArray();
-                    var warning = string.Format(Language.GetText(fails.Length == 1 ? nameof(en_US.AppDownloadErrorMsg) : nameof(en_US.AppsDownloadErrorMsg)), fails.Join(Environment.NewLine));
-                    switch (AutoRetry ? DialogResult.Retry : MessageBoxEx.Show(this, warning, Settings.Title, MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning))
+                    var warning = string.Format(CultureInfo.InvariantCulture, Language.GetText(fails.Length == 1 ? nameof(en_US.AppDownloadErrorMsg) : nameof(en_US.AppsDownloadErrorMsg)), fails.Join(Environment.NewLine));
+                    switch (AutoRetry ? DialogResult.Retry : MessageBoxEx.Show(this, warning, Resources.GlobalTitle, MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning))
                     {
                         case DialogResult.Retry:
                             AutoRetry = false;
@@ -1169,7 +1170,7 @@ namespace AppsDownloader.Windows
 
                 TaskBarProgress.SetValue(Handle, 100, 100);
                 var information = Language.GetText(ActionGuid.IsUpdateInstance ? installed.Count == 1 ? nameof(en_US.AppUpdatedMsg) : nameof(en_US.AppsUpdatedMsg) : installed.Count == 1 ? nameof(en_US.AppDownloadedMsg) : nameof(en_US.AppsDownloadedMsg));
-                MessageBoxEx.Show(this, information, Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBoxEx.Show(this, information, Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ApplicationExit();
             }
         }

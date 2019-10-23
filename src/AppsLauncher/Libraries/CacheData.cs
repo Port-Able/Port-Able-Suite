@@ -182,7 +182,7 @@
             {
                 dirs = Settings.AppDirs.SelectMany(x => DirectoryEx.EnumerateDirectories(x)).ToArray();
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }
@@ -261,7 +261,7 @@
                     nameRegEx = new Regex("(PortableApps.com Launcher)|, Portable Edition|Portable64|Portable", RegexOptions.IgnoreCase);
                 var newName = nameRegEx.Replace(name, string.Empty).Replace("\t", " ");
                 newName = Regex.Replace(newName.Trim(' ', ','), " {2,}", " ");
-                if (!name.Equals(newName))
+                if (!name.Equals(newName, StringComparison.Ordinal))
                     name = newName;
                 if (string.IsNullOrWhiteSpace(name) || !File.Exists(filePath) || _currentAppInfo.Any(x => x.Name.EqualsEx(name)))
                     continue;

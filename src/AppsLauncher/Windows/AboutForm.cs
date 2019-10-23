@@ -5,6 +5,7 @@ namespace AppsLauncher.Windows
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Drawing;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Windows.Forms;
@@ -85,11 +86,11 @@ namespace AppsLauncher.Windows
             };
             aboutInfoLabel.ActiveLinkColor = Settings.Window.Colors.Base;
             aboutInfoLabel.BorderStyle = BorderStyle.None;
-            aboutInfoLabel.Text = string.Format(Language.GetText(aboutInfoLabel), aboutInfoLabelData.Select(x => x.First()).Cast<object>().ToArray());
+            aboutInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, Language.GetText(aboutInfoLabel), aboutInfoLabelData.Select(x => x.First()).Cast<object>().ToArray());
             aboutInfoLabel.Links.Clear();
             aboutInfoLabelData.ForEach(x => aboutInfoLabel.LinkText(x.First(), x.Last()));
 
-            copyrightLabel.Text = string.Format(copyrightLabel.Text, DateTime.Now.Year);
+            copyrightLabel.Text = string.Format(CultureInfo.InvariantCulture, copyrightLabel.Text, DateTime.Now.Year);
 
             ((ISupportInitialize)logoBox).EndInit();
             logoPanel.ResumeLayout(false);
@@ -140,7 +141,7 @@ namespace AppsLauncher.Windows
                         verArray[i] = FileEx.GetVersion(fvi.FileName);
                         verInfoList.Add(fvi);
                     }
-                    catch (Exception ex)
+                    catch (Exception ex) when (ex.IsCaught())
                     {
                         Log.Write(ex);
                     }
@@ -196,7 +197,7 @@ namespace AppsLauncher.Windows
                     Font = version.Font,
                     ForeColor = copyrightLabel.ForeColor,
                     Location = new Point(version.Right, name.Bottom),
-                    Text = @"|"
+                    Text = Resources.Separator
                 };
                 mainPanel.Controls.Add(separator);
                 var path = new Label
@@ -251,17 +252,17 @@ namespace AppsLauncher.Windows
                 {
                     case 0:
                         series.Points.Clear();
-                        series.Points.AddXY($"{length.FormatSize(SizeOptions.Round)} Free", length);
+                        series.Points.AddXY($"{length.FormatSize(SizeOption.Round)} Free", length);
                         break;
                     case 25:
-                        series.Points.AddXY($"{length.FormatSize(SizeOptions.Round)} Used", length);
+                        series.Points.AddXY($"{length.FormatSize(SizeOption.Round)} Used", length);
                         series.Points.Last().Color = Color.Firebrick;
                         break;
                     case 50:
-                        series.Points.AddXY($"{length.FormatSize(SizeOptions.Round)} Used (Apps)", length);
+                        series.Points.AddXY($"{length.FormatSize(SizeOption.Round)} Used (Apps)", length);
                         break;
                     case 100:
-                        series.Points.AddXY($"{length.FormatSize(SizeOptions.Round)} Used (Other)", length);
+                        series.Points.AddXY($"{length.FormatSize(SizeOption.Round)} Used (Other)", length);
                         break;
                 }
             }
@@ -270,7 +271,7 @@ namespace AppsLauncher.Windows
                 if (Log.DebugMode > 1)
                     Log.Write(ex);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }

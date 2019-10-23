@@ -2,11 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Windows.Forms;
     using LangResources;
     using Microsoft.Win32;
+    using Properties;
     using SilDev;
     using SilDev.Forms;
 
@@ -22,7 +24,7 @@
 
         public FileTypeAssocData(string json)
         {
-            _assocData = Json.Deserialize<Dictionary<string, string>>(json) ?? throw new ArgumentException("JSON content is invalid.");
+            _assocData = Json.Deserialize<Dictionary<string, string>>(json) ?? throw new FormatException();
             SystemRegistryAccess = new RegistryAccess(this);
         }
 
@@ -91,12 +93,12 @@
                     return;
                 }
 
-                var restPointEnabled = quiet || MessageBoxEx.Show(Language.GetText(nameof(en_US.RestorePointMsg0)), Settings.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+                var restPointEnabled = quiet || MessageBoxEx.Show(Language.GetText(nameof(en_US.RestorePointMsg0)), Resources.GlobalTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
                 if (restPointEnabled && EnvironmentEx.SystemRestore.IsEnabled)
                 {
-                    var result = !quiet ? MessageBoxEx.Show(Language.GetText(nameof(en_US.RestorePointMsg1)), Settings.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) : DialogResult.Yes;
+                    var result = !quiet ? MessageBoxEx.Show(Language.GetText(nameof(en_US.RestorePointMsg1)), Resources.GlobalTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question) : DialogResult.Yes;
                     if (result == DialogResult.Yes)
-                        EnvironmentEx.SystemRestore.Create(string.Format(en_US.AssociateRestPointLabel, appData.Name), EnvironmentEx.RestoreEventType.BeginSystemChange, EnvironmentEx.RestorePointType.ModifySettings);
+                        EnvironmentEx.SystemRestore.Create(string.Format(CultureInfo.InvariantCulture, en_US.AssociateRestPointLabel, appData.Name), EnvironmentEx.RestoreEventType.BeginSystemChange, EnvironmentEx.RestorePointType.ModifySettings);
                 }
 
                 var restPointDir = Path.Combine(CorePaths.RestorePointDir, appData.Key);
@@ -139,7 +141,7 @@
                     Reg.Write(curCmdKeyPath, null, newCmdData, RegistryValueKind.ExpandString);
                 Reg.RemoveEntry(curCmdKeyPath, "DelegateExecute");
 
-                foreach (var type in appData.Settings.FileTypes.Where(x => !x.StartsWith(".")))
+                foreach (var type in appData.Settings.FileTypes.Where(x => !x.StartsWith(".", StringComparison.Ordinal)))
                 {
                     if (string.IsNullOrWhiteSpace(type))
                         continue;
@@ -198,7 +200,7 @@
 
                 if (!quiet)
                 {
-                    var result = MessageBoxEx.Show(Language.GetText(nameof(en_US.RestorePointMsg2)), Settings.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    var result = MessageBoxEx.Show(Language.GetText(nameof(en_US.RestorePointMsg2)), Resources.GlobalTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result != DialogResult.Yes)
                         goto Cancel;
                 }
@@ -232,19 +234,19 @@
 
                 if (EnvironmentEx.SystemRestore.IsEnabled)
                 {
-                    var result = MessageBoxEx.Show(Language.GetText(nameof(en_US.RestorePointMsg3)), Settings.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    var result = MessageBoxEx.Show(Language.GetText(nameof(en_US.RestorePointMsg3)), Resources.GlobalTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result == DialogResult.Yes)
                         using (var process = ProcessEx.Start(CorePaths.SystemRestore, false))
                             if (!process?.HasExited == true)
                                 process.WaitForExit();
                 }
 
-                MessageBoxEx.Show(Language.GetText(nameof(en_US.OperationCompletedMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBoxEx.Show(Language.GetText(nameof(en_US.OperationCompletedMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
 
                 Cancel:
                 if (!quiet)
-                    MessageBoxEx.Show(Language.GetText(nameof(en_US.OperationCanceledMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBoxEx.Show(Language.GetText(nameof(en_US.OperationCanceledMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }

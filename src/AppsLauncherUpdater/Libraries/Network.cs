@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using LangResources;
+    using Properties;
     using SilDev;
 
     internal static class Network
@@ -26,7 +27,7 @@
         internal static void DownloadArchiver()
         {
             var notifyBox = new NotifyBox();
-            notifyBox.Show(Language.GetText(nameof(en_US.InitRequirementsNotify)), Settings.Title, NotifyBoxStartPosition.Center);
+            notifyBox.Show(Language.GetText(nameof(en_US.InitRequirementsNotify)), Resources.GlobalTitle, NotifyBoxStartPosition.Center);
             var mirrors = NetEx.InternalDownloadMirrors;
             var verMap = new Dictionary<string, string>();
             foreach (var mirror in mirrors)
@@ -47,7 +48,7 @@
                         continue;
                     verMap.Add(name, version);
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ex.IsCaught())
                 {
                     Log.Write(ex);
                 }
@@ -68,7 +69,7 @@
                         NetEx.Transfer.DownloadFile(url, path);
                         Compaction.Unzip(path, CachePaths.UpdateDir);
                     }
-                    catch (Exception ex)
+                    catch (Exception ex) when (ex.IsCaught())
                     {
                         Log.Write(ex);
                     }

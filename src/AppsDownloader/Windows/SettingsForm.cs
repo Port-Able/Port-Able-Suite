@@ -8,6 +8,7 @@
     using System.Windows.Forms;
     using LangResources;
     using Libraries;
+    using Properties;
     using SilDev;
     using SilDev.Drawing;
     using SilDev.Forms;
@@ -21,7 +22,7 @@
             Language.SetControlLang(this);
             foreach (var label in groupColorsGroupBox.Controls.OfType<Label>())
             {
-                if (string.IsNullOrEmpty(label.Text) || label.Text.EndsWith(":"))
+                if (string.IsNullOrEmpty(label.Text) || label.Text.EndsWith(":", StringComparison.Ordinal))
                     continue;
                 label.Text += ':';
             }
@@ -153,7 +154,7 @@
             {
                 title = Controls.Find($"listViewGroup{new string(owner.Name.Where(char.IsDigit).ToArray())}", true).First().Text;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }
@@ -205,20 +206,20 @@
                 dialog.SelectedPath = Path.GetTempPath();
                 if (dialog.ShowDialog() != DialogResult.OK)
                 {
-                    MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationCanceledMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationCanceledMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     return;
                 }
                 var transferDir = dialog.SelectedPath;
                 if (transferDir.EqualsEx(Settings.TransferDir))
                 {
-                    MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationFailedMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationFailedMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-                var currentDrive = PathEx.LocalPath.ToUpper().First();
-                var transferDrive = transferDir.ToUpper().First();
+                var currentDrive = PathEx.LocalPath.ToUpperInvariant().First();
+                var transferDrive = transferDir.ToUpperInvariant().First();
                 if (currentDrive.Equals(transferDrive))
                 {
-                    MessageBoxEx.Show(this, Language.GetText(nameof(en_US.TransferDirMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBoxEx.Show(this, Language.GetText(nameof(en_US.TransferDirMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
                 var currentDir = Settings.TransferDir;
@@ -233,7 +234,7 @@
                         transferPathUndoBtn.BackgroundImage = transferPathUndoBtn.BackgroundImage.SwitchGrayScale(transferPathUndoBtn);
                     }
                 }
-                MessageBoxEx.Show(this, Language.GetText(dirChanged ? nameof(en_US.OperationCompletedMsg) : nameof(en_US.OperationFailedMsg)), Settings.Title, MessageBoxButtons.OK, dirChanged ? MessageBoxIcon.Asterisk : MessageBoxIcon.Warning);
+                MessageBoxEx.Show(this, Language.GetText(dirChanged ? nameof(en_US.OperationCompletedMsg) : nameof(en_US.OperationFailedMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, dirChanged ? MessageBoxIcon.Asterisk : MessageBoxIcon.Warning);
             }
         }
 
@@ -246,7 +247,7 @@
                 transferPathUndoBtn.Enabled = false;
                 transferPathUndoBtn.BackgroundImage = transferPathUndoBtn.BackgroundImage.SwitchGrayScale(transferPathUndoBtn);
             }
-            MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationCompletedMsg)), Settings.Title, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationCompletedMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
 
         private void OpenSrcManBtn_Click(object sender, EventArgs e)
@@ -260,7 +261,7 @@
                     dialog.ShowDialog();
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }

@@ -2,6 +2,7 @@ namespace AppsLauncher
 {
     using System;
     using System.Diagnostics;
+    using System.Globalization;
     using System.Linq;
     using System.Threading;
     using System.Windows.Forms;
@@ -17,7 +18,7 @@ namespace AppsLauncher
         {
             Settings.Initialize();
 
-            var instanceKey = PathEx.LocalPath.GetHashCode().ToString();
+            var instanceKey = PathEx.LocalPath.GetHashCode().ToString(CultureInfo.InvariantCulture);
             using (new Mutex(true, instanceKey, out var newInstance))
             {
                 Language.ResourcesNamespace = typeof(Program).Namespace;
@@ -28,7 +29,8 @@ namespace AppsLauncher
 
                 if (newInstance && Arguments.ValidPaths.Any() && !ActionGuid.IsDisallowInterface)
                 {
-                    Application.Run(new OpenWithForm().Plus());
+                    using (var form = new OpenWithForm())
+                        Application.Run(form.Plus());
                     return;
                 }
 
@@ -99,7 +101,9 @@ namespace AppsLauncher
 
                 if (!newInstance && !ActionGuid.IsAllowNewInstance)
                     return;
-                Application.Run(new MenuViewForm().Plus());
+
+                using (var form = new MenuViewForm())
+                    Application.Run(form.Plus());
             }
         }
     }

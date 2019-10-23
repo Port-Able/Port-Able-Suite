@@ -1,6 +1,7 @@
 ﻿namespace AppsDownloader.Libraries
 {
     using System.IO;
+    using System.Linq;
     using SilDev;
 
     internal static class Recovery
@@ -28,9 +29,8 @@
 
                 try
                 {
-                    foreach (var dir in CorePaths.AppDirs)
-                        if (!Directory.Exists(dir))
-                            throw new PathNotFoundException(dir);
+                    foreach (var dir in CorePaths.AppDirs.Where(dir => !Directory.Exists(dir)))
+                        throw new PathNotFoundException(dir);
                 }
                 catch (PathNotFoundException ex)
                 {

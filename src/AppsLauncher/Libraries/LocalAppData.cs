@@ -1,6 +1,8 @@
 ﻿namespace AppsLauncher.Libraries
 {
     using System;
+    using System.Collections.ObjectModel;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Runtime.Serialization;
@@ -8,6 +10,7 @@
     using System.Text.RegularExpressions;
     using System.Windows.Forms;
     using LangResources;
+    using Properties;
     using SilDev;
     using SilDev.Forms;
     using GlobalSettings = Settings;
@@ -55,6 +58,9 @@
             if (info == null)
                 throw new ArgumentNullException(nameof(info));
 
+            if ((context.State & StreamingContextStates.CrossMachine) != 0)
+                throw new SerializationException();
+
             Key = info.GetString(nameof(Key));
             Name = info.GetString(nameof(Name));
 
@@ -93,7 +99,7 @@
             private set => _appInfoPath = GetFullPath(value);
         }
 
-        public AppSettings Settings => 
+        public AppSettings Settings =>
             _settings ?? (_settings = new AppSettings(Key));
 
         [SecurityCritical]
@@ -164,17 +170,17 @@
                 var types = Arguments.FileTypes.Where(x => !Arguments.SavedFileTypes.Contains(x)).ToList();
                 if (types.Any())
                 {
-                    var question = types.Count == 1 ? Language.GetText(nameof(en_US.AssociateQuestionMsg0)) : string.Format(Language.GetText(nameof(en_US.AssociateQuestionMsg1)), types.Join("; "));
+                    var question = types.Count == 1 ? Language.GetText(nameof(en_US.AssociateQuestionMsg0)) : string.Format(CultureInfo.InvariantCulture, Language.GetText(nameof(en_US.AssociateQuestionMsg1)), types.Join("; "));
                     if (MessageBoxEx.Show(question, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
-                        types = types.Select(x => $".{x.ToLower()}").ToList();
+                        types = types.Select(x => $".{x.ToLowerInvariant()}").ToList();
                         Settings.FileTypes.ForEach(x =>
                         {
                             if (types.Any(y => y.TrimStart('.').EqualsEx(x.TrimStart('.'))))
                                 return;
                             types.Add(x);
                         });
-                        Settings.FileTypes = types.ToArray();
+                        Settings.FileTypes = new Collection<string>(types);
                     }
                 }
             }
@@ -197,17 +203,17 @@
                     Ini.RemoveSection(Key);
                     GlobalSettings.WriteToFileInQueue = true;
                 }
-                MessageBoxEx.Show(owner, Language.GetText(nameof(en_US.OperationCompletedMsg)), GlobalSettings.Title, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                MessageBoxEx.Show(owner, Language.GetText(nameof(en_US.OperationCompletedMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 return !Directory.Exists(FileDir);
             }
             Failed:
-            if (MessageBoxEx.Show(owner, Language.GetText(nameof(en_US.OperationFailedMsg)), GlobalSettings.Title, MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning) == DialogResult.Retry)
+            if (MessageBoxEx.Show(owner, Language.GetText(nameof(en_US.OperationFailedMsg)), Resources.GlobalTitle, MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning) == DialogResult.Retry)
                 goto Retry;
             return false;
         }
 
         public bool Equals(LocalAppData appData) =>
-            Equals(GetHashCode(), appData.GetHashCode());
+            Equals(GetHashCode(), appData?.GetHashCode());
 
         public override bool Equals(object obj)
         {
@@ -234,8 +240,9 @@
         public sealed class AppSettings
         {
             private readonly string _section;
-            private string[] _fileAboluteTypes, _fileTypes;
+            private ReadOnlyCollection<string> _fileAbsoluteTypes;
             private FileTypeAssocData _fileTypeAssoc;
+            private Collection<string> _fileTypes;
             private bool? _noConfirm, _noUpdates, _runAsAdmin, _sortArgPaths;
             private DateTime _noUpdatesTime;
             private string _startArgsFirst, _startArgsLast;
@@ -243,36 +250,37 @@
             internal AppSettings(string key) =>
                 _section = key;
 
-            public string[] FileAboluteTypes
+            public ReadOnlyCollection<string> FileAbsoluteTypes
             {
                 get
                 {
-                    if (FileTypes.Length == _fileAboluteTypes?.Length)
-                        return _fileAboluteTypes;
-                    _fileAboluteTypes = FileTypes;
-                    if (_fileAboluteTypes.Any())
-                        _fileAboluteTypes = FileTypes.Select(x => x.TrimStart('.')).Distinct().ToArray();
-                    return _fileAboluteTypes;
+                    if (FileTypes.Count == _fileAbsoluteTypes?.Count)
+                        return _fileAbsoluteTypes;
+                    var types = FileTypes.ToArray();
+                    if (types.Any())
+                        types = types.Select(x => x.TrimStart('.')).Distinct().ToArray();
+                    _fileAbsoluteTypes = new ReadOnlyCollection<string>(types);
+                    return _fileAbsoluteTypes;
                 }
             }
 
-            public string[] FileTypes
+            public Collection<string> FileTypes
             {
                 get
                 {
-                    if (_fileTypes != default(string[]))
+                    if (_fileTypes != default)
                         return _fileTypes;
                     var types = Ini.Read<string>(_section, nameof(FileTypes));
                     if (types != default)
-                        _fileTypes = types.Contains(',') ? types.Split(',') : new[] { types };
-                    return _fileTypes ?? (_fileTypes = Array.Empty<string>());
+                        _fileTypes = new Collection<string>(types.Contains(',') ? types.Split(',') : new[] { types });
+                    return _fileTypes ?? (_fileTypes = new Collection<string>());
                 }
                 set
                 {
                     if (_fileTypes == value)
                         return;
                     _fileTypes = value;
-                    _fileAboluteTypes = default;
+                    _fileAbsoluteTypes = default;
                     if (_fileTypes?.Any() != true)
                         WriteValue(nameof(FileTypes), default(string));
                     else
@@ -288,13 +296,13 @@
             {
                 get
                 {
-                    if (_fileTypeAssoc != default(FileTypeAssocData))
+                    if (_fileTypeAssoc != default)
                         return _fileTypeAssoc;
                     try
                     {
                         _fileTypeAssoc = new FileTypeAssocData(Ini.Read(_section, nameof(FileTypeAssoc)));
                     }
-                    catch (Exception ex)
+                    catch (Exception ex) when (ex.IsCaught())
                     {
                         if (Log.DebugMode > 1)
                             Log.Write(ex);

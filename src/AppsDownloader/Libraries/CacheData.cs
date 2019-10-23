@@ -26,7 +26,7 @@
         {
             get
             {
-                if (_appImages != default(Dictionary<string, Image>))
+                if (_appImages != default)
                     return _appImages;
                 UpdateAppImagesFile(false);
                 _appImages = FileEx.Deserialize<Dictionary<string, Image>>(CachePaths.AppImages) ?? FileEx.Deserialize<Dictionary<string, Image>>(CorePaths.AppImages);
@@ -39,11 +39,11 @@
         {
             get
             {
-                if (_appImagesLarge != default(Dictionary<string, Image>))
+                if (_appImagesLarge != default)
                     return _appImagesLarge;
                 UpdateAppImagesFile(true);
                 _appImagesLarge = FileEx.Deserialize<Dictionary<string, Image>>(CachePaths.AppImagesLarge) ?? FileEx.Deserialize<Dictionary<string, Image>>(CorePaths.AppImagesLarge);
-                _appImagesLarge = _appImagesLarge != default(Dictionary<string, Image>) ? _appImagesLarge.ToDictionary(x => x.Key, x => x.Value, StringComparer.OrdinalIgnoreCase) : new Dictionary<string, Image>(StringComparer.OrdinalIgnoreCase);
+                _appImagesLarge = _appImagesLarge != default ? _appImagesLarge.ToDictionary(x => x.Key, x => x.Value, StringComparer.OrdinalIgnoreCase) : new Dictionary<string, Image>(StringComparer.OrdinalIgnoreCase);
                 return _appImagesLarge;
             }
         }
@@ -52,7 +52,7 @@
         {
             get
             {
-                if (_appInfo != default(List<AppData>))
+                if (_appInfo != default)
                     return _appInfo;
                 UpdateAppInfoFile();
                 return _appInfo ?? (_appInfo = new List<AppData>());
@@ -63,7 +63,7 @@
         {
             get
             {
-                if (_settingsMerges != default(List<string>))
+                if (_settingsMerges != default)
                     return _settingsMerges;
                 _settingsMerges = FileEx.Deserialize<List<string>>(CachePaths.SettingsMerges) ?? new List<string>();
                 return _settingsMerges;
@@ -74,7 +74,7 @@
         {
             get
             {
-                if (_swDataKey != default(byte[]))
+                if (_swDataKey != default)
                     return _swDataKey;
                 if (File.Exists(CachePaths.SwDataKey))
                     _swDataKey = FileEx.ReadAllBytes(CachePaths.SwDataKey);
@@ -94,11 +94,11 @@
             if (Icons.Any())
             {
                 icon = Icons.FirstOrDefault(x => x.Item1.Equals(index) && x.Item2.Equals(large))?.Item3;
-                if (icon != default(Icon))
+                if (icon != default)
                     goto Return;
             }
             icon = ResourcesEx.GetSystemIcon(index, large);
-            if (icon == default(Icon))
+            if (icon == default)
                 goto Return;
             var tuple = new Tuple<ResourcesEx.IconIndex, bool, Icon>(index, large, icon);
             Icons.Add(tuple);
@@ -112,11 +112,11 @@
             if (Images.Any())
             {
                 image = Images.FirstOrDefault(x => x.Item1.Equals(index) && x.Item2.Equals(large))?.Item3;
-                if (image != default(Image))
+                if (image != default)
                     goto Return;
             }
             image = GetSystemIcon(index, large)?.ToBitmap();
-            if (image == default(Image))
+            if (image == default)
                 goto Return;
             var tuple = new Tuple<ResourcesEx.IconIndex, bool, Image>(index, large, image);
             Images.Add(tuple);
@@ -158,7 +158,7 @@
             try
             {
                 var appInfo = FileEx.Deserialize<List<AppData>>(CachePaths.AppInfo, true);
-                if (appInfo == default(List<AppData>))
+                if (appInfo == default)
                     throw new ArgumentNullException(nameof(appInfo));
                 if (appInfo.Count < 430)
                     throw new ArgumentOutOfRangeException(nameof(appInfo));
@@ -170,7 +170,7 @@
                 _appInfo = appInfo;
                 return;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }
@@ -263,7 +263,7 @@
                 var appInfo = NetEx.Transfer.DownloadString(url, usr, pwd, 60000, UserAgents.Default);
                 if (string.IsNullOrWhiteSpace(appInfo))
                     continue;
-                UpdateAppInfoData(appInfo, null, key.Decode(BinaryToTextEncodings.Base85));
+                UpdateAppInfoData(appInfo, null, key.Decode(BinaryToTextEncoding.Base85));
             }
         }
 
@@ -301,7 +301,7 @@
                     var newName = name.RemoveTextIgnoreCase(", Portable Edition", "Portable64", "Portable");
                     if (!string.IsNullOrWhiteSpace(newName))
                         newName = newName.ReduceWhiteSpace().TrimEnd(' ', ',');
-                    if (!string.IsNullOrWhiteSpace(newName) && !newName.Equals(name))
+                    if (!string.IsNullOrWhiteSpace(newName) && !newName.Equals(name, StringComparison.Ordinal))
                         name = newName;
                 }
 
@@ -330,7 +330,7 @@
                         description = description.UpperText("djvu");
                         break;
                 }
-                description = $"{description.Substring(0, 1).ToUpper()}{description.Substring(1)}";
+                description = $"{description.Substring(0, 1).ToUpperInvariant()}{description.Substring(1)}";
 
                 #endregion
 
@@ -343,7 +343,7 @@
                     category = category.Trim('*', '#');
                     if (string.IsNullOrWhiteSpace(category))
                         category = custom;
-                    if (!category.StartsWith(custom))
+                    if (!category.StartsWith(custom, StringComparison.Ordinal))
                         category = $"{custom}: {category}";
                 }
 
@@ -356,7 +356,7 @@
 
                 var website = Ini.Read(section, "Website", config);
                 if (string.IsNullOrWhiteSpace(website))
-                    website = Ini.Read(section, "URL", config).ToLower().Replace("https", "http");
+                    website = Ini.Read(section, "URL", config).ToLowerInvariant().Replace("https", "http");
                 if (string.IsNullOrWhiteSpace(website) || website.Any(char.IsUpper))
                     website = default;
 
@@ -380,7 +380,7 @@
                                     version += ".0";
                                 packageVersion = new Version(version);
                             }
-                            catch
+                            catch (Exception ex) when (ex.IsCaught())
                             {
                                 packageVersion = new Version("1.0.0.0");
                             }
@@ -532,7 +532,6 @@
 
                 var requires = Ini.Read(section, "Requires", default(string), config);
                 if (string.IsNullOrEmpty(requires))
-                {
                     switch (section)
                     {
                         case "FirefoxPortablePrivateWindow":
@@ -545,25 +544,22 @@
                             requires = "Java|Java64";
                             break;
                     }
-                }
                 var requiresList = new List<string>();
                 if (!string.IsNullOrEmpty(requires))
                 {
                     if (!requires.Contains(","))
                         requires += ",";
-                    foreach (var str in requires.Split(','))
+                    foreach (var str in requires.Split(',').Where(x => !string.IsNullOrWhiteSpace(x)))
                     {
-                        if (string.IsNullOrWhiteSpace(str))
-                            continue;
                         var value = str;
                         if (!value.Contains("|"))
                             value += "|";
                         var items = value.Split('|');
                         string item;
-                        if (Environment.Is64BitOperatingSystem && items.Any(x => x.EndsWith("64")))
-                            item = items.FirstOrDefault(x => x.EndsWith("64"))?.Trim();
+                        if (Environment.Is64BitOperatingSystem && items.Any(x => x.EndsWith("64", StringComparison.Ordinal)))
+                            item = items.FirstOrDefault(x => x.EndsWith("64", StringComparison.Ordinal))?.Trim();
                         else
-                            item = items.FirstOrDefault(x => !x.EndsWith("64"))?.Trim();
+                            item = items.FirstOrDefault(x => !x.EndsWith("64", StringComparison.Ordinal))?.Trim();
                         if (string.IsNullOrEmpty(item))
                             continue;
                         requiresList.Add(item);

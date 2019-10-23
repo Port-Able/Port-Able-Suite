@@ -28,7 +28,7 @@ namespace AppsDownloader.Windows
 
             if (!CacheData.AppImagesLarge.TryGetValue(appData.Key, out var image))
                 CacheData.AppImages.TryGetValue(appData.Key, out image);
-            if (image != default(Image))
+            if (image != default)
                 Icon = image.ToIcon();
 
             appNameLabel.Text = _appData.Name;

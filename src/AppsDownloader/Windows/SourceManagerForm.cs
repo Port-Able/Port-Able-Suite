@@ -49,7 +49,7 @@
             var srcData = new Dictionary<string, Tuple<string, string>>();
             foreach (var row in srcMngDataGridView.Rows.Cast<DataGridViewRow>())
             {
-                if (!(row.Cells[nameof(Address)].Value is string srv) || !srv.StartsWithEx("http://", "https://") || srv.Count(c => c == '.') < 1)
+                if (!(row.Cells[nameof(Address)].Value is string srv) || !srv.StartsWithEx("http://", "https://") || srv.All(c => c != '.'))
                     continue;
                 srv = Shareware.Encrypt(srv);
                 var usr = row.Cells[nameof(User)].Value as string ?? string.Empty;
