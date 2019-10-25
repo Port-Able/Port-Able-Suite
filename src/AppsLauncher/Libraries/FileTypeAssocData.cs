@@ -155,7 +155,7 @@
 
                     if (Reg.SubKeyExists(typeKeyPath))
                     {
-                        var keyPath = Path.Combine(Path.GetTempPath(), PathEx.GetTempFileName());
+                        var keyPath = Path.Combine(CorePaths.TempDir, FileEx.GetUniqueName());
                         Reg.ExportKeys(keyPath, typeKeyPath);
                         if (File.Exists(keyPath))
                         {

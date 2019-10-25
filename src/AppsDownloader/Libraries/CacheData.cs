@@ -205,7 +205,7 @@
                 UpdateAppInfoData(CachePaths.AppInfo, blacklist);
             }
 
-            var tmpDir = Path.Combine(CorePaths.TempDir, PathEx.GetTempDirName());
+            var tmpDir = Path.Combine(CorePaths.TempDir, DirectoryEx.GetUniqueName());
             if (!DirectoryEx.Create(tmpDir))
                 return;
             var tmpZip = Path.Combine(tmpDir, "AppInfo.7z");
