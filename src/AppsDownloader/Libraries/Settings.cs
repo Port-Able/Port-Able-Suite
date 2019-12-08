@@ -557,7 +557,7 @@
                     get
                     {
                         if (_default == default)
-                            _default = new DrawingSize(Minimum.Width, (int)Math.Round(Minimum.Height / 1.5d));
+                            _default = new DrawingSize(Minimum.Width, (int)Math.Round(Maximum.Height / 1.5d));
                         return _default;
                     }
                 }
