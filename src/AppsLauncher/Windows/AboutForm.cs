@@ -25,6 +25,8 @@ namespace AppsLauncher.Windows
         {
             InitializeComponent();
 
+            SuspendLayout();
+
             Language.SetControlLang(this);
             Text = Language.GetText(Name);
 
@@ -92,11 +94,6 @@ namespace AppsLauncher.Windows
 
             copyrightLabel.Text = string.Format(CultureInfo.InvariantCulture, copyrightLabel.Text, DateTime.Now.Year);
 
-            ((ISupportInitialize)logoBox).EndInit();
-            logoPanel.ResumeLayout(false);
-            ((ISupportInitialize)spaceChart).EndInit();
-            mainPanel.ResumeLayout(false);
-            updateBtnPanel.ResumeLayout(false);
             ResumeLayout(false);
         }
 

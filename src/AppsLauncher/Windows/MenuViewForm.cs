@@ -2,7 +2,6 @@ namespace AppsLauncher.Windows
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Drawing;
     using System.Globalization;
     using System.IO;
@@ -10,6 +9,7 @@ namespace AppsLauncher.Windows
     using System.Windows.Forms;
     using LangResources;
     using Libraries;
+    using Microsoft.Win32;
     using Properties;
     using SilDev;
     using SilDev.Drawing;
@@ -25,6 +25,8 @@ namespace AppsLauncher.Windows
         public MenuViewForm()
         {
             InitializeComponent();
+
+            SuspendLayout();
 
             Language.SetControlLang(this);
             Text = Resources.GlobalTitle;
@@ -85,15 +87,9 @@ namespace AppsLauncher.Windows
             SetResizingBorders(TaskBar.GetLocation(Handle));
 #endif
 
-            appMenu.ResumeLayout(false);
-            appsListViewPanel.ResumeLayout(false);
-            ((ISupportInitialize)logoBox).EndInit();
-            ((ISupportInitialize)aboutBtn).EndInit();
-            ((ISupportInitialize)profileBtn).EndInit();
-            downloadBtnPanel.ResumeLayout(false);
-            settingsBtnPanel.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
+
+            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
         }
 
         private Point CursorLocation { get; set; }
@@ -104,12 +100,11 @@ namespace AppsLauncher.Windows
 
         private void MenuViewForm_Load(object sender, EventArgs e)
         {
-            MinimumSize = Settings.Window.Size.Minimum;
-            MaximumSize = Settings.Window.Size.Maximum;
-            if (Settings.Window.Size.Width > Settings.Window.Size.Minimum.Width)
+            if (Settings.Window.Size.Width > MinimumSize.Width)
                 Width = Settings.Window.Size.Width;
-            if (Settings.Window.Size.Height > Settings.Window.Size.Minimum.Height)
+            if (Settings.Window.Size.Height > MinimumSize.Height)
                 Height = Settings.Window.Size.Height;
+            MenuViewFormSizeRefresh();
             MenuViewFormUpdate();
             if (Settings.Window.Animation == WinApi.AnimateWindowFlags.Blend)
                 return;
@@ -130,6 +125,8 @@ namespace AppsLauncher.Windows
                 };
                 timer.Tick += (o, args) =>
                 {
+                    if (!(o is Timer owner))
+                        return;
                     if (Opacity < Settings.Window.Opacity)
                     {
                         var opacity = Settings.Window.Opacity / (Settings.Window.FadeInDuration / 10d) + Opacity;
@@ -139,10 +136,11 @@ namespace AppsLauncher.Windows
                             return;
                         }
                     }
+                    owner.Enabled = false;
                     Opacity = Settings.Window.Opacity;
                     if (WinApi.NativeHelper.GetForegroundWindow() != Handle)
                         WinApi.NativeHelper.SetForegroundWindow(Handle);
-                    timer.Dispose();
+                    owner.Dispose();
                 };
                 return;
             }
@@ -178,6 +176,7 @@ namespace AppsLauncher.Windows
             this.SetChildVisibility(true, appsListViewPanel);
             Settings.Window.Size.Width = Width;
             Settings.Window.Size.Height = Height;
+            MenuViewFormSizeRefresh();
         }
 
         private void MenuViewForm_Resize(object sender, EventArgs e)
@@ -218,6 +217,33 @@ namespace AppsLauncher.Windows
         {
             Settings.WriteToFile();
             Settings.StartUpdateSearch();
+        }
+
+        private void MenuViewFormSizeRefresh()
+        {
+            Settings.Window.Size.Refresh();
+
+            MinimumSize = Settings.Window.Size.Minimum;
+            MaximumSize = Settings.Window.Size.Maximum;
+
+            var size = Size;
+            var minSize = MinimumSize;
+            var maxSize = MaximumSize;
+
+            if (size.Width < minSize.Width)
+                size.Width = minSize.Width;
+            if (size.Width > maxSize.Width)
+                size.Width = maxSize.Width;
+
+            if (size.Height < minSize.Height)
+                size.Height = minSize.Height;
+            if (size.Height > maxSize.Height)
+                size.Height = maxSize.Height;
+
+            if (Width != size.Width)
+                Width = size.Width;
+            if (Height != size.Height)
+                Height = size.Height;
         }
 
         private void MenuViewFormUpdate(bool setWindowLocation = true)
@@ -728,6 +754,28 @@ namespace AppsLauncher.Windows
             PreventClosure = false;
             TopMost = true;
             return result;
+        }
+
+        private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+        {
+            if (Application.OpenForms.Count == 1)
+            {
+                Application.Restart();
+                return;
+            }
+            var timer = new Timer(components)
+            {
+                Interval = 1,
+                Enabled = true
+            };
+            timer.Tick += (o, args) =>
+            {
+                if (!(o is Timer owner) || Application.OpenForms.Count > 1)
+                    return;
+                owner.Enabled = false;
+                Application.Restart();
+                owner.Dispose();
+            };
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

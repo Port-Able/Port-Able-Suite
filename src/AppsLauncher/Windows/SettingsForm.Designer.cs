@@ -1343,6 +1343,32 @@ namespace AppsLauncher.Windows
             this.Load += new System.EventHandler(this.SettingsForm_Load);
             this.Shown += new System.EventHandler(this.SettingsForm_Shown);
             this.EnabledChanged += new System.EventHandler(this.SettingsForm_EnabledChanged);
+            this.tabCtrl.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.fileTypesTableLayout.ResumeLayout(false);
+            this.fileTypesTableLayout.PerformLayout();
+            this.fileTypesButtonFlowLayout.ResumeLayout(false);
+            this.fileTypesMenu.ResumeLayout(false);
+            this.startArgsTableLayout.ResumeLayout(false);
+            this.startArgsTableLayout.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
+            this.previewMainColor.ResumeLayout(false);
+            this.previewBg.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.previewLogoBox)).EndInit();
+            this.previewAppListPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.opacityNum)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fadeInNum)).EndInit();
+            this.tabPage3.ResumeLayout(false);
+            this.topControlTableLayout.ResumeLayout(false);
+            this.topControlTableLayout.PerformLayout();
+            this.buttonFlowLayout.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.exitBtnPanel.ResumeLayout(false);
+            this.saveBtnPanel.ResumeLayout(false);
+            this.ResumeLayout(false);
 
         }
 

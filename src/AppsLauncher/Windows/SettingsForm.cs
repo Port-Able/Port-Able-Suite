@@ -3,7 +3,6 @@ namespace AppsLauncher.Windows
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.ComponentModel;
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Drawing.Imaging;
@@ -26,6 +25,8 @@ namespace AppsLauncher.Windows
             SelectedAppData = appData;
 
             InitializeComponent();
+
+            SuspendLayout();
 
             Icon = CacheData.GetSystemIcon(ResourcesEx.IconIndex.SystemControl);
 
@@ -101,31 +102,6 @@ namespace AppsLauncher.Windows
             addToShellBtn.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Uac);
             rmFromShellBtn.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Uac);
 
-            tabCtrl.ResumeLayout(false);
-            tabPage1.ResumeLayout(false);
-            tabPage1.PerformLayout();
-            fileTypesTableLayout.ResumeLayout(false);
-            fileTypesTableLayout.PerformLayout();
-            fileTypesButtonFlowLayout.ResumeLayout(false);
-            fileTypesMenu.ResumeLayout(false);
-            startArgsTableLayout.ResumeLayout(false);
-            startArgsTableLayout.PerformLayout();
-            tabPage2.ResumeLayout(false);
-            tabPage2.PerformLayout();
-            previewMainColor.ResumeLayout(false);
-            previewBg.ResumeLayout(false);
-            ((ISupportInitialize)previewLogoBox).EndInit();
-            previewAppListPanel.ResumeLayout(false);
-            ((ISupportInitialize)opacityNum).EndInit();
-            ((ISupportInitialize)fadeInNum).EndInit();
-            tabPage3.ResumeLayout(false);
-            topControlTableLayout.ResumeLayout(false);
-            topControlTableLayout.PerformLayout();
-            buttonFlowLayout.ResumeLayout(false);
-            ((ISupportInitialize)pictureBox1).EndInit();
-            panel1.ResumeLayout(false);
-            exitBtnPanel.ResumeLayout(false);
-            saveBtnPanel.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -149,15 +125,18 @@ namespace AppsLauncher.Windows
             };
             timer.Tick += (o, args) =>
             {
+                if (!(o is Timer owner))
+                    return;
                 if (Opacity < 1d)
                 {
                     Opacity += .1d;
                     return;
                 }
-                timer.Dispose();
+                owner.Enabled = false;
                 if (TopMost)
                     TopMost = false;
                 Result = DialogResult.No;
+                owner.Dispose();
             };
         }
 

@@ -130,11 +130,11 @@ namespace Updater.Windows
             // 
             this.statusTableLayoutPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(32)))), ((int)(((byte)(40)))));
             this.statusTableLayoutPanel.ColumnCount = 5;
-            this.statusTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.statusTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 65F));
             this.statusTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
             this.statusTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.statusTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 105F));
-            this.statusTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 82F));
+            this.statusTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 85F));
             this.statusTableLayoutPanel.Controls.Add(this.progressLabel, 0, 0);
             this.statusTableLayoutPanel.Controls.Add(this.statusBarPanel, 1, 0);
             this.statusTableLayoutPanel.Controls.Add(this.virusTotalBtn, 3, 0);
@@ -154,7 +154,7 @@ namespace Updater.Windows
             this.progressLabel.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.progressLabel.Location = new System.Drawing.Point(3, 0);
             this.progressLabel.Name = "progressLabel";
-            this.progressLabel.Size = new System.Drawing.Size(54, 21);
+            this.progressLabel.Size = new System.Drawing.Size(59, 21);
             this.progressLabel.TabIndex = 1;
             this.progressLabel.Text = "Progress:";
             this.progressLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -164,7 +164,7 @@ namespace Updater.Windows
             // 
             this.statusBarPanel.Controls.Add(this.statusBar);
             this.statusBarPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.statusBarPanel.Location = new System.Drawing.Point(63, 3);
+            this.statusBarPanel.Location = new System.Drawing.Point(68, 3);
             this.statusBarPanel.Name = "statusBarPanel";
             this.statusBarPanel.Size = new System.Drawing.Size(134, 15);
             this.statusBarPanel.TabIndex = 2;
@@ -180,7 +180,7 @@ namespace Updater.Windows
             // 
             this.virusTotalBtn.Dock = System.Windows.Forms.DockStyle.Top;
             this.virusTotalBtn.ForeColor = System.Drawing.Color.Gray;
-            this.virusTotalBtn.Location = new System.Drawing.Point(476, 0);
+            this.virusTotalBtn.Location = new System.Drawing.Point(473, 0);
             this.virusTotalBtn.Name = "virusTotalBtn";
             this.virusTotalBtn.Size = new System.Drawing.Size(99, 21);
             this.virusTotalBtn.TabIndex = 3;
@@ -192,9 +192,9 @@ namespace Updater.Windows
             // 
             this.webBtn.Dock = System.Windows.Forms.DockStyle.Top;
             this.webBtn.ForeColor = System.Drawing.Color.Gray;
-            this.webBtn.Location = new System.Drawing.Point(581, 0);
+            this.webBtn.Location = new System.Drawing.Point(578, 0);
             this.webBtn.Name = "webBtn";
-            this.webBtn.Size = new System.Drawing.Size(76, 21);
+            this.webBtn.Size = new System.Drawing.Size(79, 21);
             this.webBtn.TabIndex = 4;
             this.webBtn.Text = "www.port-a.de";
             this.webBtn.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -204,9 +204,9 @@ namespace Updater.Windows
             // 
             this.statusLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.statusLabel.ForeColor = System.Drawing.Color.LightSteelBlue;
-            this.statusLabel.Location = new System.Drawing.Point(203, 0);
+            this.statusLabel.Location = new System.Drawing.Point(208, 0);
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(267, 21);
+            this.statusLabel.Size = new System.Drawing.Size(259, 21);
             this.statusLabel.TabIndex = 5;
             this.statusLabel.Text = "Waiting for confirmation...";
             this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -284,6 +284,12 @@ namespace Updater.Windows
             this.TopMost = true;
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
+            this.changeLogPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.logoBox)).EndInit();
+            this.buttonPanel.ResumeLayout(false);
+            this.statusTableLayoutPanel.ResumeLayout(false);
+            this.statusBarPanel.ResumeLayout(false);
+            this.ResumeLayout(false);
 
         }
 

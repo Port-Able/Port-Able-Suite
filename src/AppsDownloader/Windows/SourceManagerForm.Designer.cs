@@ -134,6 +134,8 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "App Sources Manager";
             this.Load += new System.EventHandler(this.SourceManagerForm_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.srcMngDataGridView)).EndInit();
+            this.ResumeLayout(false);
 
         }
 

@@ -89,6 +89,8 @@
 
         internal static void Initialize()
         {
+            WinApi.NativeHelper.SetProcessDPIAware();
+
             Log.FileDir = Path.Combine(CorePaths.TempDir, "Logs");
 
             Ini.SetFile(PathEx.LocalDir, "..", "Settings.ini");
@@ -546,8 +548,7 @@
 
             internal static class Size
             {
-                internal const int MinimumHeight = 125;
-                internal const int MinimumWidth = 760;
+                internal const int MinimumHeight = 125, MinimumWidth = 760;
                 private static DrawingSize _default, _maximum, _minimum;
                 private static int _width, _height;
 
@@ -556,7 +557,7 @@
                     get
                     {
                         if (_default == default)
-                            _default = new DrawingSize(MinimumWidth, (int)Math.Round(MaximumHeight / 1.5d));
+                            _default = new DrawingSize(Minimum.Width, (int)Math.Round(Minimum.Height / 1.5d));
                         return _default;
                     }
                 }
@@ -586,7 +587,7 @@
                     get
                     {
                         if (_minimum == default)
-                            _minimum = new DrawingSize(MinimumWidth, MinimumHeight);
+                            _minimum = DpiSize(MinimumWidth, MinimumHeight);
                         return _minimum;
                     }
                 }
@@ -639,6 +640,29 @@
                         _height = State != FormWindowState.Maximized ? ValidateValue(value, MinimumHeight, MaximumHeight) : DefaultHeight;
                         WriteValue(Resources.ConfigSection, key, _height, DefaultHeight);
                     }
+                }
+
+                private static DrawingSize DpiSize(int width, int height)
+                {
+                    var handle = WinApi.NativeHelper.GetDesktopWindow();
+                    var size = DrawingSize.Empty;
+                    using (var graphics = Graphics.FromHwnd(handle))
+                    {
+                        if (width > 0)
+                            size.Width = (int)Math.Floor(graphics.DpiX / 96d * width);
+                        if (height > 0)
+                            size.Height = (int)Math.Floor(graphics.DpiY / 96d * height);
+                    }
+                    return size;
+                }
+
+                internal static void Refresh()
+                {
+                    _minimum = default;
+                    _maximum = default;
+                    _default = default;
+                    _width = default;
+                    _height = default;
                 }
             }
         }

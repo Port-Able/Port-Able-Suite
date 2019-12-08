@@ -245,6 +245,12 @@ namespace AppsLauncher.Windows
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AboutForm_FormClosing);
             this.Load += new System.EventHandler(this.AboutForm_Load);
             this.Shown += new System.EventHandler(this.AboutForm_Shown);
+            ((System.ComponentModel.ISupportInitialize)(this.logoBox)).EndInit();
+            this.logoPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.spaceChart)).EndInit();
+            this.mainPanel.ResumeLayout(false);
+            this.updateBtnPanel.ResumeLayout(false);
+            this.ResumeLayout(false);
 
         }
 

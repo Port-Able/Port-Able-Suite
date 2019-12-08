@@ -627,6 +627,14 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SettingsForm_FormClosed);
             this.Load += new System.EventHandler(this.SettingsForm_Load);
             this.Shown += new System.EventHandler(this.SettingsForm_Shown);
+            this.appListGroupBox.ResumeLayout(false);
+            this.appListGroupBox.PerformLayout();
+            this.groupColorsGroupBox.ResumeLayout(false);
+            this.transferGroupBox.ResumeLayout(false);
+            this.transferGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.logoBox)).EndInit();
+            this.advancedGroupBox.ResumeLayout(false);
+            this.ResumeLayout(false);
 
         }
 

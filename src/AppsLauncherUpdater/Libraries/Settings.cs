@@ -1,7 +1,6 @@
 ﻿namespace Updater.Libraries
 {
     using System;
-    using System.Drawing;
     using System.IO;
     using Properties;
     using SilDev;
@@ -16,20 +15,6 @@
 
         internal static string RegistryPath =>
             _registryPath ?? (_registryPath = "HKCU\\Software\\Portable Apps Suite");
-
-        internal static int ScreenDpi
-        {
-            get
-            {
-                int dpi;
-                using (var g = Graphics.FromHwnd(IntPtr.Zero))
-                {
-                    var max = Math.Max(g.DpiX, g.DpiY);
-                    dpi = (int)Math.Ceiling(max);
-                }
-                return dpi;
-            }
-        }
 
         internal static DateTime LastUpdateCheck =>
             Ini.Read<DateTime>(Resources.ConfigSection, nameof(LastUpdateCheck));
@@ -47,6 +32,8 @@
 
         internal static void Initialize()
         {
+            WinApi.NativeHelper.SetProcessDPIAware();
+
             Log.FileDir = Path.Combine(CorePaths.TempDir, "Logs");
 
             Ini.SetFile(CorePaths.HomeDir, "Settings.ini");

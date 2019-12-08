@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Linq;
     using System.Windows.Forms;
     using Libraries;
@@ -14,6 +13,8 @@
         {
             InitializeComponent();
 
+            SuspendLayout();
+
             Language.SetControlLang(this);
             Address.HeaderText = Language.GetText(Address.Name);
             User.HeaderText = Language.GetText(User.Name);
@@ -23,7 +24,6 @@
 
             cancelBtn.Click += (s, e) => Close();
 
-            ((ISupportInitialize)srcMngDataGridView).EndInit();
             ResumeLayout(false);
         }
 

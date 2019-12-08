@@ -28,6 +28,8 @@ namespace AppsDownloader.Windows
         {
             InitializeComponent();
 
+            SuspendLayout();
+
             Language.SetControlLang(this);
             Text = Resources.GlobalTitle;
             for (var i = 0; i < appsList.Columns.Count; i++)
@@ -112,14 +114,6 @@ namespace AppsDownloader.Windows
             settingsBtn.BackgroundImage = CacheData.GetSystemImage(ResourcesEx.IconIndex.SystemControl, true);
             searchBox.DrawSearchSymbol(searchBox.ForeColor);
 
-            settingsAreaPanel.ResumeLayout(false);
-            settingsAreaPanel.PerformLayout();
-            buttonAreaPanel.ResumeLayout(false);
-            statusAreaLayoutPanel.ResumeLayout(false);
-            statusAreaLeftPanel.ResumeLayout(false);
-            statusAreaRightPanel.ResumeLayout(false);
-            statusAreaPanel.ResumeLayout(false);
-            appMenu.ResumeLayout(false);
             ResumeLayout(false);
 
             if (!appsList.Focus())
@@ -154,17 +148,15 @@ namespace AppsDownloader.Windows
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            MinimumSize = Settings.Window.Size.Minimum;
-            MaximumSize = Settings.Window.Size.Maximum;
-            if (Settings.Window.Size.Width > Settings.Window.Size.Minimum.Width)
+            if (Settings.Window.Size.Width > MinimumSize.Width)
                 Width = Settings.Window.Size.Width;
-            if (Settings.Window.Size.Height > Settings.Window.Size.Minimum.Height)
+            if (Settings.Window.Size.Height > MinimumSize.Height)
                 Height = Settings.Window.Size.Height;
             WinApi.NativeHelper.CenterWindow(Handle);
             if (Settings.Window.State == FormWindowState.Maximized)
                 WindowState = FormWindowState.Maximized;
-
             FormEx.Dockable(this);
+            MainFormSizeRefresh();
 
             if (!Network.InternetIsAvailable)
             {
@@ -265,6 +257,7 @@ namespace AppsDownloader.Windows
             appsList.EndUpdate();
             appsList.Visible = true;
             AppsListResizeColumns();
+            MainFormSizeRefresh();
         }
 
         private void MainForm_SystemColorsChanged(object sender, EventArgs e) =>
@@ -292,6 +285,46 @@ namespace AppsDownloader.Windows
 
             if (DirectoryEx.EnumerateFiles(Settings.TransferDir)?.Any() == true)
                 ProcessEx.SendHelper.WaitThenDelete(Settings.TransferDir);
+        }
+
+        private void MainFormSizeRefresh()
+        {
+            Settings.Window.Size.Refresh();
+
+            MinimumSize = Settings.Window.Size.Minimum;
+            MaximumSize = Settings.Window.Size.Maximum;
+
+            var changed = false;
+            var size = Size;
+            var minSize = MinimumSize;
+            var maxSize = MaximumSize;
+
+            if (size.Width < minSize.Width)
+                size.Width = minSize.Width;
+            if (size.Width > maxSize.Width)
+                size.Width = maxSize.Width;
+
+            if (size.Height < minSize.Height)
+                size.Height = minSize.Height;
+            if (size.Height > maxSize.Height)
+                size.Height = maxSize.Height;
+
+            if (Width != size.Width)
+            {
+                changed = true;
+                Width = size.Width;
+            }
+            if (Height != size.Height)
+            {
+                changed = true;
+                Height = size.Height;
+            }
+
+            if (!changed)
+                return;
+            WinApi.NativeHelper.CenterWindow(Handle);
+            if (Settings.Window.State == FormWindowState.Maximized)
+                WindowState = FormWindowState.Maximized;
         }
 
         private void AppsList_Enter(object sender, EventArgs e) =>

@@ -268,6 +268,11 @@ namespace AppsLauncher.Windows
             this.Load += new System.EventHandler(this.OpenWithForm_Load);
             this.Shown += new System.EventHandler(this.OpenWithForm_Shown);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.OpenWithForm_DragEnter);
+            this.appMenu.ResumeLayout(false);
+            this.startBtnPanel.ResumeLayout(false);
+            this.settingsBtnPanel.ResumeLayout(false);
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

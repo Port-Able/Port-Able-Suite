@@ -100,20 +100,6 @@
         internal static string RegistryPath =>
             _registryPath ?? (_registryPath = Path.Combine("HKCU\\Software\\Portable Apps Suite", PathEx.LocalPath.GetHashCode().ToString(CultureInfo.InvariantCulture)));
 
-        internal static int ScreenDpi
-        {
-            get
-            {
-                int dpi;
-                using (var graphics = Graphics.FromHwnd(IntPtr.Zero))
-                {
-                    var max = Math.Max(graphics.DpiX, graphics.DpiY);
-                    dpi = (int)Math.Ceiling(max);
-                }
-                return dpi;
-            }
-        }
-
         internal static bool StartMenuIntegration
         {
             get
@@ -236,6 +222,8 @@
 
         internal static void Initialize()
         {
+            WinApi.NativeHelper.SetProcessDPIAware();
+
             Log.FileDir = Path.Combine(CorePaths.TempDir, "Logs");
 
             Ini.SetFile(PathEx.LocalDir, "Settings.ini");
@@ -838,20 +826,9 @@
 
             internal static class Size
             {
-                internal const int MinimumHeight = 320;
-                internal const int MinimumWidth = 346;
-                private static DrawingSize _current, _maximum, _minimum;
+                internal const int MinimumWidth = 346, MinimumHeight = 320;
+                private static DrawingSize _maximum, _minimum;
                 private static int _width, _height;
-
-                internal static DrawingSize Current
-                {
-                    get
-                    {
-                        if (_current == default)
-                            _current = new DrawingSize(Width, Height);
-                        return _current;
-                    }
-                }
 
                 internal static DrawingSize Maximum
                 {
@@ -878,7 +855,7 @@
                     get
                     {
                         if (_minimum == default)
-                            _minimum = new DrawingSize(MinimumWidth, MinimumHeight);
+                            _minimum = DpiSize(MinimumWidth, MinimumHeight);
                         return _minimum;
                     }
                 }
@@ -904,7 +881,6 @@
                     {
                         var key = GetConfigKey(nameof(Window), nameof(Size), nameof(Width));
                         _width = ValidateValue(value, MinimumWidth, MaximumWidth);
-                        _current = default;
                         WriteValue(Resources.ConfigSection, key, _width, MinimumWidth);
                     }
                 }
@@ -924,9 +900,30 @@
                     {
                         var key = GetConfigKey(nameof(Window), nameof(Size), nameof(Height));
                         _height = ValidateValue(value, MinimumHeight, MaximumHeight);
-                        _current = default;
                         WriteValue(Resources.ConfigSection, key, _height, MinimumHeight);
                     }
+                }
+
+                private static DrawingSize DpiSize(int width, int height)
+                {
+                    var handle = WinApi.NativeHelper.GetDesktopWindow();
+                    var size = DrawingSize.Empty;
+                    using (var graphics = Graphics.FromHwnd(handle))
+                    {
+                        if (width > 0)
+                            size.Width = (int)Math.Floor(graphics.DpiX / 96d * width);
+                        if (height > 0)
+                            size.Height = (int)Math.Floor(graphics.DpiY / 96d * height);
+                    }
+                    return size;
+                }
+
+                internal static void Refresh()
+                {
+                    _minimum = default;
+                    _maximum = default;
+                    _width = default;
+                    _height = default;
                 }
             }
         }

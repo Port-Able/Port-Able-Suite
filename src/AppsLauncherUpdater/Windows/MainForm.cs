@@ -25,14 +25,10 @@ namespace Updater.Windows
         public MainForm()
         {
             InitializeComponent();
+            SuspendLayout();
             Icon = Resources.Logo;
             logoBox.Image = Resources.Changelog;
             Language.SetControlLang(this);
-            changeLogPanel.ResumeLayout(false);
-            ((ISupportInitialize)logoBox).EndInit();
-            buttonPanel.ResumeLayout(false);
-            statusTableLayoutPanel.ResumeLayout(false);
-            statusBarPanel.ResumeLayout(false);
             ResumeLayout(false);
         }
 

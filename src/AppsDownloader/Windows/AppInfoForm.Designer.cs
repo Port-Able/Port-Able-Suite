@@ -69,6 +69,7 @@
             this.TopMost = true;
             this.Load += new System.EventHandler(this.InfoForm_Load);
             this.Shown += new System.EventHandler(this.InfoForm_Shown);
+            this.ResumeLayout(false);
 
         }
 

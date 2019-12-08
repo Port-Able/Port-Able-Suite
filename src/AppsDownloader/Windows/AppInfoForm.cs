@@ -18,6 +18,8 @@
 
             InitializeComponent();
 
+            SuspendLayout();
+
             Text = appData.Name;
             var text = appData.ToString(true);
             if (text == default)

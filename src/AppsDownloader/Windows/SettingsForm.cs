@@ -1,7 +1,6 @@
 ﻿namespace AppsDownloader.Windows
 {
     using System;
-    using System.ComponentModel;
     using System.Drawing;
     using System.IO;
     using System.Linq;
@@ -18,6 +17,8 @@
         public SettingsForm()
         {
             InitializeComponent();
+
+            SuspendLayout();
 
             Language.SetControlLang(this);
             foreach (var label in groupColorsGroupBox.Controls.OfType<Label>())
@@ -38,13 +39,6 @@
                 transferPathUndoBtn.BackgroundImage = transferPathUndoBtn.BackgroundImage.SwitchGrayScale(transferPathUndoBtn);
             }
 
-            appListGroupBox.ResumeLayout(false);
-            appListGroupBox.PerformLayout();
-            groupColorsGroupBox.ResumeLayout(false);
-            ((ISupportInitialize)logoBox).EndInit();
-            transferGroupBox.ResumeLayout(false);
-            transferGroupBox.PerformLayout();
-            advancedGroupBox.ResumeLayout(false);
             ResumeLayout(false);
         }
 

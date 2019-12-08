@@ -492,6 +492,7 @@ namespace AppsDownloader.Windows
             listViewGroup11,
             listViewGroup12});
             this.appsList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.appsList.HideSelection = false;
             this.appsList.LabelWrap = false;
             this.appsList.Location = new System.Drawing.Point(0, 0);
             this.appsList.MultiSelect = false;
@@ -640,6 +641,15 @@ namespace AppsDownloader.Windows
             this.ResizeBegin += new System.EventHandler(this.MainForm_ResizeBegin);
             this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
             this.SystemColorsChanged += new System.EventHandler(this.MainForm_SystemColorsChanged);
+            this.settingsAreaPanel.ResumeLayout(false);
+            this.settingsAreaPanel.PerformLayout();
+            this.buttonAreaPanel.ResumeLayout(false);
+            this.statusAreaLayoutPanel.ResumeLayout(false);
+            this.statusAreaRightPanel.ResumeLayout(false);
+            this.statusAreaLeftPanel.ResumeLayout(false);
+            this.statusAreaPanel.ResumeLayout(false);
+            this.appMenu.ResumeLayout(false);
+            this.ResumeLayout(false);
 
         }
 

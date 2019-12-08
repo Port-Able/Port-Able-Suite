@@ -11,10 +11,12 @@ namespace AppsLauncher.Windows
     using System.Windows.Forms;
     using LangResources;
     using Libraries;
+    using Microsoft.Win32;
     using Properties;
     using SilDev;
     using SilDev.Drawing;
     using SilDev.Forms;
+    using FormsTimer = System.Windows.Forms.Timer;
 
     public sealed partial class OpenWithForm : Form
     {
@@ -23,6 +25,8 @@ namespace AppsLauncher.Windows
         public OpenWithForm()
         {
             InitializeComponent();
+
+            SuspendLayout();
 
             Language.SetControlLang(this);
             Text = Language.GetText(Name);
@@ -50,14 +54,12 @@ namespace AppsLauncher.Windows
             appMenuItem3.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Directory);
             appMenuItem7.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.RecycleBinEmpty);
 
-            appMenu.ResumeLayout(false);
-            startBtnPanel.ResumeLayout(false);
-            settingsBtnPanel.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
 
             if (!searchBox.Focused)
                 searchBox.Select();
+
+            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
         }
 
         private bool IsStarted { get; set; }
@@ -455,6 +457,28 @@ namespace AppsLauncher.Windows
                 Log.Write(ex);
             }
             TopMost = true;
+        }
+
+        private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+        {
+            if (Application.OpenForms.Count == 1)
+            {
+                Application.Restart();
+                return;
+            }
+            var timer = new FormsTimer(components)
+            {
+                Interval = 1,
+                Enabled = true
+            };
+            timer.Tick += (o, args) =>
+            {
+                if (!(o is FormsTimer owner) || Application.OpenForms.Count > 1)
+                    return;
+                owner.Enabled = false;
+                Application.Restart();
+                owner.Dispose();
+            };
         }
 
         protected override void WndProc(ref Message m)

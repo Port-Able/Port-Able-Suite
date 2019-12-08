@@ -120,6 +120,7 @@ namespace AppsDownloader.Windows
             this.TopMost = true;
             this.Load += new System.EventHandler(this.LangSelectionForm_Load);
             this.Shown += new System.EventHandler(this.SetArchiveLangForm_Shown);
+            this.ResumeLayout(false);
 
         }
 

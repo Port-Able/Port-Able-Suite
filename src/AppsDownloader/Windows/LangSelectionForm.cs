@@ -1,7 +1,6 @@
 namespace AppsDownloader.Windows
 {
     using System;
-    using System.Drawing;
     using System.Linq;
     using System.Media;
     using System.Windows.Forms;
@@ -22,6 +21,7 @@ namespace AppsDownloader.Windows
                 throw new ArgumentNullException(nameof(appData));
 
             InitializeComponent();
+
             SuspendLayout();
 
             Text = Language.GetText(Name);
