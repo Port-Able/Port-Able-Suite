@@ -142,14 +142,24 @@
                         continue;
                 }
 
-                var packageVersion = Ini.Read("Version", nameof(appData.PackageVersion), Version.Parse("0.0.0.0"), appIniPath);
-                if (packageVersion >= appData.PackageVersion)
+                var srvPackageVersion = appData.PackageVersion;
+                if (appData.PackageVersion == Version.Parse("1.0.0.0"))
+                {
+                    var archivePath = appData.DownloadCollection.FirstOrDefault().Value.FirstOrDefault()?.Item1;
+                    if (string.IsNullOrEmpty(archivePath))
+                        continue;
+                    if (archivePath.StartsWith("{", StringComparison.InvariantCulture) && archivePath.EndsWith("}", StringComparison.InvariantCulture))
+                        srvPackageVersion = AppTransferor.FindArchivePath(archivePath).Item1;
+                }
+                
+                var curPackageVersion = Ini.Read("Version", nameof(appData.PackageVersion), Version.Parse("0.0.0.0"), appIniPath);
+                if (curPackageVersion >= srvPackageVersion)
                     continue;
 
                 if (outdatedApps.Any(x => x.Equals(appData)))
                     continue;
                 if (Log.DebugMode > 0)
-                    Log.Write($"Update: Outdated app has been found (Key: '{appData.Key}'; LocalVersion: '{packageVersion}'; ServerVersion: {appData.PackageVersion}).");
+                    Log.Write($"Update: Outdated app has been found (Key: '{appData.Key}'; LocalVersion: '{curPackageVersion}'; ServerVersion: {srvPackageVersion}).");
                 outdatedApps.Add(appData);
             }
             if (Log.DebugMode > 0 && outdatedApps.Any())

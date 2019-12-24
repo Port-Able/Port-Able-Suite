@@ -15,6 +15,7 @@
     using KeyCollection = System.Collections.ObjectModel.ReadOnlyCollection<byte>;
     using VersionCollection = System.Collections.ObjectModel.ReadOnlyCollection<System.Tuple<string, string>>;
     using GlobalSettings = Settings;
+    using System.Web.Script.Serialization;
 
     [Serializable]
     public sealed class AppData : ISerializable
@@ -151,6 +152,7 @@
 
         public long InstallSize { get; }
 
+        [ScriptIgnore]
         public string InstallDir
         {
             get
@@ -193,8 +195,10 @@
 
         public bool Advanced { get; set; }
 
+        [ScriptIgnore]
         public ReadOnlyCollection<byte> ServerKey { get; }
 
+        [ScriptIgnore]
         public AppSettings Settings =>
             _settings ?? (_settings = new AppSettings(this));
 
@@ -215,7 +219,7 @@
             if (Languages?.Any() != true ||
                 DownloadCollection?.Any() != true ||
                 DownloadCollection.Values.FirstOrDefault()?.Any() != true ||
-                DownloadCollection.SelectMany(x => x.Value).Any(x => x?.Item1?.StartsWithEx("http") != true ||
+                DownloadCollection.SelectMany(x => x.Value).Any(x => x?.Item1?.StartsWithEx("http", "{") != true ||
                                                                      x.Item2 == default ||
                                                                      x.Item2.Length != Crypto.Md5.HashLength &&
                                                                      x.Item2.Length != Crypto.Sha1.HashLength &&

@@ -6,6 +6,7 @@
     using System.Globalization;
     using System.IO;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Threading;
     using System.Windows.Forms;
     using LangResources;
@@ -43,17 +44,21 @@
 
                 foreach (var (item1, item2) in pair.Value)
                 {
+                    var srcUrl = item1;
+                    if (srcUrl.StartsWith("{", StringComparison.InvariantCulture) && srcUrl.EndsWith("}", StringComparison.InvariantCulture))
+                        srcUrl = FindArchivePath(srcUrl).Item2;
+
                     if (DestPath == default)
                     {
                         if (!DirectoryEx.Create(Settings.TransferDir))
                             continue;
-                        var fileName = Path.GetFileName(item1);
+                        var fileName = Path.GetFileName(srcUrl);
                         if (string.IsNullOrEmpty(fileName))
                             continue;
                         DestPath = PathEx.Combine(Settings.TransferDir, fileName);
                     }
 
-                    var shortHost = NetEx.GetShortHost(item1);
+                    var shortHost = NetEx.GetShortHost(srcUrl);
                     var redirect = Settings.ForceTransferRedirection || !NetEx.IPv4IsAvalaible && !string.IsNullOrWhiteSpace(shortHost) && !shortHost.EqualsEx(AppSupplierHosts.Internal);
                     string userAgent;
                     List<string> mirrors;
@@ -73,7 +78,6 @@
                             break;
                         default:
                             userAgent = UserAgents.Default;
-                            var srcUrl = item1;
                             if (AppData.ServerKey != default)
                             {
                                 var srv = Shareware.GetAddresses().FirstOrDefault(x => Shareware.FindAddressKey(x) == AppData.ServerKey.ToArray().Encode(BinaryToTextEncoding.Base85));
@@ -88,13 +92,12 @@
                             continue;
                     }
 
-                    var sHost = NetEx.GetShortHost(item1);
-                    var fhost = item1.Substring(0, item1.IndexOf(sHost, StringComparison.OrdinalIgnoreCase) + sHost.Length);
+                    var sHost = NetEx.GetShortHost(srcUrl);
+                    var fhost = srcUrl.Substring(0, srcUrl.IndexOf(sHost, StringComparison.OrdinalIgnoreCase) + sHost.Length);
                     foreach (var mirror in mirrors)
                     {
-                        var srcUrl = item1;
                         if (!fhost.EqualsEx(mirror))
-                            srcUrl = item1.Replace(fhost, mirror);
+                            srcUrl = srcUrl.Replace(fhost, mirror);
                         if (SrcData.Any(x => x.Item1.EqualsEx(srcUrl)))
                             continue;
                         if (redirect)
@@ -368,6 +371,52 @@
                 return true;
             }
             return false;
+        }
+
+        internal static (Version, string) FindArchivePath(string jsonArchivePath)
+        {
+            try
+            {
+                var searchData = Json.Deserialize<Dictionary<string, string>>(jsonArchivePath);
+                if (searchData == default || !searchData.ContainsKey("regex") || !searchData.ContainsKey("source"))
+                    throw new ArgumentInvalidException(nameof(jsonArchivePath));
+                var sourceUrl = searchData["source"];
+                var sourceText = NetEx.Transfer.DownloadString(sourceUrl);
+                if (string.IsNullOrWhiteSpace(sourceText))
+                {
+                    if (!searchData.ContainsKey("mirror"))
+                        throw new PathNotFoundException(sourceUrl);
+                    sourceUrl = searchData["mirror"];
+                    sourceText = NetEx.Transfer.DownloadString(sourceUrl);
+                }
+                var foundData = new Dictionary<Version, string>();
+                var regex = new Regex(searchData["regex"], RegexOptions.IgnoreCase);
+                foreach (var match in regex.Matches(sourceText).Cast<Match>())
+                {
+                    var versions = match.Groups["Version"]?.Captures;
+                    var fileNames = match.Groups["FileName"]?.Captures;
+                    if (versions == null || fileNames == null || versions.Count != fileNames.Count)
+                        continue;
+                    for (var i = 0; i < versions.Count; i++)
+                    {
+                        var version = new Version(versions[i].Value.Trim());
+                        if (foundData.ContainsKey(version))
+                            continue;
+                        var fileName = fileNames[i].Value.Trim();
+                        foundData.Add(version, fileName);
+                    }
+                }
+                foundData = foundData.OrderByDescending(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
+                var (lastVersion, lastArchivePath) = foundData.Select(x => (x.Key, PathEx.AltCombine(sourceUrl, x.Value))).FirstOrDefault();
+                if (lastVersion == default || lastArchivePath == default)
+                    throw new MissingFieldException();
+                return (lastVersion, lastArchivePath);
+            }
+            catch (Exception ex) when (ex.IsCaught())
+            {
+                Log.Write(ex);
+                return (new Version("1.0.0.0"), string.Empty);
+            }
         }
 
         private static bool BreakFileLocks(string path, bool force = true)

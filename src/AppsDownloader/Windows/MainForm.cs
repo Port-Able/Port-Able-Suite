@@ -522,6 +522,13 @@ namespace AppsDownloader.Windows
                     continue;
 
                 var src = Language.GetText(en_US.HostNotAvailable);
+                if (url.StartsWith("{", StringComparison.InvariantCulture) && url.EndsWith("}", StringComparison.InvariantCulture))
+                {
+                    var searchData = Json.Deserialize<Dictionary<string, string>>(url);
+                    if (searchData?.ContainsKey("source") != true)
+                        continue;
+                    url = searchData["source"];
+                }
                 if (url.StartsWithEx("http"))
                     if (url.ContainsEx(AppSupplierHosts.PortableApps) && url.ContainsEx("/redirect/"))
                         src = AppSupplierHosts.SourceForge;
