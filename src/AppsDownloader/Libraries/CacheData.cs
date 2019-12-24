@@ -157,7 +157,7 @@
 
             try
             {
-                var appInfo = FileEx.Deserialize<List<AppData>>(CachePaths.AppInfo, true);
+                var appInfo = FileEx.Deserialize<List<AppData>>(CachePaths.AppInfo);
                 if (appInfo == default)
                     throw new ArgumentNullException(nameof(appInfo));
                 if (appInfo.Count < 430)

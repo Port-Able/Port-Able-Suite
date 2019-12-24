@@ -220,7 +220,7 @@
                     if (files?.Any() == true)
                         foreach (var file in files)
                         {
-                            var restPoint = FileEx.Deserialize<Dictionary<string, List<string>>>(file, true);
+                            var restPoint = FileEx.Deserialize<Dictionary<string, List<string>>>(file);
                             if (restPoint?.Values.Any() == true)
                                 Reg.ImportFile(restPoint.Values.SelectMany(x => x.ToArray()).ToArray());
                             FileEx.TryDelete(file);

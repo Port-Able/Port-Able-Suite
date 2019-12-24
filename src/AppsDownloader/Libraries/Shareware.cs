@@ -17,7 +17,7 @@
                 if (_data != default)
                     return _data;
                 if (File.Exists(CachePaths.SwData))
-                    _data = FileEx.Deserialize<Dictionary<string, Tuple<string, string>>>(CachePaths.SwData, true);
+                    _data = FileEx.Deserialize<Dictionary<string, Tuple<string, string>>>(CachePaths.SwData);
                 if (_data?.Any() != true)
                     _data = new Dictionary<string, Tuple<string, string>>();
                 return _data;
