@@ -151,7 +151,7 @@
                     if (archivePath.StartsWith("{", StringComparison.InvariantCulture) && archivePath.EndsWith("}", StringComparison.InvariantCulture))
                         srvPackageVersion = AppTransferor.FindArchivePath(archivePath).Item1;
                 }
-                
+
                 var curPackageVersion = Ini.Read("Version", nameof(appData.PackageVersion), Version.Parse("0.0.0.0"), appIniPath);
                 if (curPackageVersion >= srvPackageVersion)
                     continue;
