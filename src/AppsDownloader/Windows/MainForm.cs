@@ -52,7 +52,7 @@ namespace AppsDownloader.Windows
 
             Icon = Resources.Logo;
 
-            appsList.ListViewItemSorter = new ListViewEx.AlphanumericComparer();
+            appsList.ListViewItemSorter = new ControlAlphaNumericComparer();
             appsList.SetDoubleBuffer();
 
             GroupColors = new Dictionary<string, Color>
@@ -103,15 +103,15 @@ namespace AppsDownloader.Windows
                 }
             };
 
-            appMenuItem3.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Network);
-            appMenuItem4.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Asterisk);
+            appMenuItem3.Image = CacheData.GetSystemImage(ImageResourceSymbol.Network);
+            appMenuItem4.Image = CacheData.GetSystemImage(ImageResourceSymbol.Asterisk);
             appMenu.EnableAnimation();
             appMenu.SetFixedSingle();
 
             statusAreaLeftPanel.SetDoubleBuffer();
             statusAreaRightPanel.SetDoubleBuffer();
 
-            settingsBtn.BackgroundImage = CacheData.GetSystemImage(ResourcesEx.IconIndex.SystemControl, true);
+            settingsBtn.BackgroundImage = CacheData.GetSystemImage(ImageResourceSymbol.SystemControl, true);
             searchBox.DrawSearchSymbol(searchBox.ForeColor);
 
             ResumeLayout(false);
@@ -585,12 +585,12 @@ namespace AppsDownloader.Windows
                     if (!smallImageAdded)
                     {
                         Log.Write($"Cache: Could not find target '{CachePaths.AppImages}:{appData.Key}'.");
-                        smallImageList.Images.Add(appData.Key, CacheData.GetSystemImage(ResourcesEx.IconIndex.Stop));
+                        smallImageList.Images.Add(appData.Key, CacheData.GetSystemImage(ImageResourceSymbol.Stop));
                     }
                     if (!largeImageAdded)
                     {
                         Log.Write($"Cache: Could not find target '{CachePaths.AppImagesLarge}:{appData.Key}'.");
-                        largeImageList.Images.Add(appData.Key, CacheData.GetSystemImage(ResourcesEx.IconIndex.Stop, true));
+                        largeImageList.Images.Add(appData.Key, CacheData.GetSystemImage(ImageResourceSymbol.Stop, true));
                     }
                 }
 
@@ -1017,7 +1017,7 @@ namespace AppsDownloader.Windows
             settingsAreaPanel.Visible = owner.Enabled;
             ResumeLayout();
 
-            Icon = CacheData.GetSystemIcon(ResourcesEx.IconIndex.Network, true);
+            Icon = CacheData.GetSystemIcon(ImageResourceSymbol.Network, true);
             downloadStarter.Enabled = !owner.Enabled;
         }
 
@@ -1129,7 +1129,7 @@ namespace AppsDownloader.Windows
                 TransferStopwatch.Stop();
                 TaskBarProgress.SetState(Handle, TaskBarProgressState.Indeterminate);
 
-                Icon = CacheData.GetSystemIcon(ResourcesEx.IconIndex.Install, true);
+                Icon = CacheData.GetSystemIcon(ImageResourceSymbol.Install, true);
                 var installed = new List<ListViewItem>();
                 installed.AddRange(TransferManager.Where(x => x.Value.StartInstall()).Select(x => x.Key));
                 if (installed.Any())

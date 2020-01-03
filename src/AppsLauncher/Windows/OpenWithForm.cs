@@ -33,7 +33,7 @@ namespace AppsLauncher.Windows
 
             BackColor = Settings.Window.Colors.BaseDark;
             Icon = Resources.Logo;
-            notifyIcon.Icon = CacheData.GetSystemIcon(ResourcesEx.IconIndex.Asterisk, true);
+            notifyIcon.Icon = CacheData.GetSystemIcon(ImageResourceSymbol.Asterisk, true);
 
             searchBox.BackColor = Settings.Window.Colors.Control;
             searchBox.ForeColor = Settings.Window.Colors.ControlText;
@@ -50,9 +50,9 @@ namespace AppsLauncher.Windows
 
             appMenu.EnableAnimation(ContextMenuStripExAnimation.SlideVerPositive, 100);
             appMenu.SetFixedSingle();
-            appMenuItem2.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Uac);
-            appMenuItem3.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Directory);
-            appMenuItem7.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.RecycleBinEmpty);
+            appMenuItem2.Image = CacheData.GetSystemImage(ImageResourceSymbol.Uac);
+            appMenuItem3.Image = CacheData.GetSystemImage(ImageResourceSymbol.Directory);
+            appMenuItem7.Image = CacheData.GetSystemImage(ImageResourceSymbol.RecycleBinEmpty);
 
             ResumeLayout(false);
 

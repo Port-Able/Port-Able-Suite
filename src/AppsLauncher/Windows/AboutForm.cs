@@ -30,7 +30,7 @@ namespace AppsLauncher.Windows
             Language.SetControlLang(this);
             Text = Language.GetText(Name);
 
-            Icon = CacheData.GetSystemIcon(ResourcesEx.IconIndex.HelpShield);
+            Icon = CacheData.GetSystemIcon(ImageResourceSymbol.HelpShield);
 
             AddFileInfoLabels();
 
@@ -47,7 +47,7 @@ namespace AppsLauncher.Windows
             logoBox.BackgroundImage = Resources.Logo256px.Redraw(128, 128);
 
             updateBtnPanel.Width = TextRenderer.MeasureText(updateBtn.Text, updateBtn.Font).Width + 32;
-            updateBtn.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Network);
+            updateBtn.Image = CacheData.GetSystemImage(ImageResourceSymbol.Network);
             updateBtn.ForeColor = Settings.Window.Colors.ButtonText;
             updateBtn.BackColor = Settings.Window.Colors.Button;
             updateBtn.FlatAppearance.MouseDownBackColor = Settings.Window.Colors.Button;

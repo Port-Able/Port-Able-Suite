@@ -157,7 +157,7 @@
             {
                 if (Settings.SortArgPaths)
                 {
-                    var comparer = new Comparison.AlphanumericComparer();
+                    var comparer = new AlphaNumericComparer();
                     Arguments.ValidPaths = Arguments.ValidPaths.OrderBy(x => x, comparer).ToList();
                 }
                 if (string.IsNullOrWhiteSpace(arguments))
@@ -288,7 +288,7 @@
                         WriteValue(nameof(FileTypes), default(string));
                     else
                     {
-                        var comparer = new Comparison.AlphanumericComparer();
+                        var comparer = new AlphaNumericComparer();
                         var types = _fileTypes.Distinct().OrderBy(x => x, comparer);
                         WriteValue(nameof(FileTypes), types.Join(',').Trim(','));
                     }

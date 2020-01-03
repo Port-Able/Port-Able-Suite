@@ -58,13 +58,13 @@ namespace AppsLauncher.Windows
             logoBox.Image = Resources.Logo64px;
             appsCount.ForeColor = Settings.Window.Colors.BaseText;
 
-            aboutBtn.BackgroundImage = CacheData.GetSystemImage(ResourcesEx.IconIndex.Help);
+            aboutBtn.BackgroundImage = CacheData.GetSystemImage(ImageResourceSymbol.Help);
             aboutBtn.BackgroundImage = aboutBtn.BackgroundImage.SwitchGrayScale($"{aboutBtn.Name}BackgroundImage");
 
-            profileBtn.BackgroundImage = CacheData.GetSystemImage(ResourcesEx.IconIndex.UserDir, true);
+            profileBtn.BackgroundImage = CacheData.GetSystemImage(ImageResourceSymbol.UserDirectory, true);
 
-            downloadBtn.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Network);
-            settingsBtn.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.SystemControl);
+            downloadBtn.Image = CacheData.GetSystemImage(ImageResourceSymbol.Network);
+            settingsBtn.Image = CacheData.GetSystemImage(ImageResourceSymbol.SystemControl);
             foreach (var btn in new[] { downloadBtn, settingsBtn })
             {
                 btn.BackColor = Settings.Window.Colors.Button;
@@ -73,10 +73,10 @@ namespace AppsLauncher.Windows
                 btn.FlatAppearance.MouseOverBackColor = Settings.Window.Colors.ButtonHover;
             }
 
-            appMenuItem2.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Uac);
-            appMenuItem3.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Directory);
-            appMenuItem7.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.RecycleBinEmpty);
-            appMenuItem8.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.SystemControl);
+            appMenuItem2.Image = CacheData.GetSystemImage(ImageResourceSymbol.Uac);
+            appMenuItem3.Image = CacheData.GetSystemImage(ImageResourceSymbol.Directory);
+            appMenuItem7.Image = CacheData.GetSystemImage(ImageResourceSymbol.RecycleBinEmpty);
+            appMenuItem8.Image = CacheData.GetSystemImage(ImageResourceSymbol.SystemControl);
             for (var i = 0; i < appMenu.Items.Count; i++)
                 appMenu.Items[i].Text = Language.GetText(appMenu.Items[i].Name);
             appMenu.CloseOnMouseLeave(32);
@@ -322,7 +322,7 @@ namespace AppsLauncher.Windows
                         }
                         if (exePath.EndsWithEx(".bat", ".cmd", ".jse", ".vbe", ".vbs"))
                         {
-                            image = CacheData.GetSystemImage(ResourcesEx.IconIndex.CommandPrompt, largeImages);
+                            image = CacheData.GetSystemImage(ImageResourceSymbol.CommandPrompt, largeImages);
                             goto UpdateCache;
                         }
                         FromFile:
@@ -338,7 +338,7 @@ namespace AppsLauncher.Windows
                         Log.Write(ex);
                     }
 
-                    image = CacheData.GetSystemImage(ResourcesEx.IconIndex.ExeFile, largeImages);
+                    image = CacheData.GetSystemImage(ImageResourceSymbol.Application, largeImages);
                     if (image == default)
                         continue;
 

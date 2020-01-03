@@ -18,8 +18,8 @@
         private static int _currentImagesCount;
         private static Dictionary<int, int> _currentTypeData;
         private static List<string> _settingsMerges;
-        private static readonly List<Tuple<ResourcesEx.IconIndex, bool, Icon>> Icons = new List<Tuple<ResourcesEx.IconIndex, bool, Icon>>();
-        private static readonly List<Tuple<ResourcesEx.IconIndex, bool, Image>> Images = new List<Tuple<ResourcesEx.IconIndex, bool, Image>>();
+        private static readonly List<Tuple<ImageResourceSymbol, bool, Icon>> Icons = new List<Tuple<ImageResourceSymbol, bool, Icon>>();
+        private static readonly List<Tuple<ImageResourceSymbol, bool, Image>> Images = new List<Tuple<ImageResourceSymbol, bool, Image>>();
 
         internal static Dictionary<string, Image> AppImages
         {
@@ -122,7 +122,7 @@
             }
         }
 
-        internal static Icon GetSystemIcon(ResourcesEx.IconIndex index, bool large = false)
+        internal static Icon GetSystemIcon(ImageResourceSymbol index, bool large = false)
         {
             Icon icon;
             if (Icons.Any())
@@ -134,13 +134,13 @@
             icon = ResourcesEx.GetSystemIcon(index, large, Settings.IconResourcePath);
             if (icon == default(Icon))
                 goto Return;
-            var tuple = new Tuple<ResourcesEx.IconIndex, bool, Icon>(index, large, icon);
+            var tuple = new Tuple<ImageResourceSymbol, bool, Icon>(index, large, icon);
             Icons.Add(tuple);
             Return:
             return icon;
         }
 
-        internal static Image GetSystemImage(ResourcesEx.IconIndex index, bool large = false)
+        internal static Image GetSystemImage(ImageResourceSymbol index, bool large = false)
         {
             Image image;
             if (Images.Any())
@@ -152,7 +152,7 @@
             image = GetSystemIcon(index, large)?.ToBitmap();
             if (image == default(Image))
                 goto Return;
-            var tuple = new Tuple<ResourcesEx.IconIndex, bool, Image>(index, large, image);
+            var tuple = new Tuple<ImageResourceSymbol, bool, Image>(index, large, image);
             Images.Add(tuple);
             Return:
             return image;
@@ -271,7 +271,7 @@
             }
 
             if (_currentAppInfo.Any())
-                _currentAppInfo = _currentAppInfo.OrderBy(x => x.Name, new Comparison.AlphanumericComparer()).ToList();
+                _currentAppInfo = _currentAppInfo.OrderBy(x => x.Name, new AlphaNumericComparer()).ToList();
             if (writeToFile)
                 FileEx.Serialize(CachePaths.CurrentAppInfo, _currentAppInfo);
         }

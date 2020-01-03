@@ -20,7 +20,7 @@
             User.HeaderText = Language.GetText(User.Name);
             Password.HeaderText = Language.GetText(Password.Name);
 
-            Icon = CacheData.GetSystemIcon(ResourcesEx.IconIndex.Sharing);
+            Icon = CacheData.GetSystemIcon(ImageResourceSymbol.Sharing);
 
             cancelBtn.Click += (s, e) => Close();
 

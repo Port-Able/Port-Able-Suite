@@ -28,29 +28,29 @@ namespace AppsLauncher.Windows
 
             SuspendLayout();
 
-            Icon = CacheData.GetSystemIcon(ResourcesEx.IconIndex.SystemControl);
+            Icon = CacheData.GetSystemIcon(ImageResourceSymbol.SystemControl);
 
             foreach (TabPage tab in tabCtrl.TabPages)
                 tab.BackColor = Settings.Window.Colors.BaseDark;
 
-            locationBtn.BackgroundImage = CacheData.GetSystemImage(ResourcesEx.IconIndex.Directory);
+            locationBtn.BackgroundImage = CacheData.GetSystemImage(ImageResourceSymbol.Directory);
             fileTypes.AutoVerticalScrollBar();
             fileTypes.MaxLength = short.MaxValue;
             fileTypesMenu.EnableAnimation();
             fileTypesMenu.SetFixedSingle();
-            associateBtn.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Uac);
+            associateBtn.Image = CacheData.GetSystemImage(ImageResourceSymbol.Uac);
             try
             {
                 restoreFileTypesBtn.Image = new Bitmap(28, 16);
                 using (var g = Graphics.FromImage(restoreFileTypesBtn.Image))
                 {
-                    g.DrawImage(CacheData.GetSystemImage(ResourcesEx.IconIndex.Uac), 0, 0);
-                    g.DrawImage(CacheData.GetSystemImage(ResourcesEx.IconIndex.Undo), 12, 0);
+                    g.DrawImage(CacheData.GetSystemImage(ImageResourceSymbol.Uac), 0, 0);
+                    g.DrawImage(CacheData.GetSystemImage(ImageResourceSymbol.Undo), 12, 0);
                 }
             }
             catch (Exception ex) when (ex.IsCaught())
             {
-                restoreFileTypesBtn.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Uac);
+                restoreFileTypesBtn.Image = CacheData.GetSystemImage(ImageResourceSymbol.Uac);
                 restoreFileTypesBtn.ImageAlign = ContentAlignment.MiddleLeft;
                 restoreFileTypesBtn.Text = Resources.LeftArrow;
                 if (restoreFileTypesBtn.Image != null)
@@ -67,13 +67,13 @@ namespace AppsLauncher.Windows
                 previewLogoBox.BackColor = Color.Transparent;
             }
             previewLogoBox.Image = Resources.Logo128px.Redraw(previewLogoBox.Height, previewLogoBox.Height);
-            var exeImage = CacheData.GetSystemImage(ResourcesEx.IconIndex.ExeFile);
+            var exeImage = CacheData.GetSystemImage(ImageResourceSymbol.Application);
             if (exeImage != null)
             {
                 previewSmallImgList.Images.Add(exeImage);
                 previewSmallImgList.Images.Add(exeImage);
             }
-            exeImage = CacheData.GetSystemImage(ResourcesEx.IconIndex.ExeFile, true);
+            exeImage = CacheData.GetSystemImage(ImageResourceSymbol.Application, true);
             if (exeImage != null)
             {
                 previewLargeImgList.Images.Add(exeImage);
@@ -90,7 +90,7 @@ namespace AppsLauncher.Windows
                 btn.FlatAppearance.MouseOverBackColor = Settings.Window.Colors.ButtonHover;
             }
 
-            var comparer = new Comparison.AlphanumericComparer();
+            var comparer = new AlphaNumericComparer();
             var appNames = CacheData.CurrentAppInfo.Select(x => x.Name).Cast<object>().OrderBy(x => x, comparer).ToArray();
             appsBox.Items.AddRange(appNames);
 
@@ -99,8 +99,8 @@ namespace AppsLauncher.Windows
                 appsBox.SelectedIndex = 0;
 
             appDirs.AutoVerticalScrollBar();
-            addToShellBtn.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Uac);
-            rmFromShellBtn.Image = CacheData.GetSystemImage(ResourcesEx.IconIndex.Uac);
+            addToShellBtn.Image = CacheData.GetSystemImage(ImageResourceSymbol.Uac);
+            rmFromShellBtn.Image = CacheData.GetSystemImage(ImageResourceSymbol.Uac);
 
             ResumeLayout(false);
         }
@@ -623,7 +623,7 @@ namespace AppsLauncher.Windows
                         }
                         if (typesList.Any())
                         {
-                            var comparer = new Comparison.AlphanumericComparer();
+                            var comparer = new AlphaNumericComparer();
                             typesList = typesList.OrderBy(x => x, comparer).ToList();
                             fileTypes.Text = typesList.Join(",");
                             appData.Settings.FileTypes = new Collection<string>(typesList);

@@ -28,11 +28,11 @@
                 label.Text += ':';
             }
 
-            Icon = CacheData.GetSystemIcon(ResourcesEx.IconIndex.SystemControl);
+            Icon = CacheData.GetSystemIcon(ImageResourceSymbol.SystemControl);
 
             transferPathBox.Text = EnvironmentEx.GetVariablePathFull(Settings.TransferDir, false, false);
-            transferPathBtn.BackgroundImage = CacheData.GetSystemImage(ResourcesEx.IconIndex.Directory);
-            transferPathUndoBtn.BackgroundImage = CacheData.GetSystemImage(ResourcesEx.IconIndex.Undo);
+            transferPathBtn.BackgroundImage = CacheData.GetSystemImage(ImageResourceSymbol.Directory);
+            transferPathUndoBtn.BackgroundImage = CacheData.GetSystemImage(ImageResourceSymbol.Undo);
             if (Settings.TransferDir.EqualsEx(CorePaths.TransferDir))
             {
                 transferPathUndoBtn.Enabled = false;
