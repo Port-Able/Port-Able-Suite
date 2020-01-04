@@ -140,7 +140,7 @@
                     continue;
                 if (!((NetEx.GetFileDate(link, 30000, UserAgents.Internal) - fileDate).TotalSeconds > 0d))
                     break;
-                NetEx.Transfer.DownloadFile(link, filePath, 60000, UserAgents.Internal, false);
+                WebTransfer.DownloadFile(link, filePath, 60000, UserAgents.Internal, false);
                 if (!File.Exists(filePath))
                     continue;
                 File.SetLastWriteTime(filePath, DateTime.Now);
@@ -192,7 +192,7 @@
                 if (Log.DebugMode > 0)
                     Log.Write($"Cache: Looking for '{link}'.");
                 if (NetEx.FileIsAvailable(link, 30000, UserAgents.Internal))
-                    NetEx.Transfer.DownloadFile(link, CachePaths.AppInfo, 60000, UserAgents.Internal, false);
+                    WebTransfer.DownloadFile(link, CachePaths.AppInfo, 60000, UserAgents.Internal, false);
                 if (!File.Exists(CachePaths.AppInfo))
                     continue;
                 break;
@@ -215,7 +215,7 @@
                 if (Log.DebugMode > 0)
                     Log.Write($"Cache: Looking for '{link}'.");
                 if (NetEx.FileIsAvailable(link, 30000, UserAgents.Internal))
-                    NetEx.Transfer.DownloadFile(link, tmpZip, 60000, UserAgents.Internal, false);
+                    WebTransfer.DownloadFile(link, tmpZip, 60000, UserAgents.Internal, false);
                 if (!File.Exists(tmpZip))
                     continue;
                 break;
@@ -226,7 +226,7 @@
                 if (Log.DebugMode > 0)
                     Log.Write($"Cache: Looking for '{link}'.");
                 if (NetEx.FileIsAvailable(link, 60000, UserAgents.Empty))
-                    NetEx.Transfer.DownloadFile(link, tmpZip, 60000, UserAgents.Empty, false);
+                    WebTransfer.DownloadFile(link, tmpZip, 60000, UserAgents.Empty, false);
             }
             if (File.Exists(tmpZip))
             {
@@ -260,7 +260,7 @@
                     Log.Write($"Shareware: Looking for '{{{key.Encode()}}}/AppInfo.ini'.");
                 if (!NetEx.FileIsAvailable(url, usr, pwd, 60000, UserAgents.Default))
                     continue;
-                var appInfo = NetEx.Transfer.DownloadString(url, usr, pwd, 60000, UserAgents.Default);
+                var appInfo = WebTransfer.DownloadString(url, usr, pwd, 60000, UserAgents.Default);
                 if (string.IsNullOrWhiteSpace(appInfo))
                     continue;
                 var srvKey = key?.Decode(BinaryToTextEncoding.Base85);

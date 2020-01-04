@@ -497,7 +497,7 @@ namespace AppsDownloader.Windows
                             Log.Write($"Shareware: Looking for '{{{Shareware.FindAddressKey(srv).Encode()}}}/{name}'.");
                         if (!NetEx.FileIsAvailable(url, usr, pwd, 60000))
                             continue;
-                        var swAppImages = NetEx.Transfer.DownloadData(url, usr, pwd)?.DeserializeObject<Dictionary<string, Image>>();
+                        var swAppImages = WebTransfer.DownloadData(url, usr, pwd)?.DeserializeObject<Dictionary<string, Image>>();
                         if (swAppImages == null)
                             continue;
                         foreach (var pair in swAppImages)

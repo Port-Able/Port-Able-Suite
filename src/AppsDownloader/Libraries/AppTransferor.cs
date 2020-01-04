@@ -112,7 +112,7 @@
                 }
                 break;
             }
-            Transfer = new NetEx.AsyncTransfer();
+            Transfer = new WebTransferAsync();
         }
 
         public AppData AppData { get; }
@@ -121,7 +121,7 @@
 
         public List<Tuple<string, string, string, bool>> SrcData { get; }
 
-        public NetEx.AsyncTransfer Transfer { get; }
+        public WebTransferAsync Transfer { get; }
 
         public Tuple<string, string> UserData { get; }
 
@@ -381,13 +381,13 @@
                 if (searchData == default || !searchData.ContainsKey("regex") || !searchData.ContainsKey("source"))
                     throw new ArgumentInvalidException(nameof(jsonArchivePath));
                 var sourceUrl = searchData["source"];
-                var sourceText = NetEx.Transfer.DownloadString(sourceUrl);
+                var sourceText = WebTransfer.DownloadString(sourceUrl);
                 if (string.IsNullOrWhiteSpace(sourceText))
                 {
                     if (!searchData.ContainsKey("mirror"))
                         throw new PathNotFoundException(sourceUrl);
                     sourceUrl = searchData["mirror"];
-                    sourceText = NetEx.Transfer.DownloadString(sourceUrl);
+                    sourceText = WebTransfer.DownloadString(sourceUrl);
                 }
                 var foundData = new Dictionary<Version, string>();
                 var regex = new Regex(searchData["regex"], RegexOptions.IgnoreCase);

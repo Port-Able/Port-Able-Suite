@@ -37,7 +37,7 @@
                     var url = PathEx.AltCombine(mirror, ".redists", "Extra", "Last.ini");
                     if (!NetEx.FileIsAvailable(url, 30000))
                         throw new PathNotFoundException(url);
-                    var data = NetEx.Transfer.DownloadString(url);
+                    var data = WebTransfer.DownloadString(url);
                     if (string.IsNullOrWhiteSpace(data))
                         throw new ArgumentNullException(nameof(data));
                     const string name = "7z";
@@ -66,7 +66,7 @@
                         var url = PathEx.AltCombine(mirror, ".redists", "Extra", map.Key, file);
                         if (!NetEx.FileIsAvailable(url, 30000))
                             throw new PathNotFoundException(url);
-                        NetEx.Transfer.DownloadFile(url, path);
+                        WebTransfer.DownloadFile(url, path);
                         Compaction.Unzip(path, CachePaths.UpdateDir);
                     }
                     catch (Exception ex) when (ex.IsCaught())

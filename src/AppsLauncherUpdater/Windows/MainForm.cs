@@ -42,7 +42,7 @@ namespace Updater.Windows
 
         private string LastStamp { get; set; }
 
-        private NetEx.AsyncTransfer Transferor { get; } = new NetEx.AsyncTransfer();
+        private WebTransferAsync Transferor { get; } = new WebTransferAsync();
 
         private void SetChangeLog(params string[] mirrors)
         {
@@ -56,7 +56,7 @@ namespace Updater.Windows
                         continue;
                     if (!NetEx.FileIsAvailable(path, 60000, UserAgents.Internal))
                         continue;
-                    changes = NetEx.Transfer.DownloadString(path, 60000, UserAgents.Internal);
+                    changes = WebTransfer.DownloadString(path, 60000, UserAgents.Internal);
                     if (!string.IsNullOrWhiteSpace(changes))
                         break;
                 }
@@ -66,7 +66,7 @@ namespace Updater.Windows
             else
                 try
                 {
-                    var atom = NetEx.Transfer.DownloadString(CorePaths.RepoCommitsUrl, 60000, UserAgents.Default);
+                    var atom = WebTransfer.DownloadString(CorePaths.RepoCommitsUrl, 60000, UserAgents.Default);
                     if (string.IsNullOrEmpty(atom))
                         throw new ArgumentNullException(nameof(atom));
                     const string nspace = "{http://www.w3.org/2005/Atom}";
@@ -198,7 +198,7 @@ namespace Updater.Windows
                     var path = PathEx.AltCombine(mirror, "Last.ini");
                     if (!NetEx.FileIsAvailable(path, 60000, UserAgents.Internal))
                         throw new PathNotFoundException(path);
-                    var data = NetEx.Transfer.DownloadString(path, 60000, UserAgents.Internal);
+                    var data = WebTransfer.DownloadString(path, 60000, UserAgents.Internal);
                     if (string.IsNullOrWhiteSpace(data))
                         throw new ArgumentNullException(nameof(data));
                     var lastStamp = Ini.ReadOnly("Info", "LastStamp", data);
@@ -207,7 +207,7 @@ namespace Updater.Windows
                     path = PathEx.AltCombine(mirror, $"{lastStamp}.ini");
                     if (!NetEx.FileIsAvailable(path, 60000, UserAgents.Internal))
                         throw new PathNotFoundException(path);
-                    data = NetEx.Transfer.DownloadString(path, 60000, UserAgents.Internal);
+                    data = WebTransfer.DownloadString(path, 60000, UserAgents.Internal);
                     if (string.IsNullOrWhiteSpace(data))
                         throw new ArgumentNullException(nameof(data));
                     HashInfo = data;
