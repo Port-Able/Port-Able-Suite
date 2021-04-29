@@ -611,7 +611,7 @@
             if (string.IsNullOrWhiteSpace(realUrl) || redirect && realUrl.ContainsEx("&d=sfpa"))
                 realUrl = PathEx.AltCombine(default(char[]), "http:", $"downloads.{AppSupplierHosts.SourceForge}", "portableapps");
             else if (redirect && realUrl.ContainsEx("&d=pa&f="))
-                realUrl = PathEx.AltCombine(default(char[]), "http:", $"downloads.{AppSupplierHosts.PortableApps}", "portableapps", key);
+                realUrl = PathEx.AltCombine(default(char[]), "http:", $"{AppSupplierHosts.PortableApps}", "portableapps", key);
             if (!url.EqualsEx(realUrl))
                 return realUrl;
             if (redirect)

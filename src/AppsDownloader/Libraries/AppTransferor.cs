@@ -88,7 +88,7 @@
                             mirrors = AppSupply.GetMirrors(AppSuppliers.Internal);
                             break;
                         case AppSupplierHosts.PortableApps:
-                            userAgent = UserAgents.Empty;
+                            userAgent = UserAgents.Default;
                             mirrors = AppSupply.GetMirrors(AppSuppliers.PortableApps);
                             break;
                         case AppSupplierHosts.SourceForge:

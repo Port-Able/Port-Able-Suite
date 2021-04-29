@@ -188,9 +188,10 @@
                     var mirrors = new[]
                     {
                         // IPv4
+                        "http://portableapps.com",
                         "http://downloads.portableapps.com",
                         "http://downloads2.portableapps.com",
-                        "http://portableapps.com"
+                        "http://download3.portableapps.com"
                     };
                     _mirrors[supplier].AddRange(mirrors);
                     break;
