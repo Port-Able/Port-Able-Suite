@@ -4,9 +4,16 @@
     using System.IO;
     using Properties;
     using SilDev;
+    using SilDev.Legacy;
 
     internal static class Settings
     {
+        internal enum UpdateChannelOptions
+        {
+            Release,
+            Beta
+        }
+
         private static string _language, _registryPath;
         private static int? _updateChannel;
 
@@ -43,13 +50,7 @@
                 Resources.ConfigSection
             };
 
-            Log.AllowLogging(Ini.FilePath, "DebugMode", Ini.GetRegex(false));
-        }
-
-        internal enum UpdateChannelOptions
-        {
-            Release,
-            Beta
+            Log.AllowLogging(Ini.FilePath);
         }
     }
 }

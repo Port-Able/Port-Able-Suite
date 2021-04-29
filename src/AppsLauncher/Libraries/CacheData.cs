@@ -8,6 +8,7 @@
     using System.Linq;
     using System.Text.RegularExpressions;
     using SilDev;
+    using SilDev.Legacy;
 
     internal static class CacheData
     {
@@ -165,6 +166,54 @@
             return CurrentAppInfo.FirstOrDefault(x => appKeyOrName.EqualsEx(x.Key, x.Name));
         }
 
+        internal static void UpdateCurrentImagesFile()
+        {
+            if (!CurrentImages.Any() || _currentImagesCount == _currentImages.Count && File.Exists(CachePaths.CurrentImages))
+                return;
+            FileEx.Serialize(CachePaths.CurrentImages, CurrentImages);
+            _currentImagesCount = _currentImages.Count;
+        }
+
+        internal static void UpdateCurrentTypeDataFile(int key, int value)
+        {
+            if (key == -1)
+                return;
+            if (!CurrentTypeData.TryGetValue(key, out var curValue))
+                curValue = -1;
+            if (curValue == value)
+                return;
+            CurrentTypeData.Update(key, value);
+            FileEx.Serialize(CachePaths.CurrentTypeData, CurrentTypeData);
+        }
+
+        internal static void UpdateSettingsMerges(string section)
+        {
+            if (ProcessEx.InstancesCount(PathEx.LocalPath) <= 1)
+                return;
+            if (!File.Exists(CachePaths.SettingsMerges))
+                SettingsMerges.Clear();
+            if (!SettingsMerges.Contains(section, StringComparer.CurrentCultureIgnoreCase))
+                SettingsMerges.Add(section);
+            FileEx.Serialize(CachePaths.SettingsMerges, SettingsMerges);
+        }
+
+        internal static void ResetCurrent()
+        {
+            FileEx.TryDelete(CachePaths.CurrentImages);
+            FileEx.TryDelete(CachePaths.CurrentAppInfo);
+            CurrentAppInfo = default;
+        }
+
+        internal static void RemoveInvalidFiles()
+        {
+            if (Settings.CurrentDirectory.EqualsEx(PathEx.LocalDir))
+                return;
+            foreach (var type in new[] { "ini", "ixi" })
+                foreach (var file in DirectoryEx.GetFiles(CorePaths.TempDir, $"*.{type}", SearchOption.AllDirectories))
+                    FileEx.Delete(file);
+            Settings.CurrentDirectory = PathEx.LocalDir;
+        }
+
         private static void UpdateCurrentAppInfo()
         {
             _currentAppInfo = new List<LocalAppData>();
@@ -271,57 +320,9 @@
             }
 
             if (_currentAppInfo.Any())
-                _currentAppInfo = _currentAppInfo.OrderBy(x => x.Name, new AlphaNumericComparer()).ToList();
+                _currentAppInfo = _currentAppInfo.OrderBy(x => x.Name, new AlphaNumericComparer<string>()).ToList();
             if (writeToFile)
                 FileEx.Serialize(CachePaths.CurrentAppInfo, _currentAppInfo);
-        }
-
-        internal static void UpdateCurrentImagesFile()
-        {
-            if (!CurrentImages.Any() || _currentImagesCount == _currentImages.Count && File.Exists(CachePaths.CurrentImages))
-                return;
-            FileEx.Serialize(CachePaths.CurrentImages, CurrentImages);
-            _currentImagesCount = _currentImages.Count;
-        }
-
-        internal static void UpdateCurrentTypeDataFile(int key, int value)
-        {
-            if (key == -1)
-                return;
-            if (!CurrentTypeData.TryGetValue(key, out var curValue))
-                curValue = -1;
-            if (curValue == value)
-                return;
-            CurrentTypeData.Update(key, value);
-            FileEx.Serialize(CachePaths.CurrentTypeData, CurrentTypeData);
-        }
-
-        internal static void UpdateSettingsMerges(string section)
-        {
-            if (ProcessEx.InstancesCount(PathEx.LocalPath) <= 1)
-                return;
-            if (!File.Exists(CachePaths.SettingsMerges))
-                SettingsMerges.Clear();
-            if (!SettingsMerges.Contains(section, StringComparer.CurrentCultureIgnoreCase))
-                SettingsMerges.Add(section);
-            FileEx.Serialize(CachePaths.SettingsMerges, SettingsMerges);
-        }
-
-        internal static void ResetCurrent()
-        {
-            FileEx.TryDelete(CachePaths.CurrentImages);
-            FileEx.TryDelete(CachePaths.CurrentAppInfo);
-            CurrentAppInfo = default;
-        }
-
-        internal static void RemoveInvalidFiles()
-        {
-            if (Settings.CurrentDirectory.EqualsEx(PathEx.LocalDir))
-                return;
-            foreach (var type in new[] { "ini", "ixi" })
-                foreach (var file in DirectoryEx.GetFiles(CorePaths.TempDir, $"*.{type}", SearchOption.AllDirectories))
-                    FileEx.Delete(file);
-            Settings.CurrentDirectory = PathEx.LocalDir;
         }
     }
 }

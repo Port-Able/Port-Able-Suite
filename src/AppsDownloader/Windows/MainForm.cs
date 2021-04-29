@@ -17,12 +17,33 @@ namespace AppsDownloader.Windows
     using SilDev.Drawing;
     using SilDev.Forms;
     using SilDev.Investment;
+    using SilDev.Network;
 
     public sealed partial class MainForm : Form
     {
         private static readonly object DownloadStarter = new object(),
                                        DownloadHandler = new object(),
                                        SearchHandler = new object();
+
+        private bool AutoRetry { get; set; }
+
+        private ListView AppsListClone { get; } = new ListView();
+
+        private Dictionary<string, Color> GroupColors { get; }
+
+        private CounterInvestor<int> Counter { get; } = new CounterInvestor<int>();
+
+        private NotifyBox NotifyBox { get; }
+
+        private static Task TransferTask { get; set; }
+
+        private Dictionary<ListViewItem, AppTransferor> TransferManager { get; } = new Dictionary<ListViewItem, AppTransferor>();
+
+        private KeyValuePair<ListViewItem, AppTransferor> CurrentTransfer { get; set; }
+
+        private Stopwatch TransferStopwatch { get; } = new Stopwatch();
+
+        private List<AppData> TransferFails { get; } = new List<AppData>();
 
         public MainForm(NotifyBox notifyBox = default)
         {
@@ -126,25 +147,25 @@ namespace AppsDownloader.Windows
             NotifyBox.Show(Language.GetText(nameof(en_US.DatabaseAccessMsg)), Resources.GlobalTitle, NotifyBoxStartPosition.Center);
         }
 
-        private bool AutoRetry { get; set; }
+        protected override void WndProc(ref Message m)
+        {
+            var previous = (int)WindowState;
+            base.WndProc(ref m);
+            var current = (int)WindowState;
+            if (previous == 1 || current == 1 || previous == current)
+                return;
+            AppsListResizeColumns();
+        }
 
-        private ListView AppsListClone { get; } = new ListView();
-
-        private Dictionary<string, Color> GroupColors { get; }
-
-        private CounterInvestor<int> Counter { get; } = new CounterInvestor<int>();
-
-        private NotifyBox NotifyBox { get; }
-
-        private static Task TransferTask { get; set; }
-
-        private Dictionary<ListViewItem, AppTransferor> TransferManager { get; } = new Dictionary<ListViewItem, AppTransferor>();
-
-        private KeyValuePair<ListViewItem, AppTransferor> CurrentTransfer { get; set; }
-
-        private Stopwatch TransferStopwatch { get; } = new Stopwatch();
-
-        private List<AppData> TransferFails { get; } = new List<AppData>();
+        private static void ApplicationExit(int exitCode = 0)
+        {
+            if (exitCode > 0)
+            {
+                Environment.ExitCode = exitCode;
+                Environment.Exit(Environment.ExitCode);
+            }
+            Application.Exit();
+        }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -284,7 +305,7 @@ namespace AppsDownloader.Windows
                 appTransferor.Transfer.CancelAsync();
 
             if (DirectoryEx.EnumerateFiles(Settings.TransferDir)?.Any() == true)
-                ProcessEx.SendHelper.WaitThenDelete(Settings.TransferDir);
+                CmdExec.WaitThenDelete(Settings.TransferDir);
         }
 
         private void MainFormSizeRefresh()
@@ -942,8 +963,8 @@ namespace AppsDownloader.Windows
                 if (appData.DownloadCollection.Count > 1 && !appData.Settings.ArchiveLangConfirmed)
                     try
                     {
-                        var result = DialogResult.None;
-                        while (result != DialogResult.OK)
+                        DialogResult result;
+                        do
                             using (Form dialog = new LangSelectionForm(appData))
                             {
                                 TopMost = false;
@@ -957,6 +978,9 @@ namespace AppsDownloader.Windows
                                 ApplicationExit();
                                 return;
                             }
+
+                        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                        while (result != DialogResult.OK);
                     }
                     catch (Exception ex) when (ex.IsCaught())
                     {
@@ -1217,33 +1241,13 @@ namespace AppsDownloader.Windows
 
         private void DownloadProgressUpdate(int value)
         {
-            var color = PanelEx.FakeProgressBar.Update(downloadProgress, value);
+            var color = PanelFakeProgressBar.SetProgress(downloadProgress, value);
             appStatus.ForeColor = color;
             fileStatus.ForeColor = color;
             urlStatus.ForeColor = color;
             downloadReceived.ForeColor = color;
             downloadSpeed.ForeColor = color;
             timeStatus.ForeColor = color;
-        }
-
-        private static void ApplicationExit(int exitCode = 0)
-        {
-            if (exitCode > 0)
-            {
-                Environment.ExitCode = exitCode;
-                Environment.Exit(Environment.ExitCode);
-            }
-            Application.Exit();
-        }
-
-        protected override void WndProc(ref Message m)
-        {
-            var previous = (int)WindowState;
-            base.WndProc(ref m);
-            var current = (int)WindowState;
-            if (previous == 1 || current == 1 || previous == current)
-                return;
-            AppsListResizeColumns();
         }
     }
 }

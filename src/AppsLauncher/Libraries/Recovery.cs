@@ -9,6 +9,7 @@
     using Microsoft.Win32;
     using Properties;
     using SilDev;
+    using SilDev.Legacy;
 
     internal static class Recovery
     {

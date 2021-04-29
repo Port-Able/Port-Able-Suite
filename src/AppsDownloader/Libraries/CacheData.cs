@@ -11,7 +11,10 @@
     using LangResources;
     using Properties;
     using SilDev;
+    using SilDev.Compression.Archiver;
     using SilDev.Investment;
+    using SilDev.Legacy;
+    using SilDev.Network;
 
     internal static class CacheData
     {
@@ -124,6 +127,17 @@
             return image;
         }
 
+        internal static void UpdateSettingsMerges(string section)
+        {
+            if (!ProcessEx.IsRunning(CorePaths.AppsLauncher))
+                return;
+            if (!File.Exists(CachePaths.SettingsMerges))
+                SettingsMerges.Clear();
+            if (!SettingsMerges.Contains(section, StringComparer.CurrentCultureIgnoreCase))
+                SettingsMerges.Add(section);
+            FileEx.Serialize(CachePaths.SettingsMerges, SettingsMerges);
+        }
+
         private static void UpdateAppImagesFile(bool large)
         {
             var filePath = large ? CachePaths.AppImagesLarge : CachePaths.AppImages;
@@ -230,7 +244,7 @@
             }
             if (File.Exists(tmpZip))
             {
-                using (var process = Compaction.SevenZipHelper.Unzip(tmpZip, tmpDir))
+                using (var process = SevenZip.DefaultArchiver.Extract(tmpZip, tmpDir))
                     if (process?.HasExited == false)
                         process.WaitForExit();
                 FileEx.TryDelete(tmpZip);
@@ -277,7 +291,7 @@
             };
             foreach (var section in Ini.GetSections(config, false))
             {
-                if (blacklist?.ContainsEx(section) == true || section.ContainsEx(sectionContainsFilter))
+                if (blacklist?.ContainsItem(section) == true || section.ContainsEx(sectionContainsFilter))
                     continue;
 
                 #region Name
@@ -612,17 +626,6 @@
             var first = mirrors.First();
             realUrl = mirrors.Aggregate(realUrl, (c, m) => c.Replace(m, first));
             return realUrl;
-        }
-
-        internal static void UpdateSettingsMerges(string section)
-        {
-            if (!ProcessEx.IsRunning(CorePaths.AppsLauncher))
-                return;
-            if (!File.Exists(CachePaths.SettingsMerges))
-                SettingsMerges.Clear();
-            if (!SettingsMerges.Contains(section, StringComparer.CurrentCultureIgnoreCase))
-                SettingsMerges.Add(section);
-            FileEx.Serialize(CachePaths.SettingsMerges, SettingsMerges);
         }
     }
 }

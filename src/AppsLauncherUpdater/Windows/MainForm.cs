@@ -2,7 +2,6 @@ namespace Updater.Windows
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Diagnostics;
     using System.Drawing;
     using System.Globalization;
@@ -18,20 +17,12 @@ namespace Updater.Windows
     using SilDev;
     using SilDev.Forms;
     using SilDev.Investment;
+    using SilDev.Legacy;
+    using SilDev.Network;
     using Timer = System.Windows.Forms.Timer;
 
     public partial class MainForm : Form
     {
-        public MainForm()
-        {
-            InitializeComponent();
-            SuspendLayout();
-            Icon = Resources.Logo;
-            logoBox.Image = Resources.Changelog;
-            Language.SetControlLang(this);
-            ResumeLayout(false);
-        }
-
         private CounterInvestor<int> Counter { get; } = new CounterInvestor<int>();
 
         private List<string> DownloadMirrors { get; } = new List<string>();
@@ -43,6 +34,16 @@ namespace Updater.Windows
         private string LastStamp { get; set; }
 
         private WebTransferAsync Transferor { get; } = new WebTransferAsync();
+
+        public MainForm()
+        {
+            InitializeComponent();
+            SuspendLayout();
+            Icon = Resources.Logo;
+            logoBox.Image = Resources.Changelog;
+            Language.SetControlLang(this);
+            ResumeLayout(false);
+        }
 
         private void SetChangeLog(params string[] mirrors)
         {
@@ -93,10 +94,10 @@ namespace Updater.Windows
                         var values = changes[key];
                         if (!values.Any())
                             continue;
-                        builder.AppendFormatLine(" {0}:", key);
+                        builder.AppendFormatLineDefault(" {0}:", key);
                         builder.AppendLine();
                         foreach (var value in values)
-                            builder.AppendFormatLine("  * {0}", value);
+                            builder.AppendFormatLineDefault("  * {0}", value);
                         builder.AppendLine();
                         if (key != lastKey)
                         {

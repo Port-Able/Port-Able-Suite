@@ -14,10 +14,11 @@ namespace AppsLauncher.Windows
     using SilDev;
     using SilDev.Drawing;
     using SilDev.Forms;
+    using SilDev.Legacy;
 
     public sealed partial class MenuViewForm :
 #if !DEBUG
-        FormEx.BorderlessResizable
+        FormBorderlessResizable
 #else
         Form
 #endif

@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Resources;
 using System.Windows.Forms;
 using SilDev;
+using SilDev.Legacy;
 
 internal static class Language
 {

@@ -16,18 +16,6 @@
     {
         private readonly Dictionary<string, string> _assocData;
 
-        public FileTypeAssocData()
-        {
-            _assocData = new Dictionary<string, string>();
-            SystemRegistryAccess = new RegistryAccess(this);
-        }
-
-        public FileTypeAssocData(string json)
-        {
-            _assocData = Json.Deserialize<Dictionary<string, string>>(json) ?? throw new FormatException();
-            SystemRegistryAccess = new RegistryAccess(this);
-        }
-
         public string AppKey
         {
             get => GetData(nameof(AppKey));
@@ -59,6 +47,18 @@
         }
 
         public RegistryAccess SystemRegistryAccess { get; }
+
+        public FileTypeAssocData()
+        {
+            _assocData = new Dictionary<string, string>();
+            SystemRegistryAccess = new RegistryAccess(this);
+        }
+
+        public FileTypeAssocData(string json)
+        {
+            _assocData = Json.Deserialize<Dictionary<string, string>>(json) ?? throw new FormatException();
+            SystemRegistryAccess = new RegistryAccess(this);
+        }
 
         public override string ToString() =>
             Json.Serialize(_assocData);
@@ -94,11 +94,11 @@
                 }
 
                 var restPointEnabled = quiet || MessageBoxEx.Show(Language.GetText(nameof(en_US.RestorePointMsg0)), Resources.GlobalTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
-                if (restPointEnabled && EnvironmentEx.SystemRestore.IsEnabled)
+                if (restPointEnabled && SystemRestore.IsEnabled)
                 {
                     var result = !quiet ? MessageBoxEx.Show(Language.GetText(nameof(en_US.RestorePointMsg1)), Resources.GlobalTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question) : DialogResult.Yes;
                     if (result == DialogResult.Yes)
-                        EnvironmentEx.SystemRestore.Create(string.Format(CultureInfo.InvariantCulture, en_US.AssociateRestPointLabel, appData.Name), EnvironmentEx.RestoreEventType.BeginSystemChange, EnvironmentEx.RestorePointType.ModifySettings);
+                        SystemRestore.Create(string.Format(CultureInfo.InvariantCulture, en_US.AssociateRestPointLabel, appData.Name), RestoreEventType.BeginSystemChange, RestorePointType.ModifySettings);
                 }
 
                 var restPointDir = Path.Combine(CorePaths.RestorePointDir, appData.Key);
@@ -232,7 +232,7 @@
                 if (quiet)
                     return;
 
-                if (EnvironmentEx.SystemRestore.IsEnabled)
+                if (SystemRestore.IsEnabled)
                 {
                     var result = MessageBoxEx.Show(Language.GetText(nameof(en_US.RestorePointMsg3)), Resources.GlobalTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result == DialogResult.Yes)

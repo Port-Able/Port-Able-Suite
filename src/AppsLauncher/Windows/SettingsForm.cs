@@ -17,9 +17,14 @@ namespace AppsLauncher.Windows
     using SilDev;
     using SilDev.Drawing;
     using SilDev.Forms;
+    using SilDev.Legacy;
 
     public partial class SettingsForm : Form
     {
+        private LocalAppData SelectedAppData { get; set; }
+
+        private DialogResult Result { get; set; }
+
         public SettingsForm(LocalAppData appData)
         {
             SelectedAppData = appData;
@@ -90,7 +95,7 @@ namespace AppsLauncher.Windows
                 btn.FlatAppearance.MouseOverBackColor = Settings.Window.Colors.ButtonHover;
             }
 
-            var comparer = new AlphaNumericComparer();
+            var comparer = new AlphaNumericComparer<object>();
             var appNames = CacheData.CurrentAppInfo.Select(x => x.Name).Cast<object>().OrderBy(x => x, comparer).ToArray();
             appsBox.Items.AddRange(appNames);
 
@@ -104,10 +109,6 @@ namespace AppsLauncher.Windows
 
             ResumeLayout(false);
         }
-
-        private LocalAppData SelectedAppData { get; set; }
-
-        private DialogResult Result { get; set; }
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
@@ -195,7 +196,7 @@ namespace AppsLauncher.Windows
 
             StylePreviewUpdate();
 
-            appDirs.Text = Settings.AppDirs?.Where(x => !CorePaths.AppDirs.ContainsEx(x)).Select(x => EnvironmentEx.GetVariablePathFull(x)).Join(Environment.NewLine);
+            appDirs.Text = Settings.AppDirs?.Where(x => !CorePaths.AppDirs.ContainsItem(x)).Select(x => EnvironmentEx.GetVariableWithPath(x)).Join(Environment.NewLine);
 
             if (startMenuIntegration.Items.Count > 0)
                 startMenuIntegration.Items.Clear();
@@ -327,7 +328,7 @@ namespace AppsLauncher.Windows
                 var configTypes = types.RemoveChar('*', '.').Split(',').ToList();
                 foreach (var type in textBoxTypes)
                 {
-                    if (!configTypes.ContainsEx(type))
+                    if (!configTypes.ContainsItem(type))
                         continue;
                     if (!alreadyDefined.ContainsKey(section))
                     {
@@ -337,7 +338,7 @@ namespace AppsLauncher.Windows
                         });
                         continue;
                     }
-                    if (!alreadyDefined[section].ContainsEx(type))
+                    if (!alreadyDefined[section].ContainsItem(type))
                         alreadyDefined[section].Add(type);
                 }
             }
@@ -416,9 +417,9 @@ namespace AppsLauncher.Windows
                     extensions.Add(imageEncoders[i].FilenameExtension.ToLowerInvariant());
                     var description = imageEncoders[i].CodecName.Substring(8).Replace("Codec", "Files").Trim();
                     var pattern = extensions[extensions.Count - 1];
-                    dialog.Filter = string.Format(CultureInfo.InvariantCulture, "{0}{1}{2} ({3})|{3}", dialog.Filter, i > 0 ? "|" : string.Empty, description, pattern);
+                    dialog.Filter = string.Format(CultureInfo.InvariantCulture, @"{0}{1}{2} ({3})|{3}", dialog.Filter, i > 0 ? "|" : string.Empty, description, pattern);
                 }
-                dialog.Filter = string.Format(CultureInfo.InvariantCulture, "{0}|Image Files ({1})|{1}", dialog.Filter, extensions.Join(";"));
+                dialog.Filter = string.Format(CultureInfo.InvariantCulture, @"{0}|Image Files ({1})|{1}", dialog.Filter, extensions.Join(";"));
                 dialog.FilterIndex = imageEncoders.Length + 1;
                 dialog.ShowDialog();
                 if (!File.Exists(dialog.FileName))
@@ -609,12 +610,12 @@ namespace AppsLauncher.Windows
                             {
                                 while (type.Contains(".."))
                                     type = type.Replace("..", ".");
-                                if (typesList.ContainsEx(type) || typesList.ContainsEx(type.Substring(1)))
+                                if (typesList.ContainsItem(type) || typesList.ContainsItem(type.Substring(1)))
                                     continue;
                             }
                             else
                             {
-                                if (typesList.ContainsEx(type) || typesList.ContainsEx($".{type}"))
+                                if (typesList.ContainsItem(type) || typesList.ContainsItem($".{type}"))
                                     continue;
                             }
                             if (type.Length == 1 && type.StartsWith(".", StringComparison.Ordinal))
@@ -623,7 +624,7 @@ namespace AppsLauncher.Windows
                         }
                         if (typesList.Any())
                         {
-                            var comparer = new AlphaNumericComparer();
+                            var comparer = new AlphaNumericComparer<string>();
                             typesList = typesList.OrderBy(x => x, comparer).ToList();
                             fileTypes.Text = typesList.Join(",");
                             appData.Settings.FileTypes = new Collection<string>(typesList);
@@ -682,8 +683,8 @@ namespace AppsLauncher.Windows
                     {
                         if (!Directory.Exists(dir))
                             Directory.CreateDirectory(dir);
-                        dir = EnvironmentEx.GetVariablePathFull(dir);
-                        if (!dirList.ContainsEx(dir))
+                        dir = EnvironmentEx.GetVariableWithPath(dir);
+                        if (!dirList.ContainsItem(dir))
                             dirList.Add(dir);
                     }
                     catch (Exception ex) when (ex.IsCaught())

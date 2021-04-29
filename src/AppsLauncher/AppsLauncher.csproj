@@ -80,7 +80,7 @@
     <Compile Include="Libraries\Recovery.cs" />
     <Compile Include="Libraries\Settings.cs" />
     <Compile Include="Libraries\SystemIntegration.cs" />
-    <Compile Include="Outdated\Ini.cs" />
+    <Compile Include="Legacy\Ini.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

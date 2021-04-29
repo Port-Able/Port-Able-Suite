@@ -107,7 +107,8 @@ namespace AppsDownloader.Properties {
         ///*Multilingual=Multilingual
         ///Chinese (Simplified)=SimpChinese
         ///Chinese (Traditional)=TradChinese
-        ///English (British)=En [rest of string was truncated]&quot;;.
+        ///English (British)=EnglishGB
+        ///Portuguese [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string LangNames {
             get {
@@ -167,7 +168,8 @@ namespace AppsDownloader.Properties {
         ///Thai
         ///TradChinese
         ///Turkish
-        ///Ukr [rest of string was truncated]&quot;;.
+        ///Ukrainian
+        ///Vietnamese.
         /// </summary>
         internal static string Languages {
             get {

@@ -32,7 +32,7 @@
             var curDir = PathEx.LocalDir;
             if (!enabled || !varDir.EqualsEx(curDir))
             {
-                var curPath = EnvironmentEx.GetVariablePathFull(PathEx.LocalPath, false);
+                var curPath = EnvironmentEx.GetVariableWithPath(PathEx.LocalPath, false);
                 var sendToPath = PathEx.Combine(Environment.SpecialFolder.SendTo, "Apps Launcher.lnk");
                 if (enabled)
                 {
@@ -105,7 +105,7 @@
                 }
                 if (!Directory.Exists(startMenuDir))
                     Directory.CreateDirectory(startMenuDir);
-                FileEx.CreateShellLink(EnvironmentEx.GetVariablePathFull(PathEx.LocalPath, false), shortcutPath);
+                FileEx.CreateShellLink(EnvironmentEx.GetVariableWithPath(PathEx.LocalPath, false), shortcutPath);
                 startMenuDir = Path.Combine(startMenuDir, "Portable Apps");
                 if (Directory.Exists(startMenuDir))
                 {
@@ -116,7 +116,7 @@
                 }
                 if (!Directory.Exists(startMenuDir))
                     Directory.CreateDirectory(startMenuDir);
-                Parallel.ForEach(appNames, x => FileEx.CreateShellLink(EnvironmentEx.GetVariablePathFull(CacheData.FindAppData(x)?.FilePath, false, false), Path.Combine(startMenuDir, x)));
+                Parallel.ForEach(appNames, x => FileEx.CreateShellLink(EnvironmentEx.GetVariableWithPath(CacheData.FindAppData(x)?.FilePath, false, false), Path.Combine(startMenuDir, x)));
             }
             catch (Exception ex) when (ex.IsCaught())
             {

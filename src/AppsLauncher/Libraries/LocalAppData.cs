@@ -13,6 +13,7 @@
     using Properties;
     using SilDev;
     using SilDev.Forms;
+    using SilDev.Legacy;
     using GlobalSettings = Settings;
 
     [Serializable]
@@ -22,6 +23,37 @@
 
         [NonSerialized]
         private AppSettings _settings;
+
+        public string Key { get; }
+
+        public string Name { get; }
+
+        public string FileDir
+        {
+            get => _fileDir;
+            private set => _fileDir = GetFullPath(value);
+        }
+
+        public string FilePath
+        {
+            get => _filePath;
+            private set => _filePath = GetFullPath(value);
+        }
+
+        public string ConfigPath
+        {
+            get => _configPath;
+            private set => _configPath = GetFullPath(value);
+        }
+
+        public string AppInfoPath
+        {
+            get => _appInfoPath;
+            private set => _appInfoPath = GetFullPath(value);
+        }
+
+        public AppSettings Settings =>
+            _settings ?? (_settings = new AppSettings(Key));
 
         public LocalAppData(string key, string name, string fileDir, string filePath, string configPath, string appInfoPath)
         {
@@ -71,37 +103,6 @@
             AppInfoPath = info.GetString(nameof(AppInfoPath));
         }
 
-        public string Key { get; }
-
-        public string Name { get; }
-
-        public string FileDir
-        {
-            get => _fileDir;
-            private set => _fileDir = GetFullPath(value);
-        }
-
-        public string FilePath
-        {
-            get => _filePath;
-            private set => _filePath = GetFullPath(value);
-        }
-
-        public string ConfigPath
-        {
-            get => _configPath;
-            private set => _configPath = GetFullPath(value);
-        }
-
-        public string AppInfoPath
-        {
-            get => _appInfoPath;
-            private set => _appInfoPath = GetFullPath(value);
-        }
-
-        public AppSettings Settings =>
-            _settings ?? (_settings = new AppSettings(Key));
-
         [SecurityCritical]
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -119,13 +120,6 @@
 
             info.AddValue(nameof(ConfigPath), GetSubPath(ConfigPath));
             info.AddValue(nameof(AppInfoPath), GetSubPath(AppInfoPath));
-        }
-
-        internal void OpenLocation(bool closeLauncher = false)
-        {
-            ProcessEx.Start(CorePaths.SystemExplorer, FileDir);
-            if (closeLauncher)
-                Application.Exit();
         }
 
         public void StartApplication(bool closeLauncher = false, bool runAsAdmin = false)
@@ -157,7 +151,7 @@
             {
                 if (Settings.SortArgPaths)
                 {
-                    var comparer = new AlphaNumericComparer();
+                    var comparer = new AlphaNumericComparer<string>();
                     Arguments.ValidPaths = Arguments.ValidPaths.OrderBy(x => x, comparer).ToList();
                 }
                 if (string.IsNullOrWhiteSpace(arguments))
@@ -193,28 +187,6 @@
                 Application.Exit();
         }
 
-        internal bool RemoveApplication(IWin32Window owner = default)
-        {
-            CacheData.ResetCurrent();
-            Retry:
-            if (GlobalSettings.AppDirs.Any(x => FileDir.StartsWithEx(x)) && Directory.Exists(FileDir))
-            {
-                if (!DirectoryEx.TryDelete(FileDir) && !PathEx.ForceDelete(FileDir) && !PathEx.ForceDelete(FileDir, true))
-                    goto Failed;
-                if (Ini.GetSections().ContainsEx(Key))
-                {
-                    Ini.RemoveSection(Key);
-                    GlobalSettings.WriteToFileInQueue = true;
-                }
-                MessageBoxEx.Show(owner, Language.GetText(nameof(en_US.OperationCompletedMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                return !Directory.Exists(FileDir);
-            }
-            Failed:
-            if (MessageBoxEx.Show(owner, Language.GetText(nameof(en_US.OperationFailedMsg)), Resources.GlobalTitle, MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning) == DialogResult.Retry)
-                goto Retry;
-            return false;
-        }
-
         public bool Equals(LocalAppData appData) =>
             Equals(GetHashCode(), appData?.GetHashCode());
 
@@ -228,17 +200,46 @@
         public override int GetHashCode() =>
             Tuple.Create(Key, Name, FileDir, FilePath, ConfigPath, AppInfoPath).GetHashCode();
 
-        public static bool operator ==(LocalAppData left, LocalAppData right) =>
-            Equals(left, right);
+        internal void OpenLocation(bool closeLauncher = false)
+        {
+            ProcessEx.Start(CorePaths.SystemExplorer, FileDir);
+            if (closeLauncher)
+                Application.Exit();
+        }
 
-        public static bool operator !=(LocalAppData left, LocalAppData right) =>
-            !Equals(left, right);
+        internal bool RemoveApplication(IWin32Window owner = default)
+        {
+            CacheData.ResetCurrent();
+            Retry:
+            if (GlobalSettings.AppDirs.Any(x => FileDir.StartsWithEx(x)) && Directory.Exists(FileDir))
+            {
+                if (!DirectoryEx.TryDelete(FileDir) && !PathEx.ForceDelete(FileDir) && !PathEx.ForceDelete(FileDir, true))
+                    goto Failed;
+                if (Ini.GetSections().ContainsItem(Key))
+                {
+                    Ini.RemoveSection(Key);
+                    GlobalSettings.WriteToFileInQueue = true;
+                }
+                MessageBoxEx.Show(owner, Language.GetText(nameof(en_US.OperationCompletedMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                return !Directory.Exists(FileDir);
+            }
+            Failed:
+            if (MessageBoxEx.Show(owner, Language.GetText(nameof(en_US.OperationFailedMsg)), Resources.GlobalTitle, MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning) == DialogResult.Retry)
+                goto Retry;
+            return false;
+        }
 
         private static string GetSubPath(string path) =>
             path.StartsWithEx(PathEx.LocalDir) ? path.Substring(PathEx.LocalDir.Length).Trim(Path.DirectorySeparatorChar) : path;
 
         private static string GetFullPath(string path) =>
             !PathEx.IsValidPath(path) ? PathEx.Combine(PathEx.LocalDir, path) : path;
+
+        public static bool operator ==(LocalAppData left, LocalAppData right) =>
+            Equals(left, right);
+
+        public static bool operator !=(LocalAppData left, LocalAppData right) =>
+            !Equals(left, right);
 
         public sealed class AppSettings
         {
@@ -249,9 +250,6 @@
             private bool? _noConfirm, _noUpdates, _runAsAdmin, _sortArgPaths;
             private DateTime _noUpdatesTime;
             private string _startArgsFirst, _startArgsLast;
-
-            internal AppSettings(string key) =>
-                _section = key;
 
             public ReadOnlyCollection<string> FileAbsoluteTypes
             {
@@ -288,7 +286,7 @@
                         WriteValue(nameof(FileTypes), default(string));
                     else
                     {
-                        var comparer = new AlphaNumericComparer();
+                        var comparer = new AlphaNumericComparer<string>();
                         var types = _fileTypes.Distinct().OrderBy(x => x, comparer);
                         WriteValue(nameof(FileTypes), types.Join(',').Trim(','));
                     }
@@ -417,6 +415,9 @@
                     WriteValue("StartArgs.Last", _startArgsLast?.Encode());
                 }
             }
+
+            internal AppSettings(string key) =>
+                _section = key;
 
             internal void WriteValue<TValue>(string key, TValue value, TValue defValue = default, bool direct = false) =>
                 GlobalSettings.WriteValue(_section, key, value, defValue, direct);

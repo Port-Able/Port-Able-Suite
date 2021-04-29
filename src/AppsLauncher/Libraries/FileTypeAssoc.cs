@@ -73,18 +73,22 @@
             if (!FileEx.Exists(assocData.IconPath) || string.IsNullOrEmpty(assocData.IconId))
                 goto Cancel;
 
-            MessageBoxEx.ButtonText.OverrideEnabled = true;
-            MessageBoxEx.ButtonText.Yes = "App";
-            MessageBoxEx.ButtonText.No = "Launcher";
-            MessageBoxEx.ButtonText.Cancel = Language.GetText(nameof(en_US.Cancel));
+            MessageBoxEx.ButtonTextOverrideEnabled = true;
+            MessageBoxEx.ButtonText = new MessageBoxButtonText
+            {
+                Yes = "App",
+                No = "Launcher",
+                Cancel = Language.GetText(nameof(en_US.Cancel))
+            };
+
             var result = !quiet ? MessageBoxEx.Show(Language.GetText(nameof(en_US.AssociateAppWayQuestion)), Resources.GlobalTitle, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) : DialogResult.Yes;
             switch (result)
             {
                 case DialogResult.Yes:
-                    assocData.StarterPath = EnvironmentEx.GetVariablePathFull(appData.FilePath, false, false);
+                    assocData.StarterPath = EnvironmentEx.GetVariableWithPath(appData.FilePath, false, false);
                     break;
                 case DialogResult.No:
-                    assocData.StarterPath = EnvironmentEx.GetVariablePathFull(PathEx.LocalPath, false, false);
+                    assocData.StarterPath = EnvironmentEx.GetVariableWithPath(PathEx.LocalPath, false, false);
                     break;
                 default:
                     goto Cancel;

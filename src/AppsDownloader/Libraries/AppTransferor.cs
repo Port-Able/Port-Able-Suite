@@ -12,11 +12,30 @@
     using LangResources;
     using Properties;
     using SilDev;
+    using SilDev.Compression.Archiver;
     using SilDev.Forms;
     using SilDev.Investment;
+    using SilDev.Legacy;
+    using SilDev.Network;
 
     public class AppTransferor
     {
+        public AppData AppData { get; }
+
+        public string DestPath { get; }
+
+        public List<Tuple<string, string, string, bool>> SrcData { get; }
+
+        public WebTransferAsync Transfer { get; }
+
+        public Tuple<string, string> UserData { get; }
+
+        public bool AutoRetry { get; private set; }
+
+        public bool DownloadStarted { get; private set; }
+
+        public bool InstallStarted { get; private set; }
+
         public AppTransferor(AppData appData)
         {
             AppData = appData ?? throw new ArgumentNullException(nameof(appData));
@@ -115,22 +134,6 @@
             Transfer = new WebTransferAsync();
         }
 
-        public AppData AppData { get; }
-
-        public string DestPath { get; }
-
-        public List<Tuple<string, string, string, bool>> SrcData { get; }
-
-        public WebTransferAsync Transfer { get; }
-
-        public Tuple<string, string> UserData { get; }
-
-        public bool AutoRetry { get; private set; }
-
-        public bool DownloadStarted { get; private set; }
-
-        public bool InstallStarted { get; private set; }
-
         public void StartDownload(bool force = false)
         {
             DownloadStarted = false;
@@ -227,7 +230,7 @@
                 {
                     if (!File.Exists(CorePaths.FileArchiver))
                         throw new PathNotFoundException(CorePaths.FileArchiver);
-                    using (var process = Compaction.SevenZipHelper.Unzip(DestPath, AppData.InstallDir))
+                    using (var process = SevenZip.DefaultArchiver.Extract(DestPath, AppData.InstallDir))
                         if (process?.HasExited == false)
                             process.WaitForExit();
                 }

@@ -10,7 +10,9 @@
     using System.Windows.Forms;
     using Properties;
     using SilDev;
+    using SilDev.Compression;
     using SilDev.Drawing;
+    using SilDev.Legacy;
     using DrawingSize = System.Drawing.Size;
 
     internal static class Settings
@@ -38,7 +40,7 @@
             {
                 if (_nsisButtons != default)
                     return _nsisButtons;
-                var buttonData = Resources.NsisData.Unzip().DeserializeObject<Dictionary<int, List<string>>>();
+                var buttonData = GZip.Decompress(Resources.NsisData).DeserializeObject<Dictionary<int, List<string>>>();
                 if (buttonData == default)
                     return default;
                 var langId = WinApi.NativeHelper.GetUserDefaultUILanguage();
@@ -100,7 +102,7 @@
                 "Launcher"
             };
 
-            Log.AllowLogging(Ini.FilePath, "DebugMode", Ini.GetRegex(false));
+            Log.AllowLogging(Ini.FilePath);
 
             if (Elevation.IsAdministrator)
             {
@@ -642,6 +644,15 @@
                     }
                 }
 
+                internal static void Refresh()
+                {
+                    _minimum = default;
+                    _maximum = default;
+                    _default = default;
+                    _width = default;
+                    _height = default;
+                }
+
                 private static DrawingSize DpiSize(int width, int height)
                 {
                     var handle = WinApi.NativeHelper.GetDesktopWindow();
@@ -654,15 +665,6 @@
                             size.Height = (int)Math.Floor(graphics.DpiY / 96d * height);
                     }
                     return size;
-                }
-
-                internal static void Refresh()
-                {
-                    _minimum = default;
-                    _maximum = default;
-                    _default = default;
-                    _width = default;
-                    _height = default;
                 }
             }
         }

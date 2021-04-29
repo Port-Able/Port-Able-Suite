@@ -9,10 +9,19 @@ namespace AppsDownloader.Windows
     using SilDev;
     using SilDev.Drawing;
     using SilDev.Forms;
+    using SilDev.Legacy;
 
     public partial class LangSelectionForm : Form
     {
         private readonly AppData _appData;
+
+        public sealed override string Text
+        {
+            get => base.Text;
+            set => base.Text = value;
+        }
+
+        private string LangNames { get; }
 
         public LangSelectionForm(AppData appData)
         {
@@ -53,14 +62,6 @@ namespace AppsDownloader.Windows
             rememberLangCheck.Checked = _appData.Settings.ArchiveLangConfirmed;
 
             ResumeLayout(false);
-        }
-
-        private string LangNames { get; }
-
-        public sealed override string Text
-        {
-            get => base.Text;
-            set => base.Text = value;
         }
 
         private void LangSelectionForm_Load(object sender, EventArgs e)

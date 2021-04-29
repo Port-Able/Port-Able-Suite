@@ -14,6 +14,8 @@
 
     public partial class SettingsForm : Form
     {
+        private DialogResult Result { get; set; } = DialogResult.No;
+
         public SettingsForm()
         {
             InitializeComponent();
@@ -30,7 +32,7 @@
 
             Icon = CacheData.GetSystemIcon(ImageResourceSymbol.SystemControl);
 
-            transferPathBox.Text = EnvironmentEx.GetVariablePathFull(Settings.TransferDir, false, false);
+            transferPathBox.Text = EnvironmentEx.GetVariableWithPath(Settings.TransferDir, false, false);
             transferPathBtn.BackgroundImage = CacheData.GetSystemImage(ImageResourceSymbol.Directory);
             transferPathUndoBtn.BackgroundImage = CacheData.GetSystemImage(ImageResourceSymbol.Undo);
             if (Settings.TransferDir.EqualsEx(CorePaths.TransferDir))
@@ -41,8 +43,6 @@
 
             ResumeLayout(false);
         }
-
-        private DialogResult Result { get; set; } = DialogResult.No;
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
@@ -221,7 +221,7 @@
                 var dirChanged = !Settings.TransferDir.EqualsEx(currentDir);
                 if (dirChanged)
                 {
-                    transferPathBox.Text = EnvironmentEx.GetVariablePathFull(Settings.TransferDir, false, false);
+                    transferPathBox.Text = EnvironmentEx.GetVariableWithPath(Settings.TransferDir, false, false);
                     if (!transferPathUndoBtn.Enabled)
                     {
                         transferPathUndoBtn.Enabled = true;
@@ -235,7 +235,7 @@
         private void TransferPathUndoBtn_Click(object sender, EventArgs e)
         {
             Settings.TransferDir = CorePaths.TransferDir;
-            transferPathBox.Text = EnvironmentEx.GetVariablePathFull(Settings.TransferDir, false, false);
+            transferPathBox.Text = EnvironmentEx.GetVariableWithPath(Settings.TransferDir, false, false);
             if (transferPathUndoBtn.Enabled)
             {
                 transferPathUndoBtn.Enabled = false;

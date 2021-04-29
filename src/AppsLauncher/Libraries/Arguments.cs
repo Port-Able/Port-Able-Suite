@@ -6,6 +6,7 @@
     using System.IO;
     using System.Linq;
     using SilDev;
+    using SilDev.Legacy;
 
     internal static class Arguments
     {
@@ -23,7 +24,7 @@
                     _fileTypes = new List<string>();
                 if (_fileTypes.Any() || !ValidPaths.Any())
                     return _fileTypes;
-                var comparer = new AlphaNumericComparer();
+                var comparer = new AlphaNumericComparer<string>();
                 _fileTypes = ValidPaths.Where(x => !PathEx.IsDir(x)).Select(x => Path.GetExtension(x)?.TrimStart('.').ToLowerInvariant())
                                        .Where(Comparison.IsNotEmpty).Distinct().OrderBy(x => x, comparer).ToList();
                 return _fileTypes;
@@ -38,7 +39,7 @@
                     _savedFileTypes = new List<string>();
                 if (_savedFileTypes.Count > 0)
                     return _savedFileTypes;
-                var comparer = new AlphaNumericComparer();
+                var comparer = new AlphaNumericComparer<string>();
                 var types = CacheData.CurrentAppSections.Aggregate(string.Empty, (x, y) => x + $"{Ini.Read(y, "FileTypes").RemoveChar('*', '.')},").ToLowerInvariant();
                 _savedFileTypes = types.Split(',').Where(Comparison.IsNotEmpty).Distinct().OrderBy(x => x, comparer).ToList();
                 return _savedFileTypes;
@@ -53,7 +54,7 @@
                     _validPaths = new List<string>();
                 if (_validPaths.Any() || Environment.GetCommandLineArgs().Length < 2)
                     return _validPaths;
-                var comparer = new AlphaNumericComparer();
+                var comparer = new AlphaNumericComparer<string>();
                 var args = Environment.GetCommandLineArgs().Skip(1).Where(PathEx.IsValidPath).OrderBy(x => x, comparer);
                 _validPaths = args.ToList();
                 return _validPaths;

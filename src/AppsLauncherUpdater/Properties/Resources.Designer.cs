@@ -79,7 +79,8 @@ namespace Updater.Properties {
         ///LICENSE.txt
         ///Update.7z ) do if exist &quot;%%s&quot; del /F /Q &quot;%%s&quot;
         ///set path=%WinDir%\System32\cmd.exe
-        ///if exist %0 start &quot;{2}&quot; %path% /C del /F /Q %0 &amp;&amp; taskkill /FI &quot;{0}&quot; /IM cmd [rest of string was truncated]&quot;;.
+        ///if exist %0 start &quot;{2}&quot; %path% /C del /F /Q %0 &amp;&amp; taskkill /FI &quot;{0}&quot; /IM cmd.exe /T
+        ///exit /b.
         /// </summary>
         internal static string BatchDummy {
             get {

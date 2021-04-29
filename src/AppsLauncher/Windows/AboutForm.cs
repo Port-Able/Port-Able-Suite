@@ -21,6 +21,8 @@ namespace AppsLauncher.Windows
         private static readonly object BwLocker = new object();
         private readonly ProgressCircle _progressCircle;
 
+        private int? ExitCode { get; set; } = 0;
+
         public AboutForm()
         {
             InitializeComponent();
@@ -96,8 +98,6 @@ namespace AppsLauncher.Windows
 
             ResumeLayout(false);
         }
-
-        private int? ExitCode { get; set; } = 0;
 
         private void AboutForm_Load(object sender, EventArgs e)
         {

@@ -18,19 +18,19 @@
             }
         }
 
-        internal static string CurrentImages => 
+        internal static string CurrentImages =>
             _currentImages ?? (_currentImages = Path.Combine(CorePaths.TempDir, "CurrentImages.dat"));
 
-        internal static string CurrentImageBg => 
+        internal static string CurrentImageBg =>
             _currentimageBg ?? (_currentimageBg = Path.Combine(CorePaths.TempDir, "CurrentImageBg.dat"));
 
-        internal static string CurrentAppInfo => 
+        internal static string CurrentAppInfo =>
             _currentAppInfo ?? (_currentAppInfo = Path.Combine(CorePaths.TempDir, "CurrentAppInfo.dat"));
 
-        internal static string CurrentTypeData => 
+        internal static string CurrentTypeData =>
             _currentTypeData ?? (_currentTypeData = Path.Combine(CorePaths.TempDir, "CurrentTypeData.dat"));
 
-        internal static string SettingsMerges => 
+        internal static string SettingsMerges =>
             _settingsMerges ?? (_settingsMerges = Path.Combine(CorePaths.TempDir, "SettingsMerges.dat"));
     }
 }

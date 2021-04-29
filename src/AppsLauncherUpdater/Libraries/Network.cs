@@ -6,6 +6,10 @@
     using LangResources;
     using Properties;
     using SilDev;
+    using SilDev.Compression.Archiver;
+    using SilDev.Forms;
+    using SilDev.Legacy;
+    using SilDev.Network;
 
     internal static class Network
     {
@@ -67,7 +71,7 @@
                         if (!NetEx.FileIsAvailable(url, 30000))
                             throw new PathNotFoundException(url);
                         WebTransfer.DownloadFile(url, path);
-                        Compaction.Unzip(path, CachePaths.UpdateDir);
+                        SevenZip.DefaultArchiver.Extract(path, CachePaths.UpdateDir);
                     }
                     catch (Exception ex) when (ex.IsCaught())
                     {

@@ -22,6 +22,10 @@ namespace AppsLauncher.Windows
     {
         private static readonly object Locker = new object();
 
+        private bool IsStarted { get; set; }
+
+        private string SearchText { get; set; }
+
         public OpenWithForm()
         {
             InitializeComponent();
@@ -62,9 +66,39 @@ namespace AppsLauncher.Windows
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
         }
 
-        private bool IsStarted { get; set; }
+        protected override void WndProc(ref Message m)
+        {
+            switch (m.Msg)
+            {
+                case (int)WinApi.WindowMenuFlags.WmCopyData:
+                    var dStruct = (WinApi.CopyData)Marshal.PtrToStructure(m.LParam, typeof(WinApi.CopyData));
+                    var strData = Marshal.PtrToStringUni(dStruct.LpData);
+                    if (!string.IsNullOrWhiteSpace(strData) && !Arguments.ValidPaths.ContainsItem(strData))
+                    {
+                        if (WinApi.NativeHelper.GetForegroundWindow() != Handle)
+                            WinApi.NativeHelper.SetForegroundWindow(Handle);
+                        Arguments.ValidPaths.Add(strData.Trim('"'));
+                        Arguments.DefineAppName();
+                        ShowBalloonTip(Text, Language.GetText(nameof(en_US.cmdLineUpdated)));
+                    }
+                    break;
+                default:
+                    base.WndProc(ref m);
+                    break;
+            }
+        }
 
-        private string SearchText { get; set; }
+        private static bool DragFileName(out Array files, DragEventArgs e)
+        {
+            files = null;
+            if ((e.AllowedEffect & DragDropEffects.Copy) != DragDropEffects.Copy)
+                return false;
+            var data = e.Data.GetData("FileDrop") as Array;
+            if (!(data?.Length > 0) || !(data.GetValue(0) is string))
+                return false;
+            files = data;
+            return true;
+        }
 
         private void OpenWithForm_Load(object sender, EventArgs e)
         {
@@ -133,18 +167,6 @@ namespace AppsLauncher.Windows
                     }
             }
             e.Effect = DragDropEffects.Copy;
-        }
-
-        private static bool DragFileName(out Array files, DragEventArgs e)
-        {
-            files = null;
-            if ((e.AllowedEffect & DragDropEffects.Copy) != DragDropEffects.Copy)
-                return false;
-            var data = e.Data.GetData("FileDrop") as Array;
-            if (!(data?.Length > 0) || !(data.GetValue(0) is string))
-                return false;
-            files = data;
-            return true;
         }
 
         private void OpenWithForm_Activated(object sender, EventArgs e)
@@ -479,28 +501,6 @@ namespace AppsLauncher.Windows
                 Application.Restart();
                 owner.Dispose();
             };
-        }
-
-        protected override void WndProc(ref Message m)
-        {
-            switch (m.Msg)
-            {
-                case (int)WinApi.WindowMenuFlags.WmCopyData:
-                    var dStruct = (WinApi.CopyData)Marshal.PtrToStructure(m.LParam, typeof(WinApi.CopyData));
-                    var strData = Marshal.PtrToStringUni(dStruct.lpData);
-                    if (!string.IsNullOrWhiteSpace(strData) && !Arguments.ValidPaths.ContainsEx(strData))
-                    {
-                        if (WinApi.NativeHelper.GetForegroundWindow() != Handle)
-                            WinApi.NativeHelper.SetForegroundWindow(Handle);
-                        Arguments.ValidPaths.Add(strData.Trim('"'));
-                        Arguments.DefineAppName();
-                        ShowBalloonTip(Text, Language.GetText(nameof(en_US.cmdLineUpdated)));
-                    }
-                    break;
-                default:
-                    base.WndProc(ref m);
-                    break;
-            }
         }
     }
 }

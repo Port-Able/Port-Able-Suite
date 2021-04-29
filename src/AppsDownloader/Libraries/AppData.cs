@@ -1,7 +1,6 @@
 ﻿namespace AppsDownloader.Libraries
 {
     using System;
-    using System.Collections.ObjectModel;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -9,13 +8,15 @@
     using System.Runtime.Serialization;
     using System.Security;
     using System.Text;
+    using System.Web.Script.Serialization;
     using SilDev;
+    using SilDev.Legacy;
+    using SilDev.Network;
     using DataCollection = System.Collections.ObjectModel.ReadOnlyCollection<string>;
     using DownloadCollection = System.Collections.ObjectModel.ReadOnlyDictionary<string, System.Collections.ObjectModel.ReadOnlyCollection<System.Tuple<string, string>>>;
     using KeyCollection = System.Collections.ObjectModel.ReadOnlyCollection<byte>;
     using VersionCollection = System.Collections.ObjectModel.ReadOnlyCollection<System.Tuple<string, string>>;
     using GlobalSettings = Settings;
-    using System.Web.Script.Serialization;
 
     [Serializable]
     public sealed class AppData : ISerializable
@@ -25,6 +26,83 @@
 
         [NonSerialized]
         private AppSettings _settings;
+
+        public string Key { get; }
+
+        public string Name { get; }
+
+        public string Description { get; }
+
+        public string Category { get; }
+
+        public string Website { get; }
+
+        public string DisplayVersion { get; }
+
+        public Version PackageVersion { get; }
+
+        public VersionCollection VersionData { get; }
+
+        public string DefaultLanguage { get; }
+
+        public DataCollection Languages { get; }
+
+        public DownloadCollection DownloadCollection { get; }
+
+        public DownloadCollection UpdateCollection { get; }
+
+        public long DownloadSize { get; }
+
+        public long InstallSize { get; }
+
+        [ScriptIgnore]
+        public string InstallDir
+        {
+            get
+            {
+                if (_installDir != default)
+                    return _installDir;
+                var appDir = CorePaths.AppsDir;
+                switch (Key)
+                {
+                    case "Ghostscript":
+                    case "GPG":
+                    case "Java":
+                    case "Java64":
+                    case "JDK":
+                    case "JDK64":
+                    case "OpenJDK":
+                    case "OpenJDK64":
+                    case "OpenJDKJRE":
+                    case "OpenJDKJRE64":
+                        _installDir = Path.Combine(appDir, "CommonFiles", Key);
+                        return _installDir;
+                }
+                if (ServerKey != default)
+                {
+                    appDir = CorePaths.AppDirs.Last();
+                    _installDir = Path.Combine(appDir, Key.TrimEnd('#'));
+                    return _installDir;
+                }
+                if (!DownloadCollection.Any())
+                    return default;
+                var downloadUrl = DownloadCollection.First().Value.FirstOrDefault()?.Item1;
+                if (downloadUrl?.Any() == true && NetEx.GetShortHost(downloadUrl)?.EqualsEx(AppSupplierHosts.Internal) == true)
+                    appDir = downloadUrl.ContainsEx("/.repack/") ? CorePaths.AppDirs.Third() : CorePaths.AppDirs.Second();
+                _installDir = Path.Combine(appDir, Key);
+                return _installDir;
+            }
+        }
+
+        public DataCollection Requirements { get; }
+
+        public bool Advanced { get; set; }
+
+        [ScriptIgnore] public KeyCollection ServerKey { get; }
+
+        [ScriptIgnore]
+        public AppSettings Settings =>
+            _settings ?? (_settings = new AppSettings(this));
 
         public AppData(string key, string name, string description, string category, string website,
                        string displayVersion, Version packageVersion, VersionCollection versionData,
@@ -124,84 +202,6 @@
             ServerKey = default;
         }
 
-        public string Key { get; }
-
-        public string Name { get; }
-
-        public string Description { get; }
-
-        public string Category { get; }
-
-        public string Website { get; }
-
-        public string DisplayVersion { get; }
-
-        public Version PackageVersion { get; }
-
-        public VersionCollection VersionData { get; }
-
-        public string DefaultLanguage { get; }
-
-        public DataCollection Languages { get; }
-
-        public DownloadCollection DownloadCollection { get; }
-
-        public DownloadCollection UpdateCollection { get; }
-
-        public long DownloadSize { get; }
-
-        public long InstallSize { get; }
-
-        [ScriptIgnore]
-        public string InstallDir
-        {
-            get
-            {
-                if (_installDir != default)
-                    return _installDir;
-                var appDir = CorePaths.AppsDir;
-                switch (Key)
-                {
-                    case "Ghostscript":
-                    case "GPG":
-                    case "Java":
-                    case "Java64":
-                    case "JDK":
-                    case "JDK64":
-                    case "OpenJDK":
-                    case "OpenJDK64":
-                    case "OpenJDKJRE":
-                    case "OpenJDKJRE64":
-                        _installDir = Path.Combine(appDir, "CommonFiles", Key);
-                        return _installDir;
-                }
-                if (ServerKey != default)
-                {
-                    appDir = CorePaths.AppDirs.Last();
-                    _installDir = Path.Combine(appDir, Key.TrimEnd('#'));
-                    return _installDir;
-                }
-                if (!DownloadCollection.Any())
-                    return default;
-                var downloadUrl = DownloadCollection.First().Value.FirstOrDefault()?.Item1;
-                if (downloadUrl?.Any() == true && NetEx.GetShortHost(downloadUrl)?.EqualsEx(AppSupplierHosts.Internal) == true)
-                    appDir = downloadUrl.ContainsEx("/.repack/") ? CorePaths.AppDirs.Third() : CorePaths.AppDirs.Second();
-                _installDir = Path.Combine(appDir, Key);
-                return _installDir;
-            }
-        }
-
-        public DataCollection Requirements { get; }
-
-        public bool Advanced { get; set; }
-
-        [ScriptIgnore]
-        public ReadOnlyCollection<byte> ServerKey { get; }
-
-        [ScriptIgnore]
-        public AppSettings Settings =>
-            _settings ?? (_settings = new AppSettings(this));
-
         [SecurityCritical]
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -277,7 +277,7 @@
                 {
                     case AppSettings _:
                         continue;
-                    case ReadOnlyCollection<byte> item:
+                    case KeyCollection item:
                     {
                         sb.Append(' ', width);
                         sb.AppendFormat(CultureInfo.InvariantCulture, "{0}: '{1}'", pi.Name, item.ToArray().Encode());
@@ -458,9 +458,6 @@
             private bool? _archiveLangConfirmed, _noUpdates;
             private DateTime _noUpdatesTime;
 
-            internal AppSettings(AppData parent) =>
-                _parent = parent;
-
             public string ArchiveLang
             {
                 get
@@ -522,6 +519,9 @@
                     WriteValue(nameof(NoUpdatesTime), _noUpdatesTime);
                 }
             }
+
+            internal AppSettings(AppData parent) =>
+                _parent = parent;
 
             private TValue ReadValue<TValue>(string key, TValue defValue = default) =>
                 Ini.Read(_parent.Key, key, defValue);

@@ -3,8 +3,8 @@
     using System.Windows.Forms;
     using LangResources;
     using Properties;
-    using SilDev;
     using SilDev.Forms;
+    using SilDev.Network;
 
     internal static class Network
     {

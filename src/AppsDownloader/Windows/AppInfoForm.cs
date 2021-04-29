@@ -11,6 +11,12 @@
 
     public partial class AppInfoForm : Form
     {
+        public sealed override string Text
+        {
+            get => base.Text;
+            set => base.Text = value;
+        }
+
         public AppInfoForm(AppData appData)
         {
             if (appData == default)
@@ -130,12 +136,6 @@
                     infoBox.MarkText(s, color.Key);
 
             ResumeLayout(false);
-        }
-
-        public sealed override string Text
-        {
-            get => base.Text;
-            set => base.Text = value;
         }
 
         private void InfoForm_Load(object sender, EventArgs e) =>

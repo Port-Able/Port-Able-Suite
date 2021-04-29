@@ -4,6 +4,7 @@
     using System.IO;
     using System.Linq;
     using SilDev;
+    using SilDev.Compression.Archiver;
 
     internal static class CorePaths
     {
@@ -49,8 +50,8 @@
                 var path = PathEx.Combine(HomeDir, "Binaries\\Helper\\7z");
                 if (Environment.Is64BitProcess)
                     path = Path.Combine(path, "x64");
-                Compaction.SevenZipHelper.Location = path;
-                _fileArchiver = Compaction.SevenZipHelper.FilePath;
+                SevenZip.DefaultArchiver.Location = path;
+                _fileArchiver = SevenZip.DefaultArchiver.ExtractExePath;
                 return _fileArchiver;
             }
         }
@@ -120,12 +121,12 @@
         }
 
         internal static string[] UserDirs { get; } =
-            {
-                Path.Combine(HomeDir, "Documents"),
-                Path.Combine(HomeDir, "Documents\\Documents"),
-                Path.Combine(HomeDir, "Documents\\Music"),
-                Path.Combine(HomeDir, "Documents\\Pictures"),
-                Path.Combine(HomeDir, "Documents\\Videos")
-            };
+        {
+            Path.Combine(HomeDir, "Documents"),
+            Path.Combine(HomeDir, "Documents\\Documents"),
+            Path.Combine(HomeDir, "Documents\\Music"),
+            Path.Combine(HomeDir, "Documents\\Pictures"),
+            Path.Combine(HomeDir, "Documents\\Videos")
+        };
     }
 }

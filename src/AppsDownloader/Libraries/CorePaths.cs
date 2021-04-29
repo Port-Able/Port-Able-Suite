@@ -3,6 +3,7 @@
     using System;
     using System.IO;
     using SilDev;
+    using SilDev.Compression.Archiver;
 
     internal static class CorePaths
     {
@@ -50,8 +51,8 @@
                 var path = PathEx.Combine(PathEx.LocalDir, "Helper\\7z");
                 if (Environment.Is64BitProcess)
                     path = Path.Combine(path, "x64");
-                Compaction.SevenZipHelper.Location = path;
-                _fileArchiver = Compaction.SevenZipHelper.FilePath;
+                SevenZip.DefaultArchiver.Location = path;
+                _fileArchiver = SevenZip.DefaultArchiver.ExtractExePath;
                 return _fileArchiver;
             }
         }

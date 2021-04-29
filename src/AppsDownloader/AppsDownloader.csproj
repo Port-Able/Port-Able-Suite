@@ -87,7 +87,7 @@
     <Compile Include="Libraries\Network.cs" />
     <Compile Include="Libraries\Shareware.cs" />
     <Compile Include="Libraries\UserAgents.cs" />
-    <Compile Include="Outdated\Ini.cs" />
+    <Compile Include="Legacy\Ini.cs" />
     <Compile Include="Properties\ExceptionMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

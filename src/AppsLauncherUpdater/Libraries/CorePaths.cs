@@ -3,6 +3,7 @@
     using System;
     using System.IO;
     using SilDev;
+    using SilDev.Compression.Archiver;
 
     internal static class CorePaths
     {
@@ -20,11 +21,11 @@
                 var path = PathEx.Combine(PathEx.LocalDir, "Helper\\7z");
                 if (Environment.Is64BitProcess)
                     path = Path.Combine(path, "x64");
-                Compaction.SevenZipHelper.Location = path;
-                if (string.IsNullOrEmpty(Compaction.SevenZipHelper.FilePath))
+                SevenZip.DefaultArchiver.Location = path;
+                if (string.IsNullOrEmpty(SevenZip.DefaultArchiver.ExtractExePath))
                     Network.DownloadArchiver();
                 else
-                    foreach (var file in DirectoryEx.EnumerateFiles(Compaction.SevenZipHelper.Location))
+                    foreach (var file in DirectoryEx.EnumerateFiles(SevenZip.DefaultArchiver.Location))
                     {
                         var name = Path.GetFileName(file);
                         if (string.IsNullOrEmpty(name))
@@ -32,8 +33,8 @@
                         path = Path.Combine(CachePaths.UpdateDir, name);
                         FileEx.Copy(file, path);
                     }
-                Compaction.SevenZipHelper.Location = CachePaths.UpdateDir;
-                _fileArchiver = Compaction.SevenZipHelper.FilePath;
+                SevenZip.DefaultArchiver.Location = CachePaths.UpdateDir;
+                _fileArchiver = SevenZip.DefaultArchiver.ExtractExePath;
                 return _fileArchiver;
             }
         }

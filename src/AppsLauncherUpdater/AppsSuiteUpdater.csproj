@@ -82,7 +82,7 @@
     <Compile Include="Libraries\CorePaths.cs" />
     <Compile Include="Libraries\Network.cs" />
     <Compile Include="Libraries\Settings.cs" />
-    <Compile Include="Outdated\Ini.cs" />
+    <Compile Include="Legacy\Ini.cs" />
     <Compile Include="Windows\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

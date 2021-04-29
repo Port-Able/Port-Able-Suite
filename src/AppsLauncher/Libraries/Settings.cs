@@ -13,11 +13,32 @@
     using Properties;
     using SilDev;
     using SilDev.Drawing;
+    using SilDev.Legacy;
     using SilDev.QuickWmi;
     using DrawingSize = System.Drawing.Size;
 
     internal static class Settings
     {
+        internal enum UpdateChannelOptions
+        {
+            Release,
+            Beta
+        }
+
+        internal enum UpdateCheckOptions
+        {
+            Never,
+            HourlyFull,
+            HourlyOnlyApps,
+            HourlyOnlyAppsSuite,
+            DailyFull,
+            DailyOnlyApps,
+            DailyOnlyAppsSuite,
+            MonthlyFull,
+            MonthlyOnlyApps,
+            MonthlyOnlyAppsSuite
+        }
+
         internal const string EnvironmentVariable = "AppsSuiteDir";
         private static string[] _appDirs;
         private static string _currentDirectory, _iconResourcePath, _language, _lastItem, _registryPath, _systemInstallId;
@@ -233,7 +254,7 @@
                 Resources.ConfigSection
             };
 
-            Log.AllowLogging(Ini.FilePath, "DebugMode", Ini.GetRegex(false));
+            Log.AllowLogging(Ini.FilePath);
 
             if (Elevation.IsAdministrator)
             {
@@ -361,28 +382,14 @@
             return Math.Min(current, maxValue);
         }
 
-        internal enum UpdateChannelOptions
-        {
-            Release,
-            Beta
-        }
-
-        internal enum UpdateCheckOptions
-        {
-            Never,
-            HourlyFull,
-            HourlyOnlyApps,
-            HourlyOnlyAppsSuite,
-            DailyFull,
-            DailyOnlyApps,
-            DailyOnlyAppsSuite,
-            MonthlyFull,
-            MonthlyOnlyApps,
-            MonthlyOnlyAppsSuite
-        }
-
         internal static class Window
         {
+            internal enum FadeInEffectOptions
+            {
+                Blend,
+                Slide
+            }
+
             private static WinApi.AnimateWindowFlags _animation;
             private static int? _backgroundImageLayout, _fadeInEffect;
             private static int[] _customColors;
@@ -596,12 +603,6 @@
                 if (count > 0)
                     list.Reverse();
                 return list.ToArray();
-            }
-
-            internal enum FadeInEffectOptions
-            {
-                Blend,
-                Slide
             }
 
             internal static class Colors
@@ -904,6 +905,14 @@
                     }
                 }
 
+                internal static void Refresh()
+                {
+                    _minimum = default;
+                    _maximum = default;
+                    _width = default;
+                    _height = default;
+                }
+
                 private static DrawingSize DpiSize(int width, int height)
                 {
                     var handle = WinApi.NativeHelper.GetDesktopWindow();
@@ -916,14 +925,6 @@
                             size.Height = (int)Math.Floor(graphics.DpiY / 96d * height);
                     }
                     return size;
-                }
-
-                internal static void Refresh()
-                {
-                    _minimum = default;
-                    _maximum = default;
-                    _width = default;
-                    _height = default;
                 }
             }
         }

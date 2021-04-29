@@ -5,6 +5,8 @@
     using System.IO;
     using System.Linq;
     using SilDev;
+    using SilDev.Legacy;
+    using SilDev.Network;
 
     internal enum AppSuppliers
     {
@@ -217,7 +219,7 @@
                             Log.Write($"{nameof(AppSuppliers.SourceForge)}: Try to find the best server . . .");
                         foreach (var mirror in mirrors)
                         {
-                            if (sortHelper.Keys.ContainsEx(mirror))
+                            if (sortHelper.Keys.ContainsItem(mirror))
                                 continue;
                             var time = NetEx.Ping(mirror);
                             if (Log.DebugMode > 0)
