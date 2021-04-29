@@ -246,6 +246,8 @@
             WinApi.NativeHelper.SetProcessDPIAware();
 
             Log.FileDir = Path.Combine(CorePaths.TempDir, "Logs");
+            if (Log.DebugMode > 0)
+                DirectoryEx.Create(Log.FileDir);
 
             Ini.SetFile(PathEx.LocalDir, "Settings.ini");
             Ini.SortBySections = new[]
