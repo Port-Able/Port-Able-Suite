@@ -79,8 +79,7 @@
             }
         }
 
-        internal static bool DeveloperVersion =>
-            Ini.Read(Resources.ConfigSection, nameof(DeveloperVersion), false);
+        internal static bool DeveloperVersion { get; } = Ini.Read(Resources.ConfigSection, nameof(DeveloperVersion), false) || FileEx.Exists(".\\..\\Port-Able-Suite.sln");
 
         internal static string IconResourcePath
         {
