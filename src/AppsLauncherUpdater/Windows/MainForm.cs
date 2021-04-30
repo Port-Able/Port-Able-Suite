@@ -55,9 +55,7 @@ namespace Updater.Windows
                     var path = PathEx.AltCombine(mirror, "ChangeLog.txt");
                     if (string.IsNullOrWhiteSpace(path))
                         continue;
-                    if (!NetEx.FileIsAvailable(path, 60000, UserAgents.Internal))
-                        continue;
-                    changes = WebTransfer.DownloadString(path, 60000, UserAgents.Internal);
+                    changes = WebTransfer.DownloadString(path, 20000, UserAgents.Internal);
                     if (!string.IsNullOrWhiteSpace(changes))
                         break;
                 }
