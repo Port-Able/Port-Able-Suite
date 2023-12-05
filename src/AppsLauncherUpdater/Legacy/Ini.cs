@@ -1035,8 +1035,7 @@
 
         private static void InitializeCache(int code, string section = null, string key = null)
         {
-            if (CachedFiles == null)
-                CachedFiles = new Dictionary<int, Dictionary<string, Dictionary<string, List<string>>>>();
+            CachedFiles ??= new Dictionary<int, Dictionary<string, Dictionary<string, List<string>>>>();
 
             if (!CachedFiles.ContainsKey(code))
                 CachedFiles[code] = new Dictionary<string, Dictionary<string, List<string>>>(StringComparer.OrdinalIgnoreCase);

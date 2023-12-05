@@ -19,8 +19,7 @@
         {
             get
             {
-                if (!_internetIsAvailable.HasValue)
-                    _internetIsAvailable = NetEx.IPv4IsAvalaible;
+                _internetIsAvailable ??= NetEx.IPv4IsAvalaible;
                 if (_internetIsAvailable == true)
                     return (bool)_internetIsAvailable;
                 _internetIsAvailable = NetEx.IPv6IsAvalaible;
@@ -31,7 +30,7 @@
         internal static void DownloadArchiver()
         {
             var notifyBox = new NotifyBox();
-            notifyBox.Show(Language.GetText(nameof(en_US.InitRequirementsNotify)), Resources.GlobalTitle, NotifyBoxStartPosition.Center);
+            notifyBox.Show(Language.GetText(nameof(en_US.InitRequirementsNotify)), AssemblyInfo.Title, NotifyBoxStartPosition.Center);
             var mirrors = NetEx.InternalDownloadMirrors;
             var verMap = new Dictionary<string, string>();
             foreach (var mirror in mirrors)

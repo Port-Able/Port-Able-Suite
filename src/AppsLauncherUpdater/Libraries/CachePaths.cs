@@ -22,10 +22,8 @@
             }
         }
 
-        internal static string UpdateHelperPath =>
-            _updateHelperPath ?? (_updateHelperPath = Path.Combine(UpdateDir, "UpdateHelper.bat"));
+        internal static string UpdateHelperPath => _updateHelperPath ??= Path.Combine(UpdateDir, "UpdateHelper.bat");
 
-        internal static string UpdatePath =>
-            _updatePath ?? (_updatePath = Path.Combine(UpdateDir, "Update.7z"));
+        internal static string UpdatePath => _updatePath ??= Path.Combine(UpdateDir, "Update.7z");
     }
 }

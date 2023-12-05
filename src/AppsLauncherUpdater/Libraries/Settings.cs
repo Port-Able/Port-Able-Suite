@@ -14,14 +14,13 @@
             Beta
         }
 
-        private static string _language, _registryPath;
+        private static string _language;
         private static int? _updateChannel;
 
         internal static string Language =>
-            _language ?? (_language = Ini.Read<string>(Resources.ConfigSection, nameof(Language), global::Language.SystemLang));
+            _language ??= Ini.Read<string>(Resources.ConfigSection, nameof(Language), global::Language.SystemLang);
 
-        internal static string RegistryPath =>
-            _registryPath ?? (_registryPath = "HKCU\\Software\\Portable Apps Suite");
+        internal static string RegistryPath => "HKCU\\Software\\Portable Apps Suite";
 
         internal static DateTime LastUpdateCheck =>
             Ini.Read<DateTime>(Resources.ConfigSection, nameof(LastUpdateCheck));

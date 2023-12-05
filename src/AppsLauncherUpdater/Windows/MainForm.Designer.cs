@@ -70,7 +70,7 @@ namespace Updater.Windows
             // 
             // changeLog
             // 
-            this.changeLog.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(64)))));
+            this.changeLog.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.changeLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.changeLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.changeLog.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -96,6 +96,7 @@ namespace Updater.Windows
             this.logoBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.logoBox.BackColor = System.Drawing.Color.Transparent;
+            this.logoBox.Image = global::Updater.Properties.Resources.Changelog;
             this.logoBox.Location = new System.Drawing.Point(12, 11);
             this.logoBox.Name = "logoBox";
             this.logoBox.Size = new System.Drawing.Size(100, 496);
@@ -106,7 +107,7 @@ namespace Updater.Windows
             // buttonPanel
             // 
             this.buttonPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
-            this.buttonPanel.BackgroundImage = global::Updater.Properties.Resources.diagonal_pattern;
+            this.buttonPanel.BackgroundImage = global::Updater.Properties.Resources.PatternDiagonal;
             this.buttonPanel.Controls.Add(this.statusTableLayoutPanelBorder);
             this.buttonPanel.Controls.Add(this.statusTableLayoutPanel);
             this.buttonPanel.Controls.Add(this.cancelBtn);
@@ -128,7 +129,7 @@ namespace Updater.Windows
             // 
             // statusTableLayoutPanel
             // 
-            this.statusTableLayoutPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(32)))), ((int)(((byte)(40)))));
+            this.statusTableLayoutPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.statusTableLayoutPanel.ColumnCount = 5;
             this.statusTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 65F));
             this.statusTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));

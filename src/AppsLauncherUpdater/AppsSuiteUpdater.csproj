@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.props" Condition="Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" />
+  <Import Project="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\build\Microsoft.CodeAnalysis.NetAnalyzers.props" Condition="Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
@@ -10,7 +10,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Updater</RootNamespace>
     <AssemblyName>Updater</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <LangVersion>latest</LangVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
@@ -41,19 +42,17 @@
     <StartupObject>Updater.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resources\Logo.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\PaLogoRedSymbol.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\..\..\SilDev\.helper\SilDev.pfx</AssemblyOriginatorKeyFile>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SilDev.CSharpLib">
+    <Reference Include="SilDev.CSharpLib, Version=23.12.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\refs\SilDev\CSharpLib\bin\SilDev.CSharpLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -113,24 +112,36 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.manifest" />
-    <None Include="..\..\..\SilDev\.helper\SilDev.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Resources\diagonal_pattern.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Logo.ico" />
+    <None Include="..\..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Changelog.png" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PaLogoRedSymbol.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PatternDiagonal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PortAble.Suite\PortAble.Suite.csproj">
+      <Project>{a2f5303d-24f0-43c9-96df-068a3336d5a0}</Project>
+      <Name>PortAble.Suite</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -147,11 +158,11 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.props'))" />
-    <Error Condition="!Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.targets'))" />
+    <Error Condition="!Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\build\Microsoft.CodeAnalysis.NetAnalyzers.props'))" />
+    <Error Condition="!Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\build\Microsoft.CodeAnalysis.NetAnalyzers.targets'))" />
   </Target>
-  <Import Project="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.targets" Condition="Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <Import Project="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\build\Microsoft.CodeAnalysis.NetAnalyzers.targets" Condition="Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.4\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

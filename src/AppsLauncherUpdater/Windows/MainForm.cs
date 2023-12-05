@@ -23,9 +23,9 @@ namespace Updater.Windows
 
     public partial class MainForm : Form
     {
-        private CounterInvestor<int> Counter { get; } = new CounterInvestor<int>();
+        private CounterInvestor<int> Counter { get; } = new();
 
-        private List<string> DownloadMirrors { get; } = new List<string>();
+        private List<string> DownloadMirrors { get; } = new();
 
         private string HashInfo { get; set; }
 
@@ -33,14 +33,13 @@ namespace Updater.Windows
 
         private string LastStamp { get; set; }
 
-        private WebTransferAsync Transferor { get; } = new WebTransferAsync();
+        private WebTransferAsync Transferor { get; } = new();
 
         public MainForm()
         {
             InitializeComponent();
             SuspendLayout();
-            Icon = Resources.Logo;
-            logoBox.Image = Resources.Changelog;
+            Icon = Resources.PaLogoRedSymbol;
             Language.SetControlLang(this);
             ResumeLayout(false);
         }
@@ -55,7 +54,7 @@ namespace Updater.Windows
                     var path = PathEx.AltCombine(mirror, "ChangeLog.txt");
                     if (string.IsNullOrWhiteSpace(path))
                         continue;
-                    changes = WebTransfer.DownloadString(path, 20000, UserAgents.Internal);
+                    changes = WebTransfer.DownloadString(path, 20000, UserAgents.Pa);
                     if (!string.IsNullOrWhiteSpace(changes))
                         break;
                 }
@@ -65,7 +64,7 @@ namespace Updater.Windows
             else
                 try
                 {
-                    var atom = WebTransfer.DownloadString(CorePaths.RepoCommitsUrl, 60000, UserAgents.Default);
+                    var atom = WebTransfer.DownloadString(CorePaths.RepoCommitsUrl, 60000, UserAgents.Wget);
                     if (string.IsNullOrEmpty(atom))
                         throw new ArgumentNullException(nameof(atom));
                     const string nspace = "{http://www.w3.org/2005/Atom}";
@@ -195,18 +194,18 @@ namespace Updater.Windows
                 try
                 {
                     var path = PathEx.AltCombine(mirror, "Last.ini");
-                    if (!NetEx.FileIsAvailable(path, 60000, UserAgents.Internal))
+                    if (!NetEx.FileIsAvailable(path, 60000, UserAgents.Pa))
                         throw new PathNotFoundException(path);
-                    var data = WebTransfer.DownloadString(path, 60000, UserAgents.Internal);
+                    var data = WebTransfer.DownloadString(path, 60000, UserAgents.Pa);
                     if (string.IsNullOrWhiteSpace(data))
                         throw new ArgumentNullException(nameof(data));
                     var lastStamp = Ini.ReadOnly("Info", "LastStamp", data);
                     if (string.IsNullOrWhiteSpace(lastStamp))
                         throw new ArgumentNullException(nameof(lastStamp));
                     path = PathEx.AltCombine(mirror, $"{lastStamp}.ini");
-                    if (!NetEx.FileIsAvailable(path, 60000, UserAgents.Internal))
+                    if (!NetEx.FileIsAvailable(path, 60000, UserAgents.Pa))
                         throw new PathNotFoundException(path);
-                    data = WebTransfer.DownloadString(path, 60000, UserAgents.Internal);
+                    data = WebTransfer.DownloadString(path, 60000, UserAgents.Pa);
                     if (string.IsNullOrWhiteSpace(data))
                         throw new ArgumentNullException(nameof(data));
                     HashInfo = data;
@@ -339,7 +338,7 @@ namespace Updater.Windows
                 Interval = 1,
                 Enabled = true
             };
-            timer.Tick += (o, args) =>
+            timer.Tick += (_, _) =>
             {
                 if (Opacity < 1d)
                 {
@@ -352,7 +351,7 @@ namespace Updater.Windows
 
         private void ChangeLog_HideCaret(object sender, EventArgs e)
         {
-            if (!(sender is RichTextBox owner) || !owner.Enabled || !owner.Visible)
+            if (sender is not RichTextBox { Enabled: true, Visible: true } owner)
                 return;
             WinApi.NativeHelper.HideCaret(owner.Handle);
         }
@@ -384,7 +383,7 @@ namespace Updater.Windows
                 try
                 {
                     downloadPath = PathEx.AltCombine(CorePaths.RepoSnapshotsUrl, $"{LastStamp}.7z");
-                    if (!NetEx.FileIsAvailable(downloadPath, 60000, UserAgents.Default))
+                    if (!NetEx.FileIsAvailable(downloadPath, 60000, UserAgents.Wget))
                         throw new PathNotFoundException(downloadPath);
                 }
                 catch (Exception ex) when (ex.IsCaught())
@@ -400,7 +399,7 @@ namespace Updater.Windows
                     foreach (var mirror in DownloadMirrors)
                     {
                         downloadPath = PathEx.AltCombine(mirror, $"{LastFinalStamp}.7z");
-                        exist = NetEx.FileIsAvailable(downloadPath, 60000, UserAgents.Internal);
+                        exist = NetEx.FileIsAvailable(downloadPath, 60000, UserAgents.Pa);
                         if (exist)
                             break;
                     }
@@ -417,7 +416,7 @@ namespace Updater.Windows
                 return;
             try
             {
-                Transferor.DownloadFile(downloadPath, CachePaths.UpdatePath, 60000, !string.IsNullOrWhiteSpace(LastStamp) ? UserAgents.Default : UserAgents.Internal);
+                Transferor.DownloadFile(downloadPath, CachePaths.UpdatePath, 60000, !string.IsNullOrWhiteSpace(LastStamp) ? UserAgents.Wget : UserAgents.Pa);
                 checkDownload.Enabled = true;
             }
             catch (Exception ex) when (ex.IsCaught())

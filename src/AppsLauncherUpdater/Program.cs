@@ -16,17 +16,15 @@ namespace Updater
         {
             Settings.Initialize();
             var instanceKey = PathEx.LocalPath.GetHashCode().ToString(CultureInfo.InvariantCulture);
-            using (new Mutex(true, instanceKey, out var newInstance))
-            {
-                if (!newInstance)
-                    return;
-                MessageBoxEx.TopMost = true;
-                Language.ResourcesNamespace = typeof(Program).Namespace;
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                using (var form = new MainForm())
-                    Application.Run(form.Plus());
-            }
+            using var mutex = new Mutex(true, instanceKey, out var newInstance);
+            if (!newInstance)
+                return;
+            MessageBoxEx.TopMost = true;
+            Language.ResourcesNamespace = typeof(Program).Namespace;
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            using var form = new MainForm();
+            Application.Run(form.Plus());
         }
     }
 }
