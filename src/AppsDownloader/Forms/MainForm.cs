@@ -136,12 +136,16 @@ namespace AppsDownloader.Forms
             this.Dockable();
             MainFormSizeRefresh();
 
-            if (!Network.InternetIsAvailable)
+            if (!NetEx.IPv4IsAvalaible)
             {
-                if (!ActionGuid.IsUpdateInstance)
-                    MessageBoxEx.Show(LangStrings.InternetIsNotAvailableMsg, AssemblyInfo.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                ApplicationExit(1);
-                return;
+                if (!NetEx.IPv6IsAvalaible)
+                {
+                    if (!ActionGuid.IsUpdateInstance)
+                        MessageBoxEx.Show(LangStrings.InternetIsNotAvailableMsg, AssemblyInfo.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ApplicationExit(1);
+                    return;
+                }
+                MessageBoxEx.Show(LangStrings.InternetProtocolWarningMsg, AssemblyInfo.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
             if (!ActionGuid.IsUpdateInstance && !AppSupplierMirrors.Pa.Any())

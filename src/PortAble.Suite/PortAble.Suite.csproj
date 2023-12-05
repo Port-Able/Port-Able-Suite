@@ -62,7 +62,6 @@
     <Compile Include="CacheFiles.cs" />
     <Compile Include="CorePaths.cs" />
     <Compile Include="CustomAppsSupplier.cs" />
-    <Compile Include="Network.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserAgents.cs" />
     <Compile Include="Properties\LangStrings.Designer.cs">
