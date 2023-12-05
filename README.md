@@ -8,11 +8,11 @@ The Port-Able Suite helps you manage a collection of portable apps. It lets you 
 
 #### What the hell is a portable app?
 
-A portable app is a software that will not take an effect to your running system. What happens in a portable app stays in a portable app. That means that you can carry around your applications on a portable device and use it on any computer.
+A portable app is a software that will not take an effect to your running system. What happens in a portable app stays in a portable app. That means that you can carry around your applications on a portable device and use it on any computer with your personal settings and all.
 
-But to be honest, my focus isn't only to get applications for my portable devices. It's also nice that it doesn't matter how many applications you have installed, it has absolutely no negative effect on your system performance. Your system is always fast and clean.
+To be honest, my focus isn't only to get applications for my portable devices. It's also nice that it doesn't matter how many applications you have installed, it has absolutely no negative effect on your system performance. Your system is always fast and clean. Plus, it's easier to back up your personal stuff when it's all in one place instead of scattered across the entire system.
 
-<h1 align="center">Over 400 Applications</h1>
+<h1 align="center">Over 500 Applications</h1>
 <p align="center"><img src="https://user-images.githubusercontent.com/6128966/42115936-608a9970-7bf5-11e8-9eb8-7f985680b1c9.png"></p>
 
 <h1 align="center">Native Theme Style</h1>
@@ -28,11 +28,11 @@ But to be honest, my focus isn't only to get applications for my portable device
 
 ### Requirements:
 - Microsoft Windows 7 or higher
-- [Microsoft .NET Framework Version 4.8+](https://dotnet.microsoft.com/download/dotnet-framework/net48)
+- [Microsoft .NET Framework Version 4.8.1+](https://dotnet.microsoft.com/download/dotnet-framework/net481)
 
 ### Requirements (Developer):
-- Microsoft Windows 7 or higher (64-bit)
-- [Microsoft Visual Studio 2019 + .NET Framework 4.8 SDK](https://www.visualstudio.com/downloads/)
+- Microsoft Windows 10 or higher (64-bit)
+- [Microsoft Visual Studio 2022 + .NET Framework 4.8.1 SDK](https://www.visualstudio.com/downloads/)
 - [Si13n7 Dev.™ CSharp Library Binaries](https://github.com/Si13n7/SilDev.CSharpLib/)
 
 ## Would you like to help?
