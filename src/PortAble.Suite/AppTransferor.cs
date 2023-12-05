@@ -170,7 +170,8 @@
                         default:
                             if (AppData.Supplier != default)
                             {
-                                srcUrl = PathEx.AltCombine(default(char[]), AppData.Supplier.Address, srcUrl);
+                                if (!srcUrl.StartsWithEx("http:", "https:"))
+                                    srcUrl = PathEx.AltCombine(default(char[]), AppData.Supplier.Address, srcUrl);
                                 userAgent = AppData.Supplier.UserAgent;
                                 UserData = Tuple.Create(AppData.Supplier.User, AppData.Supplier.Password);
                             }
