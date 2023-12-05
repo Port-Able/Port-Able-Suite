@@ -2,9 +2,9 @@
 using System.Resources;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Apps Downloader")]
-[assembly: AssemblyProduct("AppsDownloader")]
-[assembly: AssemblyDescription("Port-Able™ Apps Downloader")]
+[assembly: AssemblyTitle("Port-Able Suite")]
+[assembly: AssemblyProduct("PortAble.Suite")]
+[assembly: AssemblyDescription("Port-Able™ Suite Library")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Si13n7 Dev.™")]
 [assembly: AssemblyCopyright("Copyright © Si13n7 Dev.™ 2023")]
@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible(false)]
 
-[assembly: Guid("a3418f24-e739-45c2-b31e-f50f4124e600")]
+[assembly: Guid("a2f5303d-24f0-43c9-96df-068a3336d5a0")]
 
 [assembly: AssemblyVersion("23.12.5.0")]
 

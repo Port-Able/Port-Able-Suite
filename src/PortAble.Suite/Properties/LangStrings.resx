@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -121,10 +121,6 @@
     <value>Address</value>
     <comment>DataGridViewRowColumn</comment>
   </data>
-  <data name="advancedGroupBox" xml:space="preserve">
-    <value>*Advanced</value>
-    <comment>GroupBox</comment>
-  </data>
   <data name="AppDownloadedMsg" xml:space="preserve">
     <value>App successfully downloaded!</value>
     <comment>Message</comment>
@@ -141,34 +137,6 @@ This could be due an incomplete download or other network issue.</value>
     <value>Please note that an IPv4 connection is required to download resources from '{0}'.</value>
     <comment>Message</comment>
   </data>
-  <data name="appListGroupBox" xml:space="preserve">
-    <value>Application List</value>
-    <comment>GroupBox</comment>
-  </data>
-  <data name="appMenuItem1" xml:space="preserve">
-    <value>Check</value>
-    <comment>ContextMenuItem</comment>
-  </data>
-  <data name="appMenuItem1u" xml:space="preserve">
-    <value>Unheck</value>
-    <comment>ContextMenuItem</comment>
-  </data>
-  <data name="appMenuItem2" xml:space="preserve">
-    <value>Check All</value>
-    <comment>ContextMenuItem</comment>
-  </data>
-  <data name="appMenuItem2u" xml:space="preserve">
-    <value>Uncheck All</value>
-    <comment>ContextMenuItem</comment>
-  </data>
-  <data name="appMenuItem3" xml:space="preserve">
-    <value>Open in Browser</value>
-    <comment>ContextMenuItem</comment>
-  </data>
-  <data name="appMenuItem4" xml:space="preserve">
-    <value>Show advanced information</value>
-    <comment>ContextMenuItem</comment>
-  </data>
   <data name="AppsDownloadedMsg" xml:space="preserve">
     <value>Apps successfully downloaded!</value>
     <comment>Message</comment>
@@ -180,10 +148,6 @@ This could be due an incomplete download or other network issue.</value>
 
 This could be due an incomplete download or other network issue.</value>
     <comment>Message</comment>
-  </data>
-  <data name="appStatusLabel" xml:space="preserve">
-    <value>Application:</value>
-    <comment>StatusLabel</comment>
   </data>
   <data name="AppsUpdatedMsg" xml:space="preserve">
     <value>Apps successfully updated!</value>
@@ -205,9 +169,19 @@ This could be due an incomplete download or other network issue.</value>
     <value>Are you sure?</value>
     <comment>Message</comment>
   </data>
-  <data name="cancelBtn" xml:space="preserve">
-    <value>Cancel</value>
-    <comment>Button</comment>
+  <data name="AssociateQuestionMsg0" xml:space="preserve">
+    <value>Do you always want to open this kind of file with this application?</value>
+    <comment>Message</comment>
+  </data>
+  <data name="AssociateQuestionMsg1" xml:space="preserve">
+    <value>Do you always want to open the following file types with this application?
+
+Types: {0}</value>
+    <comment>Message</comment>
+  </data>
+  <data name="Check" xml:space="preserve">
+    <value>Check</value>
+    <comment>MessageReplacement</comment>
   </data>
   <data name="ChecksumErrorMsg" xml:space="preserve">
     <value>There is a problem with the checksum of the following file:
@@ -217,45 +191,26 @@ This could be due an incomplete download or other network issue.</value>
 In some cases, it's just a little synchronization problem in the online database. However, this could also be due to an incomplete download or other issue.</value>
     <comment>Message</comment>
   </data>
-  <data name="columnHeader1" xml:space="preserve">
-    <value>Application</value>
-    <comment>ListViewColumn</comment>
+  <data name="CustomAppSupplierInvalidMsg" xml:space="preserve">
+    <value>The server '{0}' was added but the configuration file could not be verified.</value>
+    <comment>Exception</comment>
   </data>
-  <data name="columnHeader2" xml:space="preserve">
-    <value>Description</value>
-    <comment>ListViewColumn</comment>
-  </data>
-  <data name="columnHeader3" xml:space="preserve">
-    <value>Version</value>
-    <comment>ListViewColumn</comment>
-  </data>
-  <data name="columnHeader4" xml:space="preserve">
-    <value>Download Size</value>
-    <comment>ListViewColumn</comment>
-  </data>
-  <data name="columnHeader5" xml:space="preserve">
-    <value>Installed Size</value>
-    <comment>ListViewColumn</comment>
-  </data>
-  <data name="columnHeader6" xml:space="preserve">
-    <value>Source</value>
-    <comment>ListViewColumn</comment>
+  <data name="CustomAppSupplierUpdatedMsg" xml:space="preserve">
+    <value>App servers have been updated.
+
+Please note that these changes may not take effect until you restart this application.</value>
   </data>
   <data name="DatabaseAccessMsg" xml:space="preserve">
     <value>Database is being accessed . . .</value>
     <comment>Message</comment>
   </data>
-  <data name="downloadReceivedLabel" xml:space="preserve">
-    <value>Downloaded:</value>
-    <comment>StatusLabel</comment>
-  </data>
   <data name="DownloadRetryMsg" xml:space="preserve">
     <value>Would you like to retry?</value>
     <comment>Message</comment>
   </data>
-  <data name="downloadSpeedLabel" xml:space="preserve">
-    <value>Speed:</value>
-    <comment>StatusLabel</comment>
+  <data name="FileCountStatus" xml:space="preserve">
+    <value>File: {0}/{1}</value>
+    <comment>Status</comment>
   </data>
   <data name="FileLockMsg" xml:space="preserve">
     <value>The following process must be closed:
@@ -272,18 +227,6 @@ Please make sure your settings are saved before confirming this message!</value>
 
 Please make sure your settings are saved before confirming this message!</value>
     <comment>Message</comment>
-  </data>
-  <data name="fileStatusLabel" xml:space="preserve">
-    <value>File:</value>
-    <comment>StatusLabel</comment>
-  </data>
-  <data name="groupColorsGroupBox" xml:space="preserve">
-    <value>Group Colors</value>
-    <comment>GroupBox</comment>
-  </data>
-  <data name="highlightInstalledCheck" xml:space="preserve">
-    <value>Highlight Installed</value>
-    <comment>CheckBox</comment>
   </data>
   <data name="HostNotAvailable" xml:space="preserve">
     <value>[ Not available . . . ]</value>
@@ -309,66 +252,26 @@ Please make sure your settings are saved before confirming this message!</value>
     <value>An IPv4 connection could not be established on your system. This can lead to unwanted problems.</value>
     <comment>Message</comment>
   </data>
-  <data name="LangSelectionForm" xml:space="preserve">
-    <value>Language Selection:</value>
-    <comment>Form</comment>
+  <data name="NoAppDataFound" xml:space="preserve">
+    <value>No app data found.</value>
+    <comment>Exception</comment>
   </data>
-  <data name="listViewGroup0" xml:space="preserve">
-    <value>S E A R C H</value>
-    <comment>ListViewGroup</comment>
+  <data name="NoAppsFound" xml:space="preserve">
+    <value>No apps available.</value>
+    <comment>Exception</comment>
   </data>
-  <data name="listViewGroup1" xml:space="preserve">
-    <value>Accessibility</value>
-    <comment>ListViewGroup/Label</comment>
-  </data>
-  <data name="listViewGroup10" xml:space="preserve">
-    <value>Games</value>
-    <comment>ListViewGroup</comment>
-  </data>
-  <data name="listViewGroup11" xml:space="preserve">
-    <value>*Advanced</value>
-    <comment>ListViewGroup/Label</comment>
-  </data>
-  <data name="listViewGroup12" xml:space="preserve">
-    <value>#Custom</value>
-    <comment>ListViewGroup/Label</comment>
-  </data>
-  <data name="listViewGroup2" xml:space="preserve">
-    <value>Education</value>
-    <comment>ListViewGroup/Label</comment>
-  </data>
-  <data name="listViewGroup3" xml:space="preserve">
-    <value>Development</value>
-    <comment>ListViewGroup/Label</comment>
-  </data>
-  <data name="listViewGroup4" xml:space="preserve">
-    <value>Office</value>
-    <comment>ListViewGroup/Label</comment>
-  </data>
-  <data name="listViewGroup5" xml:space="preserve">
-    <value>Internet</value>
-    <comment>ListViewGroup/Label</comment>
-  </data>
-  <data name="listViewGroup6" xml:space="preserve">
-    <value>Graphics and Pictures</value>
-    <comment>ListViewGroup/Label</comment>
-  </data>
-  <data name="listViewGroup7" xml:space="preserve">
-    <value>Music and Video</value>
-    <comment>ListViewGroup/Label</comment>
-  </data>
-  <data name="listViewGroup8" xml:space="preserve">
-    <value>Security</value>
-    <comment>ListViewGroup/Label</comment>
-  </data>
-  <data name="listViewGroup9" xml:space="preserve">
-    <value>Utilities</value>
-    <comment>ListViewGroup/Label</comment>
+  <data name="NoLargeAppImagesFound" xml:space="preserve">
+    <value>No large app image found.</value>
+    <comment>Exception</comment>
   </data>
   <data name="NoServerAvailableMsg" xml:space="preserve">
     <value>Sorry, there are currently no download servers available.
 Please try again later.</value>
     <comment>Message</comment>
+  </data>
+  <data name="NoSmallAppImagesFound" xml:space="preserve">
+    <value>No small app image found.</value>
+    <comment>Exception</comment>
   </data>
   <data name="NotEnoughSpaceMsg" xml:space="preserve">
     <value>There is not enough free space on the storage device ({0}:\).
@@ -376,9 +279,13 @@ Please try again later.</value>
 You must free up at least {1} more space.</value>
     <comment>Message</comment>
   </data>
-  <data name="openSrcManBtn" xml:space="preserve">
-    <value>Open the App Source Manager</value>
-    <comment>Button</comment>
+  <data name="NoUpdatesFound" xml:space="preserve">
+    <value>No updates available.</value>
+    <comment>Exception</comment>
+  </data>
+  <data name="NoWritePermissionsMsg" xml:space="preserve">
+    <value>This directory requires elevated user permissions to write.</value>
+    <comment>Message</comment>
   </data>
   <data name="OperationCanceledMsg" xml:space="preserve">
     <value>Operation canceled.</value>
@@ -396,61 +303,31 @@ You must free up at least {1} more space.</value>
     <value>Password</value>
     <comment>DataGridViewRowColumn</comment>
   </data>
-  <data name="rememberLangCheck" xml:space="preserve">
-    <value>Do not ask again for this application</value>
-    <comment>CheckBox</comment>
-  </data>
   <data name="RequirementsErrorMsg" xml:space="preserve">
     <value>This program is incomplete. Would you like to download it again?</value>
     <comment>Message</comment>
   </data>
-  <data name="saveBtn" xml:space="preserve">
-    <value>Save</value>
-    <comment>Button</comment>
-  </data>
-  <data name="SettingsForm" xml:space="preserve">
-    <value>Settings</value>
-    <comment>Form</comment>
-  </data>
-  <data name="showColorsCheck" xml:space="preserve">
-    <value>Show Group Colors</value>
-    <comment>CheckBox</comment>
-  </data>
-  <data name="showGroupsCheck" xml:space="preserve">
-    <value>Show Groups</value>
-    <comment>CheckBox</comment>
-  </data>
-  <data name="showLargeImagesCheck" xml:space="preserve">
-    <value>Show Large Images</value>
-    <comment>CheckBox</comment>
-  </data>
-  <data name="SourceManagerForm" xml:space="preserve">
-    <value>App Sources Manager</value>
-    <comment>Form</comment>
-  </data>
-  <data name="startBtn" xml:space="preserve">
-    <value>Start</value>
-    <comment>Button</comment>
-  </data>
-  <data name="timeStatusLabel" xml:space="preserve">
-    <value>Time Elapsed:</value>
-    <comment>StatusLabel</comment>
-  </data>
-  <data name="titleStatus" xml:space="preserve">
-    <value>File: {0}/{1}</value>
-    <comment>Status</comment>
+  <data name="SourceManagerWarnMsg" xml:space="preserve">
+    <value>Here you can add more app providers so you can also download and receive updates from others who want to share their apps.
+
+However, please note that login credentials are not secure and can be easily read if someone has access to the hard drive on which this apps suite resides.
+
+I'm open to adding advanced security features if more users want it.
+
+Please check out the GitHub repository and create an issue with your request, or visit Si13n7.com and write a support ticket.</value>
+    <comment>Message</comment>
   </data>
   <data name="TransferDirMsg" xml:space="preserve">
     <value>The custom transfer directory can not be on the same storage device as the suite.</value>
     <comment>Message</comment>
   </data>
-  <data name="transferGroupBox" xml:space="preserve">
-    <value>Transfer Path</value>
-    <comment>ListViewGroup/Label</comment>
+  <data name="Uncheck" xml:space="preserve">
+    <value>Uncheck</value>
+    <comment>MessageReplacement</comment>
   </data>
-  <data name="urlStatusLabel" xml:space="preserve">
-    <value>Source:</value>
-    <comment>StatusLabel</comment>
+  <data name="UpdateCanceled" xml:space="preserve">
+    <value>Update canceled.</value>
+    <comment>Exception</comment>
   </data>
   <data name="User" xml:space="preserve">
     <value>User</value>

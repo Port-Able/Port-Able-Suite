@@ -19,7 +19,7 @@ namespace AppsDownloader.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -61,128 +61,81 @@ namespace AppsDownloader.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Downloader.
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static string ConfigSection {
+        internal static System.Drawing.Bitmap Check {
             get {
-                return ResourceManager.GetString("ConfigSection", resourceCulture);
+                object obj = ResourceManager.GetObject("Check", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap diagonal_pattern {
+        internal static System.Drawing.Bitmap CheckAll {
             get {
-                object obj = ResourceManager.GetObject("diagonal_pattern", resourceCulture);
+                object obj = ResourceManager.GetObject("CheckAll", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apps Downloader.
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static string GlobalTitle {
+        internal static System.Drawing.Bitmap FishBones {
             get {
-                return ResourceManager.GetString("GlobalTitle", resourceCulture);
+                object obj = ResourceManager.GetObject("FishBones", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [LongName]
-        ///Default=*Default
-        ///English=*English
-        ///EnglishGB=English (British)
-        ///Multilingual=*Multilingual
-        ///Portuguese=Portuguese (Portugal)
-        ///PortugueseBR=Portuguese (Brazilian)
-        ///SerbianLatin=Serbian (Latin)
-        ///SimpChinese=Chinese (Simplified)
-        ///Spanish=Spanish (Spain)
-        ///SpanishInternational=Spanish (International)
-        ///TradChinese=Chinese (Traditional)
-        ///[ShortName]
-        ///*Default=Default
-        ///*English=English
-        ///*Multilingual=Multilingual
-        ///Chinese (Simplified)=SimpChinese
-        ///Chinese (Traditional)=TradChinese
-        ///English (British)=EnglishGB
-        ///Portuguese [rest of string was truncated]&quot;;.
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static string LangNames {
+        internal static System.Drawing.Bitmap Folder {
             get {
-                return ResourceManager.GetString("LangNames", resourceCulture);
+                object obj = ResourceManager.GetObject("Folder", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Afrikaans
-        ///Albanian
-        ///Arabic
-        ///Armenian
-        ///Basque
-        ///Belarusian
-        ///Bulgarian
-        ///Catalan
-        ///Croatian
-        ///Czech
-        ///Danish
-        ///Dutch
-        ///EnglishGB
-        ///Estonian
-        ///Farsi
-        ///Filipino
-        ///Finnish
-        ///French
-        ///Galician
-        ///German
-        ///Greek
-        ///Hebrew
-        ///Hungarian
-        ///Indonesian
-        ///Irish
-        ///Italian
-        ///Japanese
-        ///Korean
-        ///Latvian
-        ///Lithuanian
-        ///Luxembourgish
-        ///Macedonian
-        ///Malay
-        ///Norwegian
-        ///Polish
-        ///Portuguese
-        ///PortugueseBR
-        ///Romanian
-        ///Russian
-        ///Serbian
-        ///SerbianLatin
-        ///SimpChinese
-        ///Slovak
-        ///Slovenian
-        ///Spanish
-        ///SpanishInternational
-        ///Sundanese
-        ///Swedish
-        ///Thai
-        ///TradChinese
-        ///Turkish
-        ///Ukrainian
-        ///Vietnamese.
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static string Languages {
+        internal static System.Drawing.Bitmap ImageSlash {
             get {
-                return ResourceManager.GetString("Languages", resourceCulture);
+                object obj = ResourceManager.GetObject("ImageSlash", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Info {
+            get {
+                object obj = ResourceManager.GetObject("Info", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon Logo {
+        internal static System.Drawing.Icon InstallSymbol {
             get {
-                object obj = ResourceManager.GetObject("Logo", resourceCulture);
+                object obj = ResourceManager.GetObject("InstallSymbol", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon PaLogoGreenSymbol {
+            get {
+                object obj = ResourceManager.GetObject("PaLogoGreenSymbol", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -190,20 +143,60 @@ namespace AppsDownloader.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Logo164px {
+        internal static System.Drawing.Bitmap PaLogoNegative {
             get {
-                object obj = ResourceManager.GetObject("Logo164px", resourceCulture);
+                object obj = ResourceManager.GetObject("PaLogoNegative", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static byte[] NsisData {
+        internal static System.Drawing.Bitmap PatternDiagonal {
             get {
-                object obj = ResourceManager.GetObject("NsisData", resourceCulture);
-                return ((byte[])(obj));
+                object obj = ResourceManager.GetObject("PatternDiagonal", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Settings {
+            get {
+                object obj = ResourceManager.GetObject("Settings", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Uncheck {
+            get {
+                object obj = ResourceManager.GetObject("Uncheck", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Undo {
+            get {
+                object obj = ResourceManager.GetObject("Undo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap World {
+            get {
+                object obj = ResourceManager.GetObject("World", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }
