@@ -1,4 +1,4 @@
-﻿namespace AppsDownloader.Windows
+﻿namespace AppsDownloader.Forms
 {
     partial class AppInfoForm
     {

@@ -1,13 +1,14 @@
-﻿namespace AppsDownloader.Windows
+﻿namespace AppsDownloader.Forms
 {
     using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Windows.Forms;
-    using Libraries;
+    using PortAble;
     using SilDev;
     using SilDev.Drawing;
     using SilDev.Forms;
+    using static SilDev.WinApi;
 
     public partial class AppInfoForm : Form
     {
@@ -17,7 +18,7 @@
             set => base.Text = value;
         }
 
-        public AppInfoForm(AppData appData)
+        public AppInfoForm(AppData appData, Image appImage)
         {
             if (appData == default)
                 throw new ArgumentNullException(nameof(appData));
@@ -31,10 +32,11 @@
             if (text == default)
                 return;
 
-            if (!CacheData.AppImagesLarge.TryGetValue(appData.Key, out var image))
-                CacheData.AppImages.TryGetValue(appData.Key, out image);
-            if (image != default)
-                Icon = image.ToIcon();
+            if (appImage != default)
+                Icon = appImage.ToIcon();
+
+            if (Desktop.AppsUseDarkTheme)
+                this.ChangeColorMode(ControlExColorMode.DarkDarkDark);
 
             infoBox.AppendText(Environment.NewLine);
             infoBox.AppendText(text);
@@ -62,6 +64,10 @@
                         "InstallSize:",
                         "InstallSize:",
                         "InstallDir:",
+                        "Requirements:",
+                        "PackageReleaseDate:",
+                        "PackageUpdateDate:",
+                        "InstallerVersion:",
                         "Advanced:",
                         "ServerKey:",
                         "Item1:",
@@ -115,7 +121,13 @@
                         "46:",
                         "47:",
                         "48:",
-                        "49:"
+                        "49:",
+                        "Settings:",
+                        "ArchiveLang:",
+                        "ArchiveLangCode:",
+                        "ArchiveLangConfirmed:",
+                        "DisableUpdates:",
+                        "DelayUpdates:"
                     }
                 },
                 {
@@ -135,20 +147,26 @@
                 foreach (var s in color.Value)
                     infoBox.MarkText(s, color.Key);
 
+            if (Desktop.AppsUseDarkTheme)
+            {
+                Desktop.EnableDarkMode(Handle);
+                Desktop.EnableDarkMode(infoBox.Handle);
+            }
+
             ResumeLayout(false);
         }
 
         private void InfoForm_Load(object sender, EventArgs e) =>
-            FormEx.Dockable(this);
+            this.Dockable();
 
         private void InfoForm_Shown(object sender, EventArgs e) =>
             infoBox.Enabled = true;
 
         private void InfoBox_HideCaret(object sender, EventArgs e)
         {
-            if (!(sender is RichTextBox owner) || !owner.Enabled || !owner.Visible)
+            if (sender is not RichTextBox { Enabled: true, Visible: true } owner)
                 return;
-            WinApi.NativeHelper.HideCaret(owner.Handle);
+            NativeHelper.HideCaret(owner.Handle);
         }
 
         private void InfoBox_HideCaret(object sender, MouseEventArgs e) =>

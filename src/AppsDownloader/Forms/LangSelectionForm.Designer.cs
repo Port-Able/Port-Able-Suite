@@ -1,4 +1,4 @@
-namespace AppsDownloader.Windows
+namespace AppsDownloader.Forms
 {
     partial class LangSelectionForm
     {
@@ -64,6 +64,7 @@ namespace AppsDownloader.Windows
             // okBtn
             // 
             this.okBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.okBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.okBtn.Location = new System.Drawing.Point(20, 93);
             this.okBtn.Name = "okBtn";
             this.okBtn.Size = new System.Drawing.Size(99, 23);
@@ -75,6 +76,7 @@ namespace AppsDownloader.Windows
             // cancelBtn
             // 
             this.cancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cancelBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cancelBtn.Location = new System.Drawing.Point(129, 93);
             this.cancelBtn.Name = "cancelBtn";
             this.cancelBtn.Size = new System.Drawing.Size(99, 23);
@@ -101,7 +103,7 @@ namespace AppsDownloader.Windows
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.Gray;
-            this.BackgroundImage = global::AppsDownloader.Properties.Resources.diagonal_pattern;
+            this.BackgroundImage = global::AppsDownloader.Properties.Resources.PatternDiagonal;
             this.ClientSize = new System.Drawing.Size(248, 136);
             this.Controls.Add(this.appNameLabel);
             this.Controls.Add(this.cancelBtn);
