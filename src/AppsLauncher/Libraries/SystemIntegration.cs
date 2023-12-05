@@ -22,9 +22,9 @@
         {
             if (!Elevation.IsAdministrator)
             {
-                using (var process = ProcessEx.Start(PathEx.LocalPath, $"{ActionGuid.SystemIntegration} {enabled} {quiet}", true, false))
-                    if (process?.HasExited == false)
-                        process.WaitForExit();
+                using var process = ProcessEx.Start(PathEx.LocalPath, $"{ActionGuid.SystemIntegration} {enabled} {quiet}", true, false);
+                if (process?.HasExited == false)
+                    process.WaitForExit();
                 return;
             }
             var varKey = "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment";

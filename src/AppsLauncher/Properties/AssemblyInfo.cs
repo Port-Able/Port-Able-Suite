@@ -2,12 +2,12 @@
 using System.Resources;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Port-Able Apps Launcher")]
+[assembly: AssemblyTitle("Apps Launcher")]
 [assembly: AssemblyProduct("AppsLauncher")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Port-Able™ Apps Launcher")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Si13n7 Dev.™")]
-[assembly: AssemblyCopyright("Copyright © Si13n7 Dev.™ 2020")]
+[assembly: AssemblyCopyright("Copyright © Si13n7 Dev.™ 2023")]
 [assembly: AssemblyTrademark("Si13n7 Dev.™")]
 [assembly: AssemblyCulture("")]
 
@@ -15,6 +15,6 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("ee806ac7-2a8b-4d79-8634-adbdbba0aebf")]
 
-[assembly: AssemblyVersion("21.4.30.0")]
+[assembly: AssemblyVersion("23.12.5.0")]
 
 [assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.MainAssembly)]

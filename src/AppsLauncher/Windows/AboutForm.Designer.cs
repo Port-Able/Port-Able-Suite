@@ -29,9 +29,9 @@ namespace AppsLauncher.Windows
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.logoBox = new System.Windows.Forms.PictureBox();
             this.updateChecker = new System.ComponentModel.BackgroundWorker();
             this.closeToUpdate = new System.Windows.Forms.Timer(this.components);
@@ -39,7 +39,6 @@ namespace AppsLauncher.Windows
             this.spaceChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.leftBorderPanel = new System.Windows.Forms.Label();
             this.mainPanel = new System.Windows.Forms.Panel();
-            this.updateBtnPanel = new System.Windows.Forms.Panel();
             this.updateBtn = new System.Windows.Forms.Button();
             this.aboutInfoLabel = new System.Windows.Forms.LinkLabel();
             this.copyrightLabel = new System.Windows.Forms.Label();
@@ -48,17 +47,17 @@ namespace AppsLauncher.Windows
             this.logoPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spaceChart)).BeginInit();
             this.mainPanel.SuspendLayout();
-            this.updateBtnPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // logoBox
             // 
             this.logoBox.BackColor = System.Drawing.Color.Transparent;
+            this.logoBox.BackgroundImage = global::AppsLauncher.Properties.Resources.PaLogoClear;
             this.logoBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.logoBox.Dock = System.Windows.Forms.DockStyle.Top;
             this.logoBox.Location = new System.Drawing.Point(0, 0);
             this.logoBox.Name = "logoBox";
-            this.logoBox.Size = new System.Drawing.Size(163, 145);
+            this.logoBox.Size = new System.Drawing.Size(163, 200);
             this.logoBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.logoBox.TabIndex = 0;
             this.logoBox.TabStop = false;
@@ -88,32 +87,32 @@ namespace AppsLauncher.Windows
             // 
             this.spaceChart.BackColor = System.Drawing.Color.Transparent;
             this.spaceChart.BorderlineColor = System.Drawing.Color.Transparent;
-            chartArea1.AxisY.IsMarginVisible = false;
-            chartArea1.BackColor = System.Drawing.Color.Transparent;
-            chartArea1.BorderColor = System.Drawing.Color.Transparent;
-            chartArea1.Name = "chartArea";
-            chartArea1.Position.Auto = false;
-            chartArea1.Position.Height = 50F;
-            chartArea1.Position.Width = 94F;
-            chartArea1.Position.X = 3F;
-            chartArea1.Position.Y = 25F;
-            chartArea1.ShadowColor = System.Drawing.Color.Transparent;
-            this.spaceChart.ChartAreas.Add(chartArea1);
+            chartArea2.AxisY.IsMarginVisible = false;
+            chartArea2.BackColor = System.Drawing.Color.Transparent;
+            chartArea2.BorderColor = System.Drawing.Color.Transparent;
+            chartArea2.Name = "chartArea";
+            chartArea2.Position.Auto = false;
+            chartArea2.Position.Height = 50F;
+            chartArea2.Position.Width = 94F;
+            chartArea2.Position.X = 3F;
+            chartArea2.Position.Y = 25F;
+            chartArea2.ShadowColor = System.Drawing.Color.Transparent;
+            this.spaceChart.ChartAreas.Add(chartArea2);
             this.spaceChart.Dock = System.Windows.Forms.DockStyle.Bottom;
-            legend1.Alignment = System.Drawing.StringAlignment.Center;
-            legend1.AutoFitMinFontSize = 5;
-            legend1.BackColor = System.Drawing.Color.Transparent;
-            legend1.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
-            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
-            legend1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            legend1.ForeColor = System.Drawing.Color.White;
-            legend1.IsTextAutoFit = false;
-            legend1.ItemColumnSpacing = 0;
-            legend1.LegendItemOrder = System.Windows.Forms.DataVisualization.Charting.LegendItemOrder.ReversedSeriesOrder;
-            legend1.Name = "chartLegend";
-            legend1.ShadowColor = System.Drawing.Color.Transparent;
-            legend1.TitleFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.spaceChart.Legends.Add(legend1);
+            legend2.Alignment = System.Drawing.StringAlignment.Center;
+            legend2.AutoFitMinFontSize = 5;
+            legend2.BackColor = System.Drawing.Color.Transparent;
+            legend2.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
+            legend2.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            legend2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            legend2.ForeColor = System.Drawing.Color.White;
+            legend2.IsTextAutoFit = false;
+            legend2.ItemColumnSpacing = 0;
+            legend2.LegendItemOrder = System.Windows.Forms.DataVisualization.Charting.LegendItemOrder.ReversedSeriesOrder;
+            legend2.Name = "chartLegend";
+            legend2.ShadowColor = System.Drawing.Color.Transparent;
+            legend2.TitleFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.spaceChart.Legends.Add(legend2);
             this.spaceChart.Location = new System.Drawing.Point(0, -85);
             this.spaceChart.Margin = new System.Windows.Forms.Padding(0);
             this.spaceChart.Name = "spaceChart";
@@ -122,20 +121,20 @@ namespace AppsLauncher.Windows
         System.Drawing.Color.ForestGreen,
         System.Drawing.Color.IndianRed,
         System.Drawing.Color.Firebrick};
-            series1.BackImageAlignment = System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle.Center;
-            series1.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            series1.BorderWidth = 2;
-            series1.ChartArea = "chartArea";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
-            series1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            series1.LabelBackColor = System.Drawing.Color.Transparent;
-            series1.LabelBorderColor = System.Drawing.Color.Transparent;
-            series1.LabelBorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
-            series1.LabelForeColor = System.Drawing.Color.White;
-            series1.Legend = "chartLegend";
-            series1.Name = "chartSeries";
-            series1.YValuesPerPoint = 6;
-            this.spaceChart.Series.Add(series1);
+            series2.BackImageAlignment = System.Windows.Forms.DataVisualization.Charting.ChartImageAlignmentStyle.Center;
+            series2.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            series2.BorderWidth = 2;
+            series2.ChartArea = "chartArea";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
+            series2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            series2.LabelBackColor = System.Drawing.Color.Transparent;
+            series2.LabelBorderColor = System.Drawing.Color.Transparent;
+            series2.LabelBorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
+            series2.LabelForeColor = System.Drawing.Color.White;
+            series2.Legend = "chartLegend";
+            series2.Name = "chartSeries";
+            series2.YValuesPerPoint = 6;
+            this.spaceChart.Series.Add(series2);
             this.spaceChart.Size = new System.Drawing.Size(163, 266);
             this.spaceChart.TabIndex = 12;
             // 
@@ -151,8 +150,8 @@ namespace AppsLauncher.Windows
             // mainPanel
             // 
             this.mainPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(52)))), ((int)(((byte)(64)))));
-            this.mainPanel.BackgroundImage = global::AppsLauncher.Properties.Resources.horizontal_pattern;
-            this.mainPanel.Controls.Add(this.updateBtnPanel);
+            this.mainPanel.BackgroundImage = global::AppsLauncher.Properties.Resources.PatternHorizontal;
+            this.mainPanel.Controls.Add(this.updateBtn);
             this.mainPanel.Controls.Add(this.aboutInfoLabel);
             this.mainPanel.Controls.Add(this.copyrightLabel);
             this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -161,28 +160,17 @@ namespace AppsLauncher.Windows
             this.mainPanel.Size = new System.Drawing.Size(412, 181);
             this.mainPanel.TabIndex = 21;
             // 
-            // updateBtnPanel
-            // 
-            this.updateBtnPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.updateBtnPanel.BackColor = System.Drawing.Color.Transparent;
-            this.updateBtnPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.updateBtnPanel.Controls.Add(this.updateBtn);
-            this.updateBtnPanel.Location = new System.Drawing.Point(20, 29);
-            this.updateBtnPanel.Name = "updateBtnPanel";
-            this.updateBtnPanel.Size = new System.Drawing.Size(130, 23);
-            this.updateBtnPanel.TabIndex = 23;
-            // 
             // updateBtn
             // 
-            this.updateBtn.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.updateBtn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.updateBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.updateBtn.BackColor = System.Drawing.SystemColors.Control;
             this.updateBtn.FlatAppearance.BorderSize = 0;
-            this.updateBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.updateBtn.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.updateBtn.Image = global::AppsLauncher.Properties.Resources.World;
             this.updateBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.updateBtn.Location = new System.Drawing.Point(0, 0);
+            this.updateBtn.Location = new System.Drawing.Point(20, 23);
             this.updateBtn.Name = "updateBtn";
-            this.updateBtn.Size = new System.Drawing.Size(128, 21);
+            this.updateBtn.Size = new System.Drawing.Size(128, 28);
             this.updateBtn.TabIndex = 23;
             this.updateBtn.Text = "Check for updates";
             this.updateBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -249,7 +237,6 @@ namespace AppsLauncher.Windows
             this.logoPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.spaceChart)).EndInit();
             this.mainPanel.ResumeLayout(false);
-            this.updateBtnPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -265,7 +252,6 @@ namespace AppsLauncher.Windows
         private System.Windows.Forms.LinkLabel aboutInfoLabel;
         private System.Windows.Forms.Label copyrightLabel;
         private System.Windows.Forms.Button updateBtn;
-        private System.Windows.Forms.Panel updateBtnPanel;
         private System.Windows.Forms.DataVisualization.Charting.Chart spaceChart;
         private System.ComponentModel.BackgroundWorker diskChartUpdater;
     }

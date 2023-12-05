@@ -19,7 +19,7 @@ namespace AppsLauncher.LangResources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class en_US {
@@ -57,6 +57,15 @@ namespace AppsLauncher.LangResources {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About Port-Able.
+        /// </summary>
+        internal static string aboutBtnTip {
+            get {
+                return ResourceManager.GetString("aboutBtnTip", resourceCulture);
             }
         }
         
@@ -312,15 +321,6 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} {1} found!.
-        /// </summary>
-        internal static string appsCount {
-            get {
-                return ResourceManager.GetString("appsCount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to How are the file types to be assigned?.
         /// </summary>
         internal static string AssociateAppWayQuestion {
@@ -525,7 +525,7 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Align to Start Menu.
+        ///   Looks up a localized string similar to Align to Mouse Cursor.
         /// </summary>
         internal static string defaultPosOption0 {
             get {
@@ -534,7 +534,7 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Align to Mouse Cursor.
+        ///   Looks up a localized string similar to Align to Start Menu.
         /// </summary>
         internal static string defaultPosOption1 {
             get {
@@ -552,11 +552,11 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add More.
+        ///   Looks up a localized string similar to Get more apps.
         /// </summary>
-        internal static string downloadBtn {
+        internal static string downloadBtnTip {
             get {
-                return ResourceManager.GetString("downloadBtn", resourceCulture);
+                return ResourceManager.GetString("downloadBtnTip", resourceCulture);
             }
         }
         
@@ -662,6 +662,15 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Port-Able found {0} {1}.
+        /// </summary>
+        internal static string MenuViewForm {
+            get {
+                return ResourceManager.GetString("MenuViewForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disable confirmation for this app.
         /// </summary>
         internal static string noConfirmCheck {
@@ -758,6 +767,15 @@ namespace AppsLauncher.LangResources {
         internal static string OperationFailedMsg {
             get {
                 return ResourceManager.GetString("OperationFailedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open profile directory.
+        /// </summary>
+        internal static string profileBtnTip {
+            get {
+                return ResourceManager.GetString("profileBtnTip", resourceCulture);
             }
         }
         
@@ -899,11 +917,20 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Settings.
+        ///   Looks up a localized string similar to Open settings.
         /// </summary>
-        internal static string settingsBtn {
+        internal static string settingsBtnTip {
             get {
-                return ResourceManager.GetString("settingsBtn", resourceCulture);
+                return ResourceManager.GetString("settingsBtnTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Einstellungen.
+        /// </summary>
+        internal static string SettingsForm {
+            get {
+                return ResourceManager.GetString("SettingsForm", resourceCulture);
             }
         }
         

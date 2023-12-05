@@ -24,10 +24,14 @@
             {
                 try
                 {
-                    if (!File.Exists(CorePaths.AppsDownloader) ||
-                        !File.Exists(CorePaths.AppsSuiteUpdater) ||
-                        !File.Exists(CorePaths.FileArchiver))
-                        throw new FileNotFoundException();
+                    if (!File.Exists(CorePaths.AppsLauncher))
+                        throw new PathNotFoundException(CorePaths.AppsLauncher);
+                    if (!File.Exists(CorePaths.AppsDownloader))
+                        throw new PathNotFoundException(CorePaths.AppsDownloader);
+                    if (!File.Exists(CorePaths.AppsSuiteUpdater))
+                        throw new PathNotFoundException(CorePaths.AppsSuiteUpdater);
+                    if (!File.Exists(CorePaths.FileArchiver))
+                        throw new PathNotFoundException(CorePaths.FileArchiver);
                 }
                 catch (FileNotFoundException ex)
                 {
@@ -92,17 +96,16 @@
             if (!Elevation.WritableLocation())
                 Elevation.RestartAsAdministrator(ActionGuid.RepairDirs);
 
-            foreach (var dirs in new[]
-            {
-                CorePaths.AppDirs,
-                CorePaths.UserDirs
-            })
-                foreach (var dir in dirs)
-                    if (!DirectoryEx.Create(dir))
-                        Elevation.RestartAsAdministrator(ActionGuid.RepairDirs);
+            if (new[] { CorePaths.AppDirs.ToArray(), CorePaths.UserDirs }.Any(dirs => !dirs.All(DirectoryEx.Create)))
+                Elevation.RestartAsAdministrator(ActionGuid.RepairDirs);
 
             var iniMap = new[]
             {
+                new[]
+                {
+                    CorePaths.HomeDir,
+                    "IconResource=Assets\\FolderIcons.dll,0"
+                },
                 new[]
                 {
                     CorePaths.AppDirs.First(),
@@ -140,13 +143,11 @@
                 {
                     CorePaths.UserDirs.First(),
                     "LocalizedResourceName=Profile",
-                    "IconResource=%SystemRoot%\\system32\\imageres.dll,117",
-                    "IconFile=%SystemRoot%\\system32\\shell32.dll",
-                    "IconIndex=-235"
+                    "IconResource=..\\Assets\\FolderIcons.dll,0"
                 },
                 new[]
                 {
-                    PathEx.Combine(PathEx.LocalDir, "Documents", ".cache"),
+                    CorePaths.DataDir,
                     "IconResource=%SystemRoot%\\system32\\imageres.dll,112"
                 },
                 new[]
@@ -194,7 +195,7 @@
             {
                 var array = iniMap[i];
                 var dir = array.FirstOrDefault();
-                if (!PathEx.IsValidPath(dir) || i >= iniMap.Length - 2 && !Directory.Exists(dir))
+                if (!PathEx.IsValidPath(dir) || (i >= iniMap.Length - 2 && !Directory.Exists(dir)))
                     continue;
                 if (!Elevation.WritableLocation(dir))
                     Elevation.RestartAsAdministrator(ActionGuid.RepairDirs);
@@ -221,9 +222,9 @@
         {
             if (!Elevation.IsAdministrator)
             {
-                using (var process = ProcessEx.Start(PathEx.LocalPath, ActionGuid.RepairVariable, true, false))
-                    if (process?.HasExited == false)
-                        process.WaitForExit();
+                using var process = ProcessEx.Start(PathEx.LocalPath, ActionGuid.RepairVariable, true, false);
+                if (process?.HasExited == false)
+                    process.WaitForExit();
                 return;
             }
             if (!SystemIntegration.IsAccurate)

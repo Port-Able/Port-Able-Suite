@@ -2,25 +2,30 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Diagnostics;
     using System.Drawing;
     using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
+    using System.Windows.Forms;
+    using Newtonsoft.Json;
     using SilDev;
+    using SilDev.Drawing;
     using SilDev.Legacy;
 
     internal static class CacheData
     {
-        private static Dictionary<string, Image> _appImages, _currentImages;
+        private static Dictionary<string, Image> _appImages, _appImagesLarge, _currentImages;
         private static List<LocalAppData> _currentAppInfo;
         private static List<string> _currentAppSections;
         private static Image _currentImageBg;
         private static int _currentImagesCount;
         private static Dictionary<int, int> _currentTypeData;
         private static List<string> _settingsMerges;
-        private static readonly List<Tuple<ImageResourceSymbol, bool, Icon>> Icons = new List<Tuple<ImageResourceSymbol, bool, Icon>>();
-        private static readonly List<Tuple<ImageResourceSymbol, bool, Image>> Images = new List<Tuple<ImageResourceSymbol, bool, Image>>();
+        private static readonly List<Tuple<string, Color, int, Image>> Images = new();
+        private static readonly List<Tuple<ImageResourceSymbol, bool, Icon>> SystemIcons = new();
+        private static readonly List<Tuple<ImageResourceSymbol, bool, Image>> SystemImages = new();
 
         internal static Dictionary<string, Image> AppImages
         {
@@ -28,9 +33,21 @@
             {
                 if (_appImages != default(Dictionary<string, Image>))
                     return _appImages;
-                _appImages = FileEx.Deserialize<Dictionary<string, Image>>(File.Exists(CachePaths.AppImages) ? CachePaths.AppImages : CorePaths.AppImages);
+                _appImages = FileEx.Deserialize<Dictionary<string, Image>>(File.Exists(CacheFiles.AppImages) ? CacheFiles.AppImages : CorePaths.AppImages);
                 _appImages = _appImages != default(Dictionary<string, Image>) ? _appImages.ToDictionary(x => x.Key, x => x.Value, StringComparer.OrdinalIgnoreCase) : new Dictionary<string, Image>(StringComparer.OrdinalIgnoreCase);
                 return _appImages;
+            }
+        }
+
+        internal static Dictionary<string, Image> AppImagesLarge
+        {
+            get
+            {
+                if (_appImagesLarge != default(Dictionary<string, Image>))
+                    return _appImagesLarge;
+                _appImagesLarge = FileEx.Deserialize<Dictionary<string, Image>>(File.Exists(CacheFiles.AppImagesLarge) ? CacheFiles.AppImagesLarge : CorePaths.AppImagesLarge);
+                _appImagesLarge = _appImagesLarge != default(Dictionary<string, Image>) ? _appImages.ToDictionary(x => x.Key, x => x.Value, StringComparer.OrdinalIgnoreCase) : new Dictionary<string, Image>(StringComparer.OrdinalIgnoreCase);
+                return _appImagesLarge;
             }
         }
 
@@ -64,8 +81,8 @@
             {
                 if (_currentImageBg != default(Image))
                     return _currentImageBg;
-                if (File.Exists(CachePaths.CurrentImageBg))
-                    _currentImageBg = FileEx.Deserialize<Image>(CachePaths.CurrentImageBg);
+                if (File.Exists(CacheFiles.CurrentImageBg))
+                    _currentImageBg = FileEx.Deserialize<Image>(CacheFiles.CurrentImageBg);
                 return _currentImageBg;
             }
             set
@@ -73,10 +90,10 @@
                 _currentImageBg = value;
                 if (_currentImageBg != default(Image))
                 {
-                    FileEx.Serialize(CachePaths.CurrentImageBg, _currentImageBg);
+                    FileEx.Serialize(CacheFiles.CurrentImageBg, _currentImageBg);
                     return;
                 }
-                FileEx.TryDelete(CachePaths.CurrentImageBg);
+                FileEx.TryDelete(CacheFiles.CurrentImageBg);
             }
         }
 
@@ -86,10 +103,9 @@
             {
                 if (_currentImages != default(Dictionary<string, Image>))
                     return _currentImages;
-                if (File.Exists(CachePaths.CurrentImages))
-                    _currentImages = FileEx.Deserialize<Dictionary<string, Image>>(CachePaths.CurrentImages);
-                if (_currentImages == default(Dictionary<string, Image>))
-                    _currentImages = new Dictionary<string, Image>();
+                if (File.Exists(CacheFiles.CurrentImages))
+                    _currentImages = FileEx.Deserialize<Dictionary<string, Image>>(CacheFiles.CurrentImages);
+                _currentImages ??= new Dictionary<string, Image>();
                 _currentImagesCount = _currentImages.Count;
                 return _currentImages;
             }
@@ -101,10 +117,9 @@
             {
                 if (_currentTypeData != default(Dictionary<int, int>))
                     return _currentTypeData;
-                if (File.Exists(CachePaths.CurrentTypeData))
-                    _currentTypeData = FileEx.Deserialize<Dictionary<int, int>>(CachePaths.CurrentTypeData);
-                if (_currentTypeData == default(Dictionary<int, int>))
-                    _currentTypeData = new Dictionary<int, int>();
+                if (File.Exists(CacheFiles.CurrentTypeData))
+                    _currentTypeData = FileEx.Deserialize<Dictionary<int, int>>(CacheFiles.CurrentTypeData);
+                _currentTypeData ??= new Dictionary<int, int>();
                 if (_currentTypeData.Count >= short.MaxValue)
                     _currentTypeData.Clear();
                 return _currentTypeData;
@@ -117,18 +132,46 @@
             {
                 if (_settingsMerges != default(List<string>))
                     return _settingsMerges;
-                if (File.Exists(CachePaths.SettingsMerges))
-                    _settingsMerges = FileEx.Deserialize<List<string>>(CachePaths.SettingsMerges);
-                return _settingsMerges ?? (_settingsMerges = new List<string>());
+                if (File.Exists(CacheFiles.SettingsMerges))
+                    _settingsMerges = FileEx.Deserialize<List<string>>(CacheFiles.SettingsMerges);
+                return _settingsMerges ??= new List<string>();
             }
+        }
+
+        internal static void Serialize<T>(string path, T item)
+        {
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
+            if (item == null)
+                throw new ArgumentNullException(nameof(item));
+            if (!PathEx.IsValidPath(path))
+                throw new IOException(nameof(path));
+            using var sw = File.CreateText(path);
+            var js = new JsonSerializer
+            {
+                Formatting = Formatting.Indented
+            };
+            js.Serialize(sw, item);
+        }
+
+        internal static T Deserialize<T>(string path)
+        {
+            if (!FileEx.Exists(path))
+                return default;
+            using var sw = File.OpenText(path);
+            var js = new JsonSerializer
+            {
+                Formatting = Formatting.Indented
+            };
+            return (T)js.Deserialize(sw, typeof(T));
         }
 
         internal static Icon GetSystemIcon(ImageResourceSymbol index, bool large = false)
         {
             Icon icon;
-            if (Icons.Any())
+            if (SystemIcons.Any())
             {
-                icon = Icons.FirstOrDefault(x => x.Item1.Equals(index) && x.Item2.Equals(large))?.Item3;
+                icon = SystemIcons.FirstOrDefault(x => x.Item1.Equals(index) && x.Item2.Equals(large))?.Item3;
                 if (icon != default(Icon))
                     goto Return;
             }
@@ -136,7 +179,7 @@
             if (icon == default(Icon))
                 goto Return;
             var tuple = new Tuple<ImageResourceSymbol, bool, Icon>(index, large, icon);
-            Icons.Add(tuple);
+            SystemIcons.Add(tuple);
             Return:
             return icon;
         }
@@ -144,9 +187,9 @@
         internal static Image GetSystemImage(ImageResourceSymbol index, bool large = false)
         {
             Image image;
-            if (Images.Any())
+            if (SystemImages.Any())
             {
-                image = Images.FirstOrDefault(x => x.Item1.Equals(index) && x.Item2.Equals(large))?.Item3;
+                image = SystemImages.FirstOrDefault(x => x.Item1.Equals(index) && x.Item2.Equals(large))?.Item3;
                 if (image != default(Image))
                     goto Return;
             }
@@ -154,9 +197,56 @@
             if (image == default(Image))
                 goto Return;
             var tuple = new Tuple<ImageResourceSymbol, bool, Image>(index, large, image);
-            Images.Add(tuple);
+            SystemImages.Add(tuple);
             Return:
             return image;
+        }
+
+        internal static Image GetImage(Image image, string key, Color color = default, int sizeIndicator = default)
+        {
+            var img = Images.FirstOrDefault(x => x.Item1.Equals(key) &&
+                                                 x.Item2.Equals(color) &&
+                                                 x.Item3.Equals(sizeIndicator))?.Item4;
+            if (img != default)
+                return img;
+            img = image;
+            if (img == default)
+                return default;
+            if (color != default || 
+                color != Color.Empty ||
+                color != Color.Transparent)
+                img = img.RecolorPixels(Color.Black, color);
+            if (sizeIndicator > 0)
+                img = img.Redraw(sizeIndicator);
+            if (!string.IsNullOrEmpty(key))
+                Images.Add(new(key, color, sizeIndicator, img));
+            return img;
+        }
+
+        internal static void SetComponentImageColor(Component component, Color color, bool redraw = false)
+        {
+            switch (component)
+            {
+                case Button { Image: not null } item:
+                    item.Image = GetImage(item.Image, default, color, redraw ? Math.Min(item.Width, item.Height) - 8 : 0);
+                    break;
+                case PictureBox { BackgroundImage: not null } item:
+                    item.BackgroundImage = GetImage(item.BackgroundImage, default, color, redraw ? Math.Min(item.Width, item.Height) : 0);
+                    break;
+                case ToolStripMenuItem { Image: not null } item:
+                    item.Image = GetImage(item.Image, default, color, redraw ? Math.Min(item.Width, item.Height) : 0);
+                    break;
+            }
+        }
+
+        internal static void SetComponentImageColor(Component component, bool redraw = false)
+        {
+            var color = component switch
+            {
+                ToolStripMenuItem { Image: not null } => SystemColors.Highlight,
+                _ => Settings.Window.Colors.BaseLight
+            };
+            SetComponentImageColor(component, color, redraw);
         }
 
         internal static LocalAppData FindAppData(string appKeyOrName)
@@ -168,9 +258,9 @@
 
         internal static void UpdateCurrentImagesFile()
         {
-            if (!CurrentImages.Any() || _currentImagesCount == _currentImages.Count && File.Exists(CachePaths.CurrentImages))
+            if (!CurrentImages.Any() || (_currentImagesCount == _currentImages.Count && File.Exists(CacheFiles.CurrentImages)))
                 return;
-            FileEx.Serialize(CachePaths.CurrentImages, CurrentImages);
+            FileEx.Serialize(CacheFiles.CurrentImages, CurrentImages);
             _currentImagesCount = _currentImages.Count;
         }
 
@@ -183,24 +273,24 @@
             if (curValue == value)
                 return;
             CurrentTypeData.Update(key, value);
-            FileEx.Serialize(CachePaths.CurrentTypeData, CurrentTypeData);
+            FileEx.Serialize(CacheFiles.CurrentTypeData, CurrentTypeData);
         }
 
         internal static void UpdateSettingsMerges(string section)
         {
             if (ProcessEx.InstancesCount(PathEx.LocalPath) <= 1)
                 return;
-            if (!File.Exists(CachePaths.SettingsMerges))
+            if (!File.Exists(CacheFiles.SettingsMerges))
                 SettingsMerges.Clear();
             if (!SettingsMerges.Contains(section, StringComparer.CurrentCultureIgnoreCase))
                 SettingsMerges.Add(section);
-            FileEx.Serialize(CachePaths.SettingsMerges, SettingsMerges);
+            FileEx.Serialize(CacheFiles.SettingsMerges, SettingsMerges);
         }
 
         internal static void ResetCurrent()
         {
-            FileEx.TryDelete(CachePaths.CurrentImages);
-            FileEx.TryDelete(CachePaths.CurrentAppInfo);
+            FileEx.TryDelete(CacheFiles.CurrentImages);
+            FileEx.TryDelete(CacheFiles.CurrentAppInfo);
             CurrentAppInfo = default;
         }
 
@@ -209,7 +299,7 @@
             if (Settings.CurrentDirectory.EqualsEx(PathEx.LocalDir))
                 return;
             foreach (var type in new[] { "ini", "ixi" })
-                foreach (var file in DirectoryEx.GetFiles(CorePaths.TempDir, $"*.{type}", SearchOption.AllDirectories))
+                foreach (var file in DirectoryEx.GetFiles(CorePaths.DataDir, $"*.{type}", SearchOption.AllDirectories))
                     FileEx.Delete(file);
             Settings.CurrentDirectory = PathEx.LocalDir;
         }
@@ -218,10 +308,9 @@
         {
             _currentAppInfo = new List<LocalAppData>();
             var currentAppInfo = default(List<LocalAppData>);
-            if (File.Exists(CachePaths.CurrentAppInfo))
-                currentAppInfo = FileEx.Deserialize<List<LocalAppData>>(CachePaths.CurrentAppInfo);
-            if (currentAppInfo == default(List<LocalAppData>))
-                currentAppInfo = new List<LocalAppData>();
+            if (File.Exists(CacheFiles.CurrentAppInfo))
+                currentAppInfo = FileEx.Deserialize<List<LocalAppData>>(CacheFiles.CurrentAppInfo);
+            currentAppInfo ??= new List<LocalAppData>();
 
             var nameRegEx = default(Regex);
             var writeToFile = false;
@@ -306,8 +395,7 @@
                     continue;
 
                 // apply some filters to the found app name
-                if (nameRegEx == default(Regex))
-                    nameRegEx = new Regex("(PortableApps.com Launcher)|, Portable Edition|Portable64|Portable", RegexOptions.IgnoreCase);
+                nameRegEx ??= new Regex("(PortableApps.com Launcher)|, Portable Edition|Portable64|Portable", RegexOptions.IgnoreCase);
                 var newName = nameRegEx.Replace(name, string.Empty).Replace("\t", " ");
                 newName = Regex.Replace(newName.Trim(' ', ','), " {2,}", " ");
                 if (!name.Equals(newName, StringComparison.Ordinal))
@@ -322,7 +410,7 @@
             if (_currentAppInfo.Any())
                 _currentAppInfo = _currentAppInfo.OrderBy(x => x.Name, new AlphaNumericComparer<string>()).ToList();
             if (writeToFile)
-                FileEx.Serialize(CachePaths.CurrentAppInfo, _currentAppInfo);
+                FileEx.Serialize(CacheFiles.CurrentAppInfo, _currentAppInfo);
         }
     }
 }

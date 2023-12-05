@@ -77,6 +77,7 @@ namespace AppsLauncher.Windows
             // 
             // appMenuItem2
             // 
+            this.appMenuItem2.Image = global::AppsLauncher.Properties.Resources.ShieldExclamation;
             this.appMenuItem2.Name = "appMenuItem2";
             this.appMenuItem2.Size = new System.Drawing.Size(211, 22);
             this.appMenuItem2.Text = "Run as administrator";
@@ -89,6 +90,7 @@ namespace AppsLauncher.Windows
             // 
             // appMenuItem3
             // 
+            this.appMenuItem3.Image = global::AppsLauncher.Properties.Resources.Folder;
             this.appMenuItem3.Name = "appMenuItem3";
             this.appMenuItem3.Size = new System.Drawing.Size(211, 22);
             this.appMenuItem3.Text = "Open app location";
@@ -96,6 +98,7 @@ namespace AppsLauncher.Windows
             // 
             // appMenuItem4
             // 
+            this.appMenuItem4.Image = global::AppsLauncher.Properties.Resources.AppDesktop;
             this.appMenuItem4.Name = "appMenuItem4";
             this.appMenuItem4.Size = new System.Drawing.Size(211, 22);
             this.appMenuItem4.Text = "Create a Desktop Shortcut";
@@ -108,6 +111,7 @@ namespace AppsLauncher.Windows
             // 
             // appMenuItem7
             // 
+            this.appMenuItem7.Image = global::AppsLauncher.Properties.Resources.AppDelete;
             this.appMenuItem7.Name = "appMenuItem7";
             this.appMenuItem7.Size = new System.Drawing.Size(211, 22);
             this.appMenuItem7.Text = "Delete";
@@ -124,7 +128,7 @@ namespace AppsLauncher.Windows
             // 
             // toolTip
             // 
-            this.toolTip.AutoPopDelay = 10000;
+            this.toolTip.AutoPopDelay = 5000;
             this.toolTip.InitialDelay = 500;
             this.toolTip.ReshowDelay = 100;
             // 
@@ -157,15 +161,15 @@ namespace AppsLauncher.Windows
             this.addBtn.BackColor = System.Drawing.SystemColors.Control;
             this.addBtn.FlatAppearance.BorderSize = 0;
             this.addBtn.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.Highlight;
-            this.addBtn.Image = global::AppsLauncher.Properties.Resources.add_13;
+            this.addBtn.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.addBtn.Location = new System.Drawing.Point(272, 12);
             this.addBtn.Name = "addBtn";
             this.addBtn.Size = new System.Drawing.Size(21, 21);
             this.addBtn.TabIndex = 1;
+            this.addBtn.Text = "+";
             this.addBtn.UseVisualStyleBackColor = false;
             this.addBtn.Click += new System.EventHandler(this.AddBtn_Click);
             this.addBtn.MouseEnter += new System.EventHandler(this.AddBtn_MouseEnter);
-            this.addBtn.MouseLeave += new System.EventHandler(this.AddBtn_MouseLeave);
             // 
             // appsBox
             // 
@@ -252,7 +256,6 @@ namespace AppsLauncher.Windows
             this.Controls.Add(this.appsBox);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.HelpButton = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(310, 146);
@@ -261,7 +264,6 @@ namespace AppsLauncher.Windows
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Open with:";
             this.TopMost = true;
-            this.HelpButtonClicked += new System.ComponentModel.CancelEventHandler(this.OpenWithForm_HelpButtonClicked);
             this.Activated += new System.EventHandler(this.OpenWithForm_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OpenWithForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OpenWithForm_FormClosed);

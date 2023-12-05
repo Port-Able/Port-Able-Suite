@@ -53,14 +53,14 @@
                     return _appDirs;
                 var value = Ini.Read<string>(Resources.ConfigSection, nameof(AppDirs))?.DecodeString();
                 var dirs = value?.SplitNewLine();
-                _appDirs = CorePaths.AppDirs;
+                _appDirs = CorePaths.AppDirs.ToArray();
                 if (dirs?.Any() == true)
                     _appDirs = _appDirs.Concat(dirs.Select(PathEx.Combine)).Where(Directory.Exists).ToArray();
                 return _appDirs;
             }
             set
             {
-                _appDirs = CorePaths.AppDirs;
+                _appDirs = CorePaths.AppDirs.ToArray();
                 var dirs = value;
                 if (dirs?.Any() == true)
                     _appDirs = _appDirs.Concat(dirs.Select(PathEx.Combine)).Where(Directory.Exists).ToArray();
@@ -71,7 +71,7 @@
 
         internal static string CurrentDirectory
         {
-            get => _currentDirectory ?? (_currentDirectory = Ini.Read<string>(Resources.ConfigSection, nameof(CurrentDirectory)));
+            get => _currentDirectory ??= Ini.Read<string>(Resources.ConfigSection, nameof(CurrentDirectory));
             set
             {
                 _currentDirectory = value;
@@ -99,7 +99,7 @@
 
         internal static string Language
         {
-            get => _language ?? (_language = Ini.Read<string>(Resources.ConfigSection, nameof(Language), global::Language.SystemLang));
+            get => _language ??= Ini.Read<string>(Resources.ConfigSection, nameof(Language), global::Language.SystemLang);
             set
             {
                 _language = value;
@@ -109,7 +109,7 @@
 
         internal static string LastItem
         {
-            get => _lastItem ?? (_lastItem = Ini.Read<string>(Resources.ConfigSection, nameof(LastItem)));
+            get => _lastItem ??= Ini.Read<string>(Resources.ConfigSection, nameof(LastItem));
             set
             {
                 _lastItem = value;
@@ -118,7 +118,7 @@
         }
 
         internal static string RegistryPath =>
-            _registryPath ?? (_registryPath = Path.Combine("HKCU\\Software\\Portable Apps Suite", PathEx.LocalPath.GetHashCode().ToString(CultureInfo.InvariantCulture)));
+            _registryPath ??= Path.Combine("HKCU\\Software\\Portable Apps Suite", PathEx.LocalPath.GetHashCode().ToString(CultureInfo.InvariantCulture));
 
         internal static bool StartMenuIntegration
         {
@@ -137,7 +137,7 @@
         }
 
         internal static string SystemInstallId =>
-            _systemInstallId ?? (_systemInstallId = (Win32_OperatingSystem.InstallDate?.ToString("F", CultureInfo.InvariantCulture) ?? EnvironmentEx.MachineId.ToString(CultureInfo.InvariantCulture)).Encrypt().Substring(24));
+            _systemInstallId ??= (Win32_OperatingSystem.InstallDate?.ToString("F", CultureInfo.InvariantCulture) ?? EnvironmentEx.MachineId.ToString(CultureInfo.InvariantCulture)).Encrypt().Substring(24);
 
         internal static DateTime LastUpdateCheck
         {
@@ -196,9 +196,9 @@
                 return;
             var lastCheck = LastUpdateCheck;
             if (lastCheck != default &&
-                (i.IsBetween(1, 3) && (DateTime.Now - lastCheck).TotalHours < 1d ||
-                 i.IsBetween(4, 6) && (DateTime.Now - lastCheck).TotalDays < 1d ||
-                 i.IsBetween(7, 9) && (DateTime.Now - lastCheck).TotalDays < 30d))
+                ((i.IsBetween(1, 3) && (DateTime.Now - lastCheck).TotalHours < 1d) ||
+                 (i.IsBetween(4, 6) && (DateTime.Now - lastCheck).TotalDays < 1d) ||
+                 (i.IsBetween(7, 9) && (DateTime.Now - lastCheck).TotalDays < 30d)))
                 return;
             if (i != 2 && i != 5 && i != 8)
                 ProcessEx.Start(CorePaths.AppsSuiteUpdater);
@@ -218,7 +218,7 @@
                     foreach (var item in items)
                     {
                         bool match;
-                        if (i < 1 && split != null && split.Length == 2)
+                        if (i < 1 && split is { Length: 2 })
                         {
                             var regex = new Regex($".*{split.First()}(.*){split.Second()}.*", RegexOptions.IgnoreCase);
                             match = regex.IsMatch(item);
@@ -246,7 +246,7 @@
 
             if (Log.DebugMode > 0)
             {
-                Log.FileDir = Path.Combine(CorePaths.TempDir, "Logs");
+                Log.FileDir = Path.Combine(CorePaths.DataDir, "Logs");
                 DirectoryEx.Create(Log.FileDir);
             }
 
@@ -263,7 +263,7 @@
             {
                 var path = Path.Combine("HKCU\\Software\\Portable Apps Suite", CorePaths.HomeDir.Encrypt(ChecksumAlgorithm.Adler32), ProcessEx.CurrentId.ToString(CultureInfo.InvariantCulture));
                 if (Reg.CreateNewSubKey(path))
-                    AppDomain.CurrentDomain.ProcessExit += (s, e) => Reg.RemoveSubKey(path);
+                    AppDomain.CurrentDomain.ProcessExit += (_, _) => Reg.RemoveSubKey(path);
             }
 
             if (!CacheData.CurrentAppInfo.Any())
@@ -349,7 +349,7 @@
 
         private static void MergeSettings(bool force)
         {
-            if (!force && (ProcessEx.InstancesCount(PathEx.LocalPath) > 1 || !File.Exists(CachePaths.SettingsMerges)))
+            if (!force && (ProcessEx.InstancesCount(PathEx.LocalPath) > 1 || !File.Exists(CacheFiles.SettingsMerges)))
                 return;
             if (CacheData.SettingsMerges.Any())
             {
@@ -370,7 +370,7 @@
                     WriteToFileInQueue = true;
                 }
             }
-            FileEx.Delete(CachePaths.SettingsMerges);
+            FileEx.Delete(CacheFiles.SettingsMerges);
         }
 
         private static int ValidateValue(int value, int minValue, int maxValue)
@@ -389,6 +389,7 @@
         {
             internal enum FadeInEffectOptions
             {
+                Activate,
                 Blend,
                 Slide
             }
@@ -406,35 +407,26 @@
                 {
                     if (_animation != default)
                         return _animation;
-                    if (FadeInEffect == FadeInEffectOptions.Blend)
+                    switch (FadeInEffect)
                     {
-                        _animation = WinApi.AnimateWindowFlags.Blend;
-                        return _animation;
+                        case FadeInEffectOptions.Activate:
+                            return _animation = WinApi.AnimateWindowFlags.Activate;
+                        case FadeInEffectOptions.Blend:
+                            return _animation = WinApi.AnimateWindowFlags.Blend;
                     }
-                    _animation = WinApi.AnimateWindowFlags.Slide;
                     if (DefaultPosition > 0)
                         _animation = WinApi.AnimateWindowFlags.Center;
                     else
                     {
                         var handle = Application.OpenForms.OfType<Form>().FirstOrDefault(x => x.Name?.EqualsEx(nameof(MenuViewForm)) == true)?.Handle ?? IntPtr.Zero;
-                        switch (TaskBar.GetLocation(handle))
+                        _animation = TaskBar.GetLocation(handle) switch
                         {
-                            case TaskBarLocation.Left:
-                                _animation |= WinApi.AnimateWindowFlags.HorPositive;
-                                break;
-                            case TaskBarLocation.Top:
-                                _animation |= WinApi.AnimateWindowFlags.VerPositive;
-                                break;
-                            case TaskBarLocation.Right:
-                                _animation |= WinApi.AnimateWindowFlags.HorNegative;
-                                break;
-                            case TaskBarLocation.Bottom:
-                                _animation |= WinApi.AnimateWindowFlags.VerNegative;
-                                break;
-                            default:
-                                _animation = WinApi.AnimateWindowFlags.Center;
-                                break;
-                        }
+                            TaskBarLocation.Left => WinApi.AnimateWindowFlags.HorPositive | WinApi.AnimateWindowFlags.Slide,
+                            TaskBarLocation.Top => WinApi.AnimateWindowFlags.VerPositive | WinApi.AnimateWindowFlags.Slide,
+                            TaskBarLocation.Right => WinApi.AnimateWindowFlags.HorNegative | WinApi.AnimateWindowFlags.Slide,
+                            TaskBarLocation.Bottom => WinApi.AnimateWindowFlags.VerNegative | WinApi.AnimateWindowFlags.Slide,
+                            _ => WinApi.AnimateWindowFlags.Center
+                        };
                     }
                     return _animation;
                 }
@@ -570,7 +562,7 @@
                 {
                     var key = GetConfigKey(nameof(Window), nameof(LargeImages));
                     if (_largeImages != value)
-                        FileEx.TryDelete(CachePaths.CurrentImages);
+                        FileEx.TryDelete(CacheFiles.CurrentImages);
                     _largeImages = value;
                     WriteValue(Resources.ConfigSection, key, _largeImages, false);
                 }
@@ -610,9 +602,13 @@
 
             internal static class Colors
             {
+                private const string AppsUseLightThemePath = "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";
                 private const string DefWallpaperPath = "HKCU\\Software\\Microsoft\\Internet Explorer\\Desktop\\General";
                 private const string WallpaperPath = "HKCU\\Control Panel\\Desktop";
                 private static Color _system, _base, _baseText, _control, _controlText, _button, _buttonHover, _buttonText, _highlight, _highlightText;
+
+                internal static bool IsDarkMode =>
+                    Reg.Read(AppsUseLightThemePath, "AppsUseLightTheme", 1) == 0;
 
                 internal static Color System
                 {
@@ -782,29 +778,54 @@
                     }
                 }
 
-                private static Color GetDefColor(string key)
+                internal static Color GetDefColor(string key)
                 {
+                    var c = key switch
+                    {
+                        nameof(Base) => System,
+                        nameof(Control) => SystemColors.Window,
+                        nameof(ControlText) => SystemColors.WindowText,
+                        nameof(Button) => SystemColors.ButtonFace,
+                        nameof(ButtonHover) => ProfessionalColors.ButtonSelectedHighlight,
+                        nameof(ButtonText) => SystemColors.ControlText,
+                        nameof(Highlight) => SystemColors.Highlight,
+                        nameof(HighlightText) => SystemColors.HighlightText,
+                        _ => Color.Empty
+                    };
+                    if (!IsDarkMode)
+                        return c;
                     switch (key)
                     {
-                        case nameof(Base):
-                            return System;
                         case nameof(Control):
-                            return SystemColors.Window;
-                        case nameof(ControlText):
-                            return SystemColors.WindowText;
                         case nameof(Button):
-                            return SystemColors.ButtonFace;
                         case nameof(ButtonHover):
-                            return ProfessionalColors.ButtonSelectedHighlight;
-                        case nameof(ButtonText):
-                            return SystemColors.ControlText;
                         case nameof(Highlight):
-                            return SystemColors.Highlight;
+                            c = c.EnsureDarkDarkDark();
+                            break;
+                        case nameof(ControlText):
+                        case nameof(ButtonText):
                         case nameof(HighlightText):
-                            return SystemColors.HighlightText;
-                        default:
-                            return Color.Empty;
+                            c = c.EnsureLightLightLight();
+                            break;
                     }
+                    return c;
+                }
+
+                internal static bool IsDefColor(string key)
+                {
+                    var c = GetDefColor(key);
+                    return key switch
+                    {
+                        nameof(Base) => c == Base,
+                        nameof(Control) => c == Control,
+                        nameof(ControlText) => c == ControlText,
+                        nameof(Button) => c == Button,
+                        nameof(ButtonHover) => c == ButtonHover,
+                        nameof(ButtonText) => c == ButtonText,
+                        nameof(Highlight) => c == Highlight,
+                        nameof(HighlightText) => c == HighlightText,
+                        _ => false
+                    };
                 }
 
                 private static Color GetColor(string key)
@@ -818,9 +839,10 @@
                 private static void WriteValue(string key, Color color)
                 {
                     var str = GetConfigKey(nameof(Window), nameof(Colors), key);
-                    if (color == GetDefColor(key))
+                    if (color == default || color == Color.Empty || color == GetDefColor(key))
                     {
                         WriteValue<string>(Resources.ConfigSection, str, null);
+                        WriteValue<string>(Resources.ConfigSection, str, null, null, true);
                         return;
                     }
                     var html = ColorEx.ToHtml(color);
@@ -830,7 +852,7 @@
 
             internal static class Size
             {
-                internal const int MinimumWidth = 346, MinimumHeight = 320;
+                internal const int MinimumWidth = 252 + 20, MinimumHeight = 320 + 40;
                 private static DrawingSize _maximum, _minimum;
                 private static int _width, _height;
 
@@ -849,7 +871,7 @@
                             screen = scr;
                             break;
                         }
-                        _maximum = screen.WorkingArea.Size;
+                        _maximum = screen.WorkingArea.Size + new DrawingSize(20, 40);
                         return _maximum;
                     }
                 }
@@ -920,13 +942,11 @@
                 {
                     var handle = WinApi.NativeHelper.GetDesktopWindow();
                     var size = DrawingSize.Empty;
-                    using (var graphics = Graphics.FromHwnd(handle))
-                    {
-                        if (width > 0)
-                            size.Width = (int)Math.Floor(graphics.DpiX / 96d * width);
-                        if (height > 0)
-                            size.Height = (int)Math.Floor(graphics.DpiY / 96d * height);
-                    }
+                    using var graphics = Graphics.FromHwnd(handle);
+                    if (width > 0)
+                        size.Width = (int)Math.Floor(graphics.DpiX / 96d * width);
+                    if (height > 0)
+                        size.Height = (int)Math.Floor(graphics.DpiY / 96d * height);
                     return size;
                 }
             }

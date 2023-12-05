@@ -18,7 +18,7 @@ namespace AppsLauncher.Windows
 
     public sealed partial class AboutForm : Form
     {
-        private static readonly object BwLocker = new object();
+        private static readonly object BwLocker = new();
         private readonly ProgressCircle _progressCircle;
 
         private int? ExitCode { get; set; } = 0;
@@ -32,7 +32,7 @@ namespace AppsLauncher.Windows
             Language.SetControlLang(this);
             Text = Language.GetText(Name);
 
-            Icon = CacheData.GetSystemIcon(ImageResourceSymbol.HelpShield);
+            Icon = Resources.PaLogoSymbol;
 
             AddFileInfoLabels();
 
@@ -44,27 +44,22 @@ namespace AppsLauncher.Windows
             }
             diskChartUpdater.RunWorkerAsync();
 
-            logoPanel.BackgroundImage = Resources.diagonal_pattern;
+            logoPanel.BackgroundImage = Resources.PatternDiagonal;
             logoPanel.BackColor = Settings.Window.Colors.Base.EnsureLightLight();
-            logoBox.BackgroundImage = Resources.Logo256px.Redraw(128, 128);
 
-            updateBtnPanel.Width = TextRenderer.MeasureText(updateBtn.Text, updateBtn.Font).Width + 32;
-            updateBtn.Image = CacheData.GetSystemImage(ImageResourceSymbol.Network);
-            updateBtn.ForeColor = Settings.Window.Colors.ButtonText;
-            updateBtn.BackColor = Settings.Window.Colors.Button;
-            updateBtn.FlatAppearance.MouseDownBackColor = Settings.Window.Colors.Button;
-            updateBtn.FlatAppearance.MouseOverBackColor = Settings.Window.Colors.ButtonHover;
+            CacheData.SetComponentImageColor(updateBtn);
+            updateBtn.Width = TextRenderer.MeasureText(updateBtn.Text, updateBtn.Font).Width + 32;
 
             _progressCircle = new ProgressCircle
             {
-                Anchor = updateBtnPanel.Anchor,
+                Anchor = updateBtn.Anchor,
                 BackColor = Color.Transparent,
                 ForeColor = mainPanel.BackColor,
                 InnerRadius = 7,
-                Location = new Point(updateBtnPanel.Right + 3, updateBtnPanel.Top + 1),
+                Location = new Point(updateBtn.Right + 3, updateBtn.Top + 1),
                 OuterRadius = 9,
                 RotationSpeed = 80,
-                Size = new Size(updateBtnPanel.Height, updateBtnPanel.Height),
+                Size = new Size(updateBtn.Height, updateBtn.Height),
                 Thickness = 3,
                 Visible = false
             };
@@ -96,12 +91,15 @@ namespace AppsLauncher.Windows
 
             copyrightLabel.Text = string.Format(CultureInfo.InvariantCulture, copyrightLabel.Text, DateTime.Now.Year);
 
+            if (Desktop.AppsUseDarkTheme)
+                Desktop.EnableDarkMode(Handle);
+
             ResumeLayout(false);
         }
 
         private void AboutForm_Load(object sender, EventArgs e)
         {
-            FormEx.Dockable(this);
+            this.Dockable();
             WinApi.NativeHelper.MoveWindowToVisibleScreenArea(Handle);
         }
 
@@ -112,7 +110,7 @@ namespace AppsLauncher.Windows
                 Interval = 1,
                 Enabled = true
             };
-            timer.Tick += (o, args) =>
+            timer.Tick += (_, _) =>
             {
                 if (Opacity < 1d)
                 {
@@ -149,9 +147,8 @@ namespace AppsLauncher.Windows
                 var description = fvi.FileDescription;
                 if (description.StartsWithEx("7z"))
                     description = description.Replace("7z", "7-Zip");
-                if (!description.Contains("(64"))
-                    if (PortableExecutable.Is64Bit(fvi.FileName))
-                        description += " (64-bit)";
+                if (description.StartsWithEx("Json"))
+                    description = description.Replace("Json.NET", "Newtonsoft Json.NET");
                 var name = new Label
                 {
                     AutoSize = true,
@@ -166,17 +163,19 @@ namespace AppsLauncher.Windows
                 var fna = Path.GetFileName(fvi.FileName);
                 if (fna.EqualsEx(strArray.Second().Select(Path.GetFileName).ToArray()))
                     reqVer = verArray.Second();
-                else if (fna.EqualsEx("7zG.exe") || fna.EqualsEx("7z.dll"))
+                else if (fna.EqualsEx("7zG.exe", "7z.dll"))
                     reqVer = verArray.Third();
                 else
                     reqVer = verArray.First();
                 var curVer = FileEx.GetVersion(fvi.FileName);
                 var strVer = curVer.ToString();
-                if (!fna.EqualsEx("7zG.exe") && !fna.EqualsEx("7z.dll"))
+                if (!fna.EqualsEx("7zG.exe", "7z.dll"))
                 {
                     reqVer = Version.Parse(reqVer.ToString(3));
                     curVer = Version.Parse(curVer.ToString(3));
                 }
+                if (fna.EqualsEx("Newtonsoft.Json.dll"))
+                    reqVer = curVer;
                 var version = new Label
                 {
                     AutoSize = true,
@@ -204,7 +203,8 @@ namespace AppsLauncher.Windows
                     Font = version.Font,
                     ForeColor = version.ForeColor,
                     Location = new Point(separator.Right, name.Bottom),
-                    Text = fvi.FileName.RemoveText(PathEx.LocalDir).TrimStart(Path.DirectorySeparatorChar)
+                    Text = Path.Combine(SystemIntegration.IsEnabled ? $"%{Settings.EnvironmentVariable}%" : ".",
+                                        fvi.FileName.RemoveText(PathEx.LocalDir).TrimStart(Path.DirectorySeparatorChar))
                 };
                 mainPanel.Controls.Add(path);
                 bottom = path.Bottom;
@@ -217,7 +217,7 @@ namespace AppsLauncher.Windows
 
         private void DiskChartUpdater_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (!(sender is BackgroundWorker owner))
+            if (sender is not BackgroundWorker owner)
                 return;
             foreach (var drive in DriveInfo.GetDrives())
             {
@@ -237,7 +237,7 @@ namespace AppsLauncher.Windows
 
         private void DiskChartUpdater_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            if (!(e.UserState is long length))
+            if (e.UserState is not long length)
             {
                 spaceChart.Visible = false;
                 return;
@@ -279,7 +279,7 @@ namespace AppsLauncher.Windows
 
         private void UpdateBtn_Click(object sender, EventArgs e)
         {
-            if (!(sender is Button owner))
+            if (sender is not Button owner)
                 return;
             owner.Enabled = false;
             if (!updateChecker.IsBusy)
@@ -319,19 +319,12 @@ namespace AppsLauncher.Windows
             _progressCircle.Active = false;
             _progressCircle.Visible = false;
             closeToUpdate.Enabled = false;
-            string message;
-            switch (ExitCode)
+            var message = ExitCode switch
             {
-                case 0:
-                    message = Language.GetText(nameof(en_US.OperationCompletedMsg));
-                    break;
-                case 1:
-                    message = Language.GetText(nameof(en_US.OperationCanceledMsg));
-                    break;
-                default:
-                    message = Language.GetText(nameof(en_US.NoUpdatesFoundMsg));
-                    break;
-            }
+                0 => Language.GetText(nameof(en_US.OperationCompletedMsg)),
+                1 => Language.GetText(nameof(en_US.OperationCanceledMsg)),
+                _ => Language.GetText(nameof(en_US.NoUpdatesFoundMsg))
+            };
             MessageBoxEx.Show(this, message, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

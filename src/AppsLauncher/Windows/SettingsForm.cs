@@ -33,33 +33,25 @@ namespace AppsLauncher.Windows
 
             SuspendLayout();
 
-            Icon = CacheData.GetSystemIcon(ImageResourceSymbol.SystemControl);
+            Icon = Resources.PaLogoSymbol;
 
             foreach (TabPage tab in tabCtrl.TabPages)
                 tab.BackColor = Settings.Window.Colors.BaseDark;
 
-            locationBtn.BackgroundImage = CacheData.GetSystemImage(ImageResourceSymbol.Directory);
+            CacheData.SetComponentImageColor(locationBtn, true);
+            CacheData.SetComponentImageColor(associateBtn, Color.DarkGoldenrod);
+            CacheData.SetComponentImageColor(restoreFileTypesBtn, Color.DarkGreen);
+            CacheData.SetComponentImageColor(addToShellBtn, Color.DarkGoldenrod);
+            CacheData.SetComponentImageColor(rmFromShellBtn, Color.DarkGoldenrod);
+
             fileTypes.AutoVerticalScrollBar();
             fileTypes.MaxLength = short.MaxValue;
-            fileTypesMenu.EnableAnimation();
-            fileTypesMenu.SetFixedSingle();
-            associateBtn.Image = CacheData.GetSystemImage(ImageResourceSymbol.Uac);
-            try
+            if (EnvironmentEx.IsAtLeastWindows(11))
+                Desktop.RoundCorners(fileTypesMenu.Handle, true);
+            else
             {
-                restoreFileTypesBtn.Image = new Bitmap(28, 16);
-                using (var g = Graphics.FromImage(restoreFileTypesBtn.Image))
-                {
-                    g.DrawImage(CacheData.GetSystemImage(ImageResourceSymbol.Uac), 0, 0);
-                    g.DrawImage(CacheData.GetSystemImage(ImageResourceSymbol.Undo), 12, 0);
-                }
-            }
-            catch (Exception ex) when (ex.IsCaught())
-            {
-                restoreFileTypesBtn.Image = CacheData.GetSystemImage(ImageResourceSymbol.Uac);
-                restoreFileTypesBtn.ImageAlign = ContentAlignment.MiddleLeft;
-                restoreFileTypesBtn.Text = Resources.LeftArrow;
-                if (restoreFileTypesBtn.Image != null)
-                    restoreFileTypesBtn.TextAlign = ContentAlignment.MiddleRight;
+                fileTypesMenu.EnableAnimation();
+                fileTypesMenu.SetFixedSingle();
             }
 
             previewBg.BackColor = Settings.Window.Colors.BaseDark;
@@ -69,16 +61,14 @@ namespace AppsLauncher.Windows
                 var height = (int)Math.Round(Settings.Window.BackgroundImage.Height * .65d) + 1;
                 previewBg.BackgroundImage = Settings.Window.BackgroundImage.Redraw(width, height);
                 previewBg.BackgroundImageLayout = Settings.Window.BackgroundImageLayout;
-                previewLogoBox.BackColor = Color.Transparent;
             }
-            previewLogoBox.Image = Resources.Logo128px.Redraw(previewLogoBox.Height, previewLogoBox.Height);
-            var exeImage = CacheData.GetSystemImage(ImageResourceSymbol.Application);
+            var exeImage = CacheData.GetImage(Resources.PaLogoClear, nameof(Resources.PaLogoClear), default, 16);
             if (exeImage != null)
             {
                 previewSmallImgList.Images.Add(exeImage);
                 previewSmallImgList.Images.Add(exeImage);
             }
-            exeImage = CacheData.GetSystemImage(ImageResourceSymbol.Application, true);
+            exeImage = CacheData.GetImage(Resources.PaLogoClear, nameof(Resources.PaLogoClear), default, 32);
             if (exeImage != null)
             {
                 previewLargeImgList.Images.Add(exeImage);
@@ -86,14 +76,6 @@ namespace AppsLauncher.Windows
             }
             previewAppList.StateImageList = Settings.Window.LargeImages ? previewLargeImgList : previewSmallImgList;
             previewAppList.View = Settings.Window.LargeImages ? View.Tile : View.List;
-
-            foreach (var btn in new[] { saveBtn, exitBtn })
-            {
-                btn.BackColor = Settings.Window.Colors.Button;
-                btn.ForeColor = Settings.Window.Colors.ButtonText;
-                btn.FlatAppearance.MouseDownBackColor = Settings.Window.Colors.Button;
-                btn.FlatAppearance.MouseOverBackColor = Settings.Window.Colors.ButtonHover;
-            }
 
             var comparer = new AlphaNumericComparer<object>();
             var appNames = CacheData.CurrentAppInfo.Select(x => x.Name).Cast<object>().OrderBy(x => x, comparer).ToArray();
@@ -104,8 +86,13 @@ namespace AppsLauncher.Windows
                 appsBox.SelectedIndex = 0;
 
             appDirs.AutoVerticalScrollBar();
-            addToShellBtn.Image = CacheData.GetSystemImage(ImageResourceSymbol.Uac);
-            rmFromShellBtn.Image = CacheData.GetSystemImage(ImageResourceSymbol.Uac);
+
+            if (Desktop.AppsUseDarkTheme)
+            {
+                Desktop.EnableDarkMode(Handle);
+                Desktop.EnableDarkMode(saveBtn.Handle);
+                Desktop.EnableDarkMode(exitBtn.Handle);
+            }
 
             ResumeLayout(false);
         }
@@ -124,9 +111,9 @@ namespace AppsLauncher.Windows
                 Interval = 1,
                 Enabled = true
             };
-            timer.Tick += (o, args) =>
+            timer.Tick += (o, _) =>
             {
-                if (!(o is Timer owner))
+                if (o is not Timer owner)
                     return;
                 if (Opacity < 1d)
                 {
@@ -143,7 +130,7 @@ namespace AppsLauncher.Windows
 
         private void SettingsForm_EnabledChanged(object sender, EventArgs e)
         {
-            if (sender is Form owner && owner.Enabled)
+            if (sender is Form { Enabled: true })
                 AppsBox_SelectedIndexChanged(appsBox, EventArgs.Empty);
         }
 
@@ -158,10 +145,7 @@ namespace AppsLauncher.Windows
             Language.UserLang = Settings.Language;
 
             Language.SetControlLang(this);
-
-            var title = Language.GetText(nameof(en_US.settingsBtn));
-            if (!string.IsNullOrWhiteSpace(title))
-                Text = title;
+            Text = Language.GetText(Name);
 
             for (var i = 0; i < fileTypesMenu.Items.Count; i++)
                 fileTypesMenu.Items[i].Text = Language.GetText(fileTypesMenu.Items[i].Name);
@@ -175,7 +159,7 @@ namespace AppsLauncher.Windows
             intValue = Settings.Window.FadeInDuration;
             fadeInNum.Value = intValue >= fadeInNum.Minimum && intValue <= fadeInNum.Maximum ? intValue : 100;
 
-            defBgCheck.Checked = !File.Exists(CachePaths.CurrentImageBg);
+            defBgCheck.Checked = !File.Exists(CacheFiles.CurrentImageBg);
             if (bgLayout.Items.Count > 0)
                 bgLayout.Items.Clear();
             for (var i = 0; i < 5; i++)
@@ -405,43 +389,43 @@ namespace AppsLauncher.Windows
 
         private void SetBgBtn_Click(object sender, EventArgs e)
         {
-            using (var dialog = new OpenFileDialog { CheckFileExists = true, CheckPathExists = true, Multiselect = false })
+            using var dialog = new OpenFileDialog();
+            dialog.CheckFileExists = true;
+            dialog.CheckPathExists = true;
+            dialog.Multiselect = false;
+            var path = PathEx.Combine(PathEx.LocalDir, "Assets", "bg");
+            if (Directory.Exists(path))
+                dialog.InitialDirectory = path;
+            var imageEncoders = ImageCodecInfo.GetImageEncoders();
+            var extensions = new List<string>();
+            for (var i = 0; i < imageEncoders.Length; i++)
             {
-                var path = PathEx.Combine(PathEx.LocalDir, "Assets", "bg");
-                if (Directory.Exists(path))
-                    dialog.InitialDirectory = path;
-                var imageEncoders = ImageCodecInfo.GetImageEncoders();
-                var extensions = new List<string>();
-                for (var i = 0; i < imageEncoders.Length; i++)
-                {
-                    extensions.Add(imageEncoders[i].FilenameExtension.ToLowerInvariant());
-                    var description = imageEncoders[i].CodecName.Substring(8).Replace("Codec", "Files").Trim();
-                    var pattern = extensions[extensions.Count - 1];
-                    dialog.Filter = string.Format(CultureInfo.InvariantCulture, @"{0}{1}{2} ({3})|{3}", dialog.Filter, i > 0 ? "|" : string.Empty, description, pattern);
-                }
-                dialog.Filter = string.Format(CultureInfo.InvariantCulture, @"{0}|Image Files ({1})|{1}", dialog.Filter, extensions.Join(";"));
-                dialog.FilterIndex = imageEncoders.Length + 1;
-                dialog.ShowDialog();
-                if (!File.Exists(dialog.FileName))
-                    return;
-                try
-                {
-                    var indicator = Screen.AllScreens.Max(x => Math.Max(x.WorkingArea.Width, x.WorkingArea.Height));
-                    var image = Image.FromFile(dialog.FileName).Redraw(SmoothingMode.HighQuality, indicator);
-                    if (Math.Max(image.Width, image.Height) > 768)
-                        MessageBoxEx.Show(this, Language.GetText(nameof(en_US.BgImageSizeInfoMsg)), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    CacheData.CurrentImageBg = image;
-                    previewBg.BackgroundImage = image.Redraw((int)Math.Round(image.Width * .65f) + 1, (int)Math.Round(image.Height * .65f) + 1);
-                    previewLogoBox.BackColor = Color.Transparent;
-                    defBgCheck.Checked = false;
-                    Result = DialogResult.Yes;
-                    MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationCompletedMsg)), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex) when (ex.IsCaught())
-                {
-                    Log.Write(ex);
-                    MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationFailedMsg)), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                extensions.Add(imageEncoders[i].FilenameExtension.ToLowerInvariant());
+                var description = imageEncoders[i].CodecName.Substring(8).Replace("Codec", "Files").Trim();
+                var pattern = extensions[extensions.Count - 1];
+                dialog.Filter = string.Format(CultureInfo.InvariantCulture, @"{0}{1}{2} ({3})|{3}", dialog.Filter, i > 0 ? "|" : string.Empty, description, pattern);
+            }
+            dialog.Filter = string.Format(CultureInfo.InvariantCulture, @"{0}|Image Files ({1})|{1}", dialog.Filter, extensions.Join(";"));
+            dialog.FilterIndex = imageEncoders.Length + 1;
+            dialog.ShowDialog();
+            if (!File.Exists(dialog.FileName))
+                return;
+            try
+            {
+                var indicator = Screen.AllScreens.Max(x => Math.Max(x.WorkingArea.Width, x.WorkingArea.Height));
+                var image = Image.FromFile(dialog.FileName).Redraw(SmoothingMode.HighQuality, indicator);
+                if (Math.Max(image.Width, image.Height) > 768)
+                    MessageBoxEx.Show(this, Language.GetText(nameof(en_US.BgImageSizeInfoMsg)), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                CacheData.CurrentImageBg = image;
+                previewBg.BackgroundImage = image.Redraw((int)Math.Round(image.Width * .65f) + 1, (int)Math.Round(image.Height * .65f) + 1);
+                defBgCheck.Checked = false;
+                Result = DialogResult.Yes;
+                MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationCompletedMsg)), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex) when (ex.IsCaught())
+            {
+                Log.Write(ex);
+                MessageBoxEx.Show(this, Language.GetText(nameof(en_US.OperationFailedMsg)), MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -453,7 +437,7 @@ namespace AppsLauncher.Windows
             {
                 if (!owner.Checked)
                 {
-                    var bgImg = File.ReadAllBytes(CachePaths.CurrentImageBg).DeserializeObject<Image>();
+                    var bgImg = File.ReadAllBytes(CacheFiles.CurrentImageBg).DeserializeObject<Image>();
                     previewBg.BackgroundImage = bgImg.Redraw((int)Math.Round(bgImg.Width * .65f) + 1, (int)Math.Round(bgImg.Height * .65f) + 1);
                 }
                 else
@@ -498,15 +482,13 @@ namespace AppsLauncher.Windows
             {
                 Log.Write(ex);
             }
-            using (var dialog = new ColorDialogEx(this, title)
+            using (var dialog = new ColorDialogEx(this, title))
             {
-                AllowFullOpen = true,
-                AnyColor = true,
-                SolidColorOnly = true,
-                Color = owner.BackColor,
-                FullOpen = true
-            })
-            {
+                dialog.AllowFullOpen = true;
+                dialog.AnyColor = true;
+                dialog.SolidColorOnly = true;
+                dialog.Color = owner.BackColor;
+                dialog.FullOpen = true;
                 if (Settings.Window.CustomColors.Any())
                     dialog.CustomColors = Settings.Window.CustomColors;
                 if (dialog.ShowDialog() != DialogResult.Cancel)
@@ -525,13 +507,22 @@ namespace AppsLauncher.Windows
 
         private void ResetColorsBtn_Click(object sender, EventArgs e)
         {
-            mainColorPanel.BackColor = Settings.Window.Colors.System;
-            previewBg.BackColor = ControlPaint.Dark(Settings.Window.Colors.System, .25f);
-            controlColorPanel.BackColor = SystemColors.Window;
-            controlTextColorPanel.BackColor = SystemColors.WindowText;
-            btnColorPanel.BackColor = SystemColors.ButtonFace;
-            btnHoverColorPanel.BackColor = ProfessionalColors.ButtonSelectedHighlight;
-            btnTextColorPanel.BackColor = SystemColors.ControlText;
+            Settings.Window.Colors.Base = default;
+            Settings.Window.Colors.Control = default;
+            Settings.Window.Colors.ControlText = default;
+            Settings.Window.Colors.Button = default;
+            Settings.Window.Colors.ButtonHover = default;
+            Settings.Window.Colors.ButtonText = default;
+            Settings.Window.Colors.Highlight = default;
+            Settings.Window.Colors.HighlightText = default;
+
+            mainColorPanel.BackColor = Settings.Window.Colors.Base;
+            controlColorPanel.BackColor = Settings.Window.Colors.Control;
+            controlTextColorPanel.BackColor = Settings.Window.Colors.ControlText;
+            btnColorPanel.BackColor = Settings.Window.Colors.Button;
+            btnHoverColorPanel.BackColor = Settings.Window.Colors.ButtonHover;
+            btnTextColorPanel.BackColor = Settings.Window.Colors.ButtonText;
+
             if (Result != DialogResult.Yes)
                 Result = DialogResult.Yes;
             StylePreviewUpdate();
@@ -541,15 +532,13 @@ namespace AppsLauncher.Windows
         {
             if (!(sender is Panel owner))
                 return;
-            using (var g = e.Graphics)
-            {
-                g.TranslateTransform((int)(owner.Width / (Math.PI * 2)), owner.Width + 40);
-                g.RotateTransform(-70);
-                g.TextRenderingHint = TextRenderingHint.AntiAlias;
-                using (var b = new SolidBrush(Color.FromArgb(50, (byte)~owner.BackColor.R, (byte)~owner.BackColor.G, (byte)~owner.BackColor.B)))
-                    using (var f = new Font("Comic Sans MS", 24f))
-                        g.DrawString("Preview", f, b, 0f, 0f);
-            }
+            using var g = e.Graphics;
+            g.TranslateTransform((int)(owner.Width / (Math.PI * 2)), owner.Width + 40);
+            g.RotateTransform(-70);
+            g.TextRenderingHint = TextRenderingHint.AntiAlias;
+            using var b = new SolidBrush(Color.FromArgb(50, (byte)~owner.BackColor.R, (byte)~owner.BackColor.G, (byte)~owner.BackColor.B));
+            using var f = new Font("Comic Sans MS", 24f);
+            g.DrawString("Preview", f, b, 0f, 0f);
         }
 
         private void StyleCheckBox_CheckedChanged(object sender, EventArgs e)

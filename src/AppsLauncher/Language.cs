@@ -1,9 +1,12 @@
 using System;
+using System.Collections;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Windows.Forms;
+using AppsLauncher.Libraries;
 using SilDev;
 using SilDev.Legacy;
 
@@ -14,7 +17,7 @@ internal static class Language
     private static Assembly _currentAssembly;
 
     internal static string BaseName =>
-        _baseName ?? (_baseName = ResourcesNamespace != default ? ResourcesNamespace + ".LangResources." : default);
+        _baseName ??= ResourcesNamespace != default ? ResourcesNamespace + ".LangResources." : default;
 
     internal static Assembly CurrentAssembly
     {
@@ -28,16 +31,16 @@ internal static class Language
 
     internal static string CurrentLang
     {
-        get => _currentLang ?? (_currentLang = SystemLang);
+        get => _currentLang ??= SystemLang;
         set => _currentLang = value;
     }
 
     internal static string SystemLang =>
-        _systemLang ?? (_systemLang = CultureInfo.InstalledUICulture.Name);
+        _systemLang ??= CultureInfo.InstalledUICulture.Name;
 
     internal static string UserLang
     {
-        get => _userLang ?? (_userLang = Ini.Read<string>("Launcher", "Language", SystemLang));
+        get => _userLang ??= Ini.Read<string>("Launcher", "Language", SystemLang);
         set => _userLang = value;
     }
 
@@ -68,12 +71,8 @@ internal static class Language
         return !string.IsNullOrWhiteSpace(text) ? text : key;
     }
 
-    internal static string GetText(string lang, Control control)
-    {
-        if (!(control is Control c))
-            return string.Empty;
-        return GetText(lang, c.Name);
-    }
+    internal static string GetText(string lang, Control control) => 
+        control is not { } c ? string.Empty : GetText(lang, c.Name);
 
     internal static string GetText(string key)
     {
@@ -84,7 +83,7 @@ internal static class Language
 
     internal static string GetText(Control control)
     {
-        if (!(control is Control c))
+        if (control is not { } c)
             return string.Empty;
         if (!CurrentLang.Equals(UserLang, StringComparison.Ordinal))
             CurrentLang = UserLang;
@@ -93,7 +92,7 @@ internal static class Language
 
     internal static void SetControlLang(Control control, bool recursive = true)
     {
-        if (!(control is Control parent))
+        if (control is not { } parent)
             return;
         if (!string.IsNullOrWhiteSpace(parent.Text))
         {

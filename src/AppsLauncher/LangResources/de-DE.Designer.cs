@@ -19,7 +19,7 @@ namespace AppsLauncher.LangResources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class de_DE {
@@ -57,6 +57,15 @@ namespace AppsLauncher.LangResources {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Über Port-Able.
+        /// </summary>
+        internal static string aboutBtnTip {
+            get {
+                return ResourceManager.GetString("aboutBtnTip", resourceCulture);
             }
         }
         
@@ -119,7 +128,7 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Weitere Apps hinzufügen..
+        ///   Looks up a localized string similar to Weitere Apps hinzufügen.
         /// </summary>
         internal static string addBtnTip {
             get {
@@ -308,15 +317,6 @@ namespace AppsLauncher.LangResources {
         internal static string appsBoxLabel {
             get {
                 return ResourceManager.GetString("appsBoxLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} {1} gefunden!.
-        /// </summary>
-        internal static string appsCount {
-            get {
-                return ResourceManager.GetString("appsCount", resourceCulture);
             }
         }
         
@@ -525,7 +525,7 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Startmenü.
+        ///   Looks up a localized string similar to Maus-Cursor.
         /// </summary>
         internal static string defaultPosOption0 {
             get {
@@ -534,7 +534,7 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Maus-Cursor.
+        ///   Looks up a localized string similar to Startmenü.
         /// </summary>
         internal static string defaultPosOption1 {
             get {
@@ -552,11 +552,11 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Weitere hinzufügen.
+        ///   Looks up a localized string similar to Weitere Apps hinzufügen..
         /// </summary>
-        internal static string downloadBtn {
+        internal static string downloadBtnTip {
             get {
-                return ResourceManager.GetString("downloadBtn", resourceCulture);
+                return ResourceManager.GetString("downloadBtnTip", resourceCulture);
             }
         }
         
@@ -669,6 +669,15 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Port-Able hat {0} {1} gefunden.
+        /// </summary>
+        internal static string MenuViewForm {
+            get {
+                return ResourceManager.GetString("MenuViewForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Keine Bestätigungsabfrage für diese App.
         /// </summary>
         internal static string noConfirmCheck {
@@ -766,6 +775,15 @@ namespace AppsLauncher.LangResources {
         internal static string OperationFailedMsg {
             get {
                 return ResourceManager.GetString("OperationFailedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profilverzeichnis öffnen.
+        /// </summary>
+        internal static string profileBtnTip {
+            get {
+                return ResourceManager.GetString("profileBtnTip", resourceCulture);
             }
         }
         
@@ -907,11 +925,20 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Einstellungen öffnen.
+        /// </summary>
+        internal static string settingsBtnTip {
+            get {
+                return ResourceManager.GetString("settingsBtnTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Einstellungen.
         /// </summary>
-        internal static string settingsBtn {
+        internal static string SettingsForm {
             get {
-                return ResourceManager.GetString("settingsBtn", resourceCulture);
+                return ResourceManager.GetString("SettingsForm", resourceCulture);
             }
         }
         

@@ -117,6 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="aboutBtnTip" xml:space="preserve">
+    <value>About Port-Able</value>
+    <comment>ToolTip</comment>
+  </data>
   <data name="AboutForm" xml:space="preserve">
     <value>About Port-Able</value>
     <comment>Form</comment>
@@ -233,10 +237,6 @@ Suggestions are also very welcome!</value>
     <value>Application:</value>
     <comment>Label</comment>
   </data>
-  <data name="appsCount" xml:space="preserve">
-    <value>{0} {1} found!</value>
-    <comment>Status</comment>
-  </data>
   <data name="AssociateAppWayQuestion" xml:space="preserve">
     <value>How are the file types to be assigned?</value>
     <comment>Message</comment>
@@ -332,20 +332,20 @@ Types: {0}</value>
     <comment>Label</comment>
   </data>
   <data name="defaultPosOption0" xml:space="preserve">
-    <value>Align to Start Menu</value>
+    <value>Align to Mouse Cursor</value>
     <comment>ComboBoxItem</comment>
   </data>
   <data name="defaultPosOption1" xml:space="preserve">
-    <value>Align to Mouse Cursor</value>
+    <value>Align to Start Menu</value>
     <comment>ComboBoxItem</comment>
   </data>
   <data name="defBgCheck" xml:space="preserve">
     <value>Default Background</value>
     <comment>CheckBox</comment>
   </data>
-  <data name="downloadBtn" xml:space="preserve">
-    <value>Add More</value>
-    <comment>Button</comment>
+  <data name="downloadBtnTip" xml:space="preserve">
+    <value>Get more apps</value>
+    <comment>ToolTip</comment>
   </data>
   <data name="exitBtn" xml:space="preserve">
     <value>Exit</value>
@@ -393,6 +393,10 @@ selected by default.</value>
     <value>Main Color:</value>
     <comment>Label</comment>
   </data>
+  <data name="MenuViewForm" xml:space="preserve">
+    <value>Port-Able found {0} {1}</value>
+    <comment>Form/Status</comment>
+  </data>
   <data name="noConfirmCheck" xml:space="preserve">
     <value>Disable confirmation for this app</value>
     <comment>CheckBox</comment>
@@ -437,6 +441,10 @@ without confirmation.</value>
   <data name="OperationFailedMsg" xml:space="preserve">
     <value>Operation failed.</value>
     <comment>Message</comment>
+  </data>
+  <data name="profileBtnTip" xml:space="preserve">
+    <value>Open profile directory</value>
+    <comment>ToolTip</comment>
   </data>
   <data name="RequirementsErrorMsg" xml:space="preserve">
     <value>This program is incomplete. Would you like to download it again?</value>
@@ -500,9 +508,13 @@ This will allow you to go back in time and undo the following changes.</value>
     <value>Language</value>
     <comment>Label</comment>
   </data>
-  <data name="settingsBtn" xml:space="preserve">
-    <value>Settings</value>
-    <comment>Button</comment>
+  <data name="settingsBtnTip" xml:space="preserve">
+    <value>Open settings</value>
+    <comment>ToolTip</comment>
+  </data>
+  <data name="SettingsForm" xml:space="preserve">
+    <value>Einstellungen</value>
+    <comment>Form</comment>
   </data>
   <data name="shellText" xml:space="preserve">
     <value>Open with Portable App</value>
@@ -510,6 +522,7 @@ This will allow you to go back in time and undo the following changes.</value>
   </data>
   <data name="showLargeImagesCheck" xml:space="preserve">
     <value>Show Large Images</value>
+    <comment>CheckBox</comment>
   </data>
   <data name="sortArgPathsCheck" xml:space="preserve">
     <value>Sort paths in command line arguments</value>

@@ -20,12 +20,12 @@
         {
             get
             {
-                if (_fileTypes == default(List<string>))
-                    _fileTypes = new List<string>();
+                _fileTypes ??= new List<string>();
                 if (_fileTypes.Any() || !ValidPaths.Any())
                     return _fileTypes;
                 var comparer = new AlphaNumericComparer<string>();
-                _fileTypes = ValidPaths.Where(x => !PathEx.IsDir(x)).Select(x => Path.GetExtension(x)?.TrimStart('.').ToLowerInvariant())
+                _fileTypes = ValidPaths.Where(x => !PathEx.IsDir(x))
+                                       .Select(x => Path.GetExtension(x)?.TrimStart('.').ToLowerInvariant())
                                        .Where(Comparison.IsNotEmpty).Distinct().OrderBy(x => x, comparer).ToList();
                 return _fileTypes;
             }
@@ -35,8 +35,7 @@
         {
             get
             {
-                if (_savedFileTypes == null)
-                    _savedFileTypes = new List<string>();
+                _savedFileTypes ??= new List<string>();
                 if (_savedFileTypes.Count > 0)
                     return _savedFileTypes;
                 var comparer = new AlphaNumericComparer<string>();
@@ -50,8 +49,7 @@
         {
             get
             {
-                if (_validPaths == default(List<string>))
-                    _validPaths = new List<string>();
+                _validPaths ??= new List<string>();
                 if (_validPaths.Any() || Environment.GetCommandLineArgs().Length < 2)
                     return _validPaths;
                 var comparer = new AlphaNumericComparer<string>();

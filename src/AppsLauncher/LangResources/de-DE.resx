@@ -117,6 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="aboutBtnTip" xml:space="preserve">
+    <value>Über Port-Able</value>
+    <comment>ToolTip</comment>
+  </data>
   <data name="AboutForm" xml:space="preserve">
     <value>Über Port-Able</value>
     <comment>Form</comment>
@@ -146,7 +150,7 @@ Verbesserungsvorschläge sind auch sehr willkommen!</value>
     <comment>ToolTip</comment>
   </data>
   <data name="addBtnTip" xml:space="preserve">
-    <value>Weitere Apps hinzufügen.</value>
+    <value>Weitere Apps hinzufügen</value>
     <comment>ToolTip</comment>
   </data>
   <data name="addToShellBtn" xml:space="preserve">
@@ -232,10 +236,6 @@ Verbesserungsvorschläge sind auch sehr willkommen!</value>
   <data name="appsBoxLabel" xml:space="preserve">
     <value>Anwendung:</value>
     <comment>Label</comment>
-  </data>
-  <data name="appsCount" xml:space="preserve">
-    <value>{0} {1} gefunden!</value>
-    <comment>Status</comment>
   </data>
   <data name="AssociateAppWayQuestion" xml:space="preserve">
     <value>Wie sollen die Dateitypen zugewiesen werden?</value>
@@ -332,20 +332,20 @@ Dateitypen: {0}</value>
     <comment>Label</comment>
   </data>
   <data name="defaultPosOption0" xml:space="preserve">
-    <value>Startmenü</value>
+    <value>Maus-Cursor</value>
     <comment>ComboBoxItem</comment>
   </data>
   <data name="defaultPosOption1" xml:space="preserve">
-    <value>Maus-Cursor</value>
+    <value>Startmenü</value>
     <comment>ComboBoxItem</comment>
   </data>
   <data name="defBgCheck" xml:space="preserve">
     <value>Standard Hintergrund</value>
     <comment>CheckBox</comment>
   </data>
-  <data name="downloadBtn" xml:space="preserve">
-    <value>Weitere hinzufügen</value>
-    <comment>Button</comment>
+  <data name="downloadBtnTip" xml:space="preserve">
+    <value>Weitere Apps hinzufügen.</value>
+    <comment>ToolTip</comment>
   </data>
   <data name="exitBtn" xml:space="preserve">
     <value>Beenden</value>
@@ -400,6 +400,10 @@ in folge dessen, ohne Nachfrage gestartet.</value>
     <value>Hauptfarbe:</value>
     <comment>Label</comment>
   </data>
+  <data name="MenuViewForm" xml:space="preserve">
+    <value>Port-Able hat {0} {1} gefunden</value>
+    <comment>Form/Status</comment>
+  </data>
   <data name="noConfirmCheck" xml:space="preserve">
     <value>Keine Bestätigungsabfrage für diese App</value>
     <comment>CheckBox</comment>
@@ -445,6 +449,10 @@ der zugeordneten App gestartet.</value>
   <data name="OperationFailedMsg" xml:space="preserve">
     <value>Der Vorgang ist fehlgeschlagen.</value>
     <comment>Message</comment>
+  </data>
+  <data name="profileBtnTip" xml:space="preserve">
+    <value>Profilverzeichnis öffnen</value>
+    <comment>ToolTip</comment>
   </data>
   <data name="RequirementsErrorMsg" xml:space="preserve">
     <value>Das Programm ist unvollständig. Möchten Sie es erneut herunterladen?</value>
@@ -508,9 +516,13 @@ Dadurch können Sie die folgenden Änderungen jederzeit wieder rückgängig mach
     <value>Sprache (Language)</value>
     <comment>Label</comment>
   </data>
-  <data name="settingsBtn" xml:space="preserve">
+  <data name="settingsBtnTip" xml:space="preserve">
+    <value>Einstellungen öffnen</value>
+    <comment>ToolTip</comment>
+  </data>
+  <data name="SettingsForm" xml:space="preserve">
     <value>Einstellungen</value>
-    <comment>Button</comment>
+    <comment>Form</comment>
   </data>
   <data name="shellText" xml:space="preserve">
     <value>An Portable App weiterleiten</value>
@@ -518,6 +530,7 @@ Dadurch können Sie die folgenden Änderungen jederzeit wieder rückgängig mach
   </data>
   <data name="showLargeImagesCheck" xml:space="preserve">
     <value>Große Bilder anzeigen</value>
+    <comment>CheckBox</comment>
   </data>
   <data name="sortArgPathsCheck" xml:space="preserve">
     <value>Pfade in Befehlszeilenargumenten sortieren</value>

@@ -14,13 +14,12 @@ namespace AppsLauncher.Windows
     using Microsoft.Win32;
     using Properties;
     using SilDev;
-    using SilDev.Drawing;
     using SilDev.Forms;
     using FormsTimer = System.Windows.Forms.Timer;
 
     public sealed partial class OpenWithForm : Form
     {
-        private static readonly object Locker = new object();
+        private static readonly object Locker = new();
 
         private bool IsStarted { get; set; }
 
@@ -36,8 +35,8 @@ namespace AppsLauncher.Windows
             Text = Language.GetText(Name);
 
             BackColor = Settings.Window.Colors.BaseDark;
-            Icon = Resources.Logo;
-            notifyIcon.Icon = CacheData.GetSystemIcon(ImageResourceSymbol.Asterisk, true);
+            Icon = Resources.PaLogoSymbol;
+            notifyIcon.Icon = Icon;
 
             searchBox.BackColor = Settings.Window.Colors.Control;
             searchBox.ForeColor = Settings.Window.Colors.ControlText;
@@ -52,18 +51,32 @@ namespace AppsLauncher.Windows
                 btn.FlatAppearance.MouseOverBackColor = Settings.Window.Colors.ButtonHover;
             }
 
-            appMenu.EnableAnimation(ContextMenuStripExAnimation.SlideVerPositive, 100);
-            appMenu.SetFixedSingle();
-            appMenuItem2.Image = CacheData.GetSystemImage(ImageResourceSymbol.Uac);
-            appMenuItem3.Image = CacheData.GetSystemImage(ImageResourceSymbol.Directory);
-            appMenuItem7.Image = CacheData.GetSystemImage(ImageResourceSymbol.RecycleBinEmpty);
+            CacheData.SetComponentImageColor(appMenuItem2, Color.DarkGoldenrod);
+            CacheData.SetComponentImageColor(appMenuItem3, true);
+            CacheData.SetComponentImageColor(appMenuItem4);
+            CacheData.SetComponentImageColor(appMenuItem7, Color.DarkRed);
+
+            if (EnvironmentEx.IsAtLeastWindows(11))
+                Desktop.RoundCorners(appMenu.Handle, true);
+            else
+            {
+                appMenu.EnableAnimation(ContextMenuStripExAnimation.SlideVerPositive, 100);
+                appMenu.SetFixedSingle();
+            }
+
+            if (Desktop.AppsUseDarkTheme)
+            {
+                Desktop.EnableDarkMode(Handle);
+                appsBox.ChangeColorMode(ControlExColorMode.DarkDarkDark);
+                appMenu.ChangeColorMode();
+            }
+
+            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
 
             ResumeLayout(false);
 
             if (!searchBox.Focused)
                 searchBox.Select();
-
-            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
         }
 
         protected override void WndProc(ref Message m)
@@ -109,7 +122,7 @@ namespace AppsLauncher.Windows
             if (WinApi.NativeHelper.GetForegroundWindow() != Handle)
                 WinApi.NativeHelper.SetForegroundWindow(Handle);
 
-            FormEx.Dockable(this);
+            this.Dockable();
             AppsBoxUpdate(false);
         }
 
@@ -182,12 +195,10 @@ namespace AppsLauncher.Windows
             TopMost = false;
             try
             {
-                using (var dialog = new AboutForm())
-                {
-                    dialog.TopMost = true;
-                    dialog.Plus();
-                    dialog.ShowDialog();
-                }
+                using var dialog = new AboutForm();
+                dialog.TopMost = true;
+                dialog.Plus();
+                dialog.ShowDialog(this);
             }
             catch (Exception ex) when (ex.IsCaught())
             {
@@ -390,7 +401,7 @@ namespace AppsLauncher.Windows
 
         private void SearchBox_Enter(object sender, EventArgs e)
         {
-            if (!(sender is TextBox owner))
+            if (sender is not TextBox owner)
                 return;
             owner.Font = new Font("Segoe UI", owner.Font.Size);
             owner.ForeColor = Settings.Window.Colors.ControlText;
@@ -399,7 +410,7 @@ namespace AppsLauncher.Windows
 
         private void SearchBox_Leave(object sender, EventArgs e)
         {
-            if (!(sender is TextBox owner))
+            if (sender is not TextBox owner)
                 return;
             var c = Settings.Window.Colors.ControlText;
             owner.Font = new Font("Comic Sans MS", owner.Font.Size, FontStyle.Italic);
@@ -426,11 +437,12 @@ namespace AppsLauncher.Windows
                 return;
             var itemList = appsBox.Items.Cast<object>().Select(item => item.ToString()).ToList();
             foreach (var item in appsBox.Items)
-                if (item.ToString().Equals(itemList.SearchItem(owner.Text), StringComparison.Ordinal))
-                {
-                    appsBox.SelectedItem = item;
-                    break;
-                }
+            {
+                if (!item.ToString().Equals(itemList.SearchItem(owner.Text), StringComparison.Ordinal))
+                    continue;
+                appsBox.SelectedItem = item;
+                break;
+            }
         }
 
         private void AddBtn_Click(object sender, EventArgs e) =>
@@ -438,21 +450,14 @@ namespace AppsLauncher.Windows
 
         private void AddBtn_MouseEnter(object sender, EventArgs e)
         {
-            if (!(sender is Button owner))
+            if (sender is not Button owner)
                 return;
-            owner.Image = owner.Image.SwitchGrayScale($"{owner.Name}BackgroundImage");
             toolTip.SetToolTip(owner, Language.GetText($"{owner.Name}Tip"));
-        }
-
-        private void AddBtn_MouseLeave(object sender, EventArgs e)
-        {
-            if (sender is Button owner)
-                owner.Image = owner.Image.SwitchGrayScale($"{owner.Name}BackgroundImage");
         }
 
         private void StartBtn_Click(object sender, EventArgs e)
         {
-            if (!(sender is Button owner) || owner.SplitClickHandler(appMenu))
+            if (sender is not Button owner || owner.SplitClickHandler(appMenu))
                 return;
             var appName = appsBox.SelectedItem.ToString();
             CacheData.FindAppData(appName)?.StartApplication(true);
@@ -464,15 +469,13 @@ namespace AppsLauncher.Windows
             try
             {
                 var appData = CacheData.FindAppData(appsBox.SelectedItem.ToString());
-                using (var dialog = new SettingsForm(appData))
-                {
-                    dialog.TopMost = true;
-                    dialog.Plus();
-                    dialog.ShowDialog();
-                    Language.SetControlLang(this);
-                    Text = Language.GetText(Name);
-                    AppsBoxUpdate(true);
-                }
+                using var dialog = new SettingsForm(appData);
+                dialog.TopMost = true;
+                dialog.Plus();
+                dialog.ShowDialog(this);
+                Language.SetControlLang(this);
+                Text = Language.GetText(Name);
+                AppsBoxUpdate(true);
             }
             catch (Exception ex) when (ex.IsCaught())
             {
@@ -493,9 +496,9 @@ namespace AppsLauncher.Windows
                 Interval = 1,
                 Enabled = true
             };
-            timer.Tick += (o, args) =>
+            timer.Tick += (o, _) =>
             {
-                if (!(o is FormsTimer owner) || Application.OpenForms.Count > 1)
+                if (o is not FormsTimer owner || Application.OpenForms.Count > 1)
                     return;
                 owner.Enabled = false;
                 Application.Restart();

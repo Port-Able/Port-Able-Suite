@@ -3,6 +3,7 @@
     using System.ComponentModel;
     using System.Globalization;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using System.Windows.Forms;
     using LangResources;
     using Properties;
@@ -32,13 +33,13 @@
                 }
                 _bw?.Dispose();
                 _bw = new BackgroundWorker();
-                _bw.DoWork += (sender, args) =>
+                _bw.DoWork += (_, _) =>
                 {
-                    using (var process = ProcessEx.Start(PathEx.LocalPath, $"{ActionGuid.FileTypeAssociation} \"{appData.Key}\"", true, false))
-                        if (!process?.HasExited == true)
-                            process.WaitForExit();
+                    using var process = ProcessEx.Start(PathEx.LocalPath, $"{ActionGuid.FileTypeAssociation} \"{appData.Key}\"", true, false);
+                    if (!process?.HasExited == true)
+                        process.WaitForExit();
                 };
-                _bw.RunWorkerCompleted += (sender, args) =>
+                _bw.RunWorkerCompleted += (_, _) =>
                 {
                     if (owner == default)
                         return;
@@ -58,11 +59,11 @@
                 InstallId = Settings.SystemInstallId
             };
 
-            using (var dialog = new IconBrowserDialog(Settings.IconResourcePath, Settings.Window.Colors.BaseDark, Settings.Window.Colors.ControlText, Settings.Window.Colors.Button, Settings.Window.Colors.ButtonText, Settings.Window.Colors.ButtonHover))
+            using (var dialog = new IconBrowserDialog(Settings.IconResourcePath))
             {
                 dialog.TopMost = true;
                 dialog.Plus();
-                dialog.ShowDialog();
+                dialog.ShowDialog(owner);
                 if (!string.IsNullOrEmpty(dialog.IconPath))
                 {
                     assocData.IconPath = dialog.IconPath;

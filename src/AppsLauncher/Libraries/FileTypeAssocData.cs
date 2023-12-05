@@ -87,9 +87,9 @@
 
                 if (!Elevation.IsAdministrator)
                 {
-                    using (var process = ProcessEx.Start(PathEx.LocalPath, $"{ActionGuid.RestoreFileTypes} \"{appData.Key}\"", true, false))
-                        if (!process?.HasExited == true)
-                            process.WaitForExit();
+                    using var process = ProcessEx.Start(PathEx.LocalPath, $"{ActionGuid.RestoreFileTypes} \"{appData.Key}\"", true, false);
+                    if (!process?.HasExited == true)
+                        process.WaitForExit();
                     return;
                 }
 
@@ -155,7 +155,7 @@
 
                     if (Reg.SubKeyExists(typeKeyPath))
                     {
-                        var keyPath = Path.Combine(CorePaths.TempDir, FileEx.GetUniqueName());
+                        var keyPath = Path.Combine(CorePaths.DataDir, FileEx.GetUniqueName());
                         Reg.ExportKeys(keyPath, typeKeyPath);
                         if (File.Exists(keyPath))
                         {
@@ -207,9 +207,9 @@
 
                 if (!Elevation.IsAdministrator)
                 {
-                    using (var process = ProcessEx.Start(PathEx.LocalPath, $"{ActionGuid.RestoreFileTypes} \"{appData.Key}\"", true, false))
-                        if (!process?.HasExited == true)
-                            process.WaitForExit();
+                    using var process = ProcessEx.Start(PathEx.LocalPath, $"{ActionGuid.RestoreFileTypes} \"{appData.Key}\"", true, false);
+                    if (!process?.HasExited == true)
+                        process.WaitForExit();
                     return;
                 }
 
