@@ -16,6 +16,7 @@
     using SilDev.Forms;
     using SilDev.Ini.Legacy;
     using SilDev.Network;
+    using static SilDev.WinApi;
 
     /// <summary>
     ///     Provides functionality to download apps.
@@ -114,9 +115,9 @@
             var downloadCollection = AppData.DownloadCollection;
             var packageVersion = default(string);
             if (ActionGuid.IsUpdateInstance &&
-                AppData?.UpdateCollection?.SelectMany(x => x.Value).All(x => x?.Item1?.StartsWithEx("http") == true) == true)
+                AppData?.UpdateCollection?.SelectMany(x => x.Value).All(x => x?.Item1?.StartsWithEx("http:", "https:") == true) == true)
             {
-                var appIniDir = Path.Combine(appData.InstallDir, "App", "AppInfo");
+                var appIniDir = Path.Combine(appData.InstallDir, "App\\AppInfo");
                 var appIniPath = Path.Combine(appIniDir, "appinfo.ini");
                 if (!File.Exists(appIniPath))
                     appIniPath = Path.Combine(appIniDir, "plugininstaller.ini");
@@ -131,9 +132,9 @@
                                                                          !pair.Key.EqualsEx(packageVersion)))
                     continue;
 
-                foreach (var (item1, item2) in pair.Value)
+                foreach (var (serverFile, checkHash) in pair.Value)
                 {
-                    var srcUrl = item1;
+                    var srcUrl = serverFile;
                     if (srcUrl.StartsWith("{", StringComparison.InvariantCulture) && srcUrl.EndsWith("}", StringComparison.InvariantCulture))
                         srcUrl = FindArchivePath(srcUrl).Item2;
 
@@ -173,7 +174,7 @@
                                 userAgent = AppData.Supplier.UserAgent;
                                 UserData = Tuple.Create(AppData.Supplier.User, AppData.Supplier.Password);
                             }
-                            _srcData.Add(Tuple.Create(srcUrl, item2, userAgent, false));
+                            _srcData.Add(Tuple.Create(srcUrl, checkHash, userAgent, false));
                             continue;
                     }
 
@@ -196,7 +197,7 @@
                             url = CorePaths.RedirectDlUrlFormat.FormatInvariant(url.Encode());
                         }
 
-                        _srcData.Add(Tuple.Create(url, item2, userAgent, false));
+                        _srcData.Add(Tuple.Create(url, checkHash, userAgent, false));
                         if (Log.DebugMode > 1)
                             Log.Write($"Transfer: '{url}' has been added.");
                     }
@@ -236,23 +237,24 @@
             }
             for (var i = 0; i < SrcData.Count; i++)
             {
-                var (item1, item2, item3, item4) = SrcData[i];
-                if (item4)
+                var (srcUrl, checkHash, userAgent, started) = SrcData[i];
+                if (started)
                     continue;
                 if (!FileEx.Delete(DestPath))
                     throw new InvalidOperationException();
 
-                _srcData[i] = Tuple.Create(item1, item2, item3, true);
+                _srcData[i] = Tuple.Create(srcUrl, checkHash, userAgent, true);
 
-                var fullHost = NetEx.GetFullHost(item1);
+                var fullHost = NetEx.GetFullHost(srcUrl);
                 if (_hostBlacklist.Contains(fullHost))
                     continue;
 
-                var userAgent = item3;
+                var curUserAgent = userAgent;
                 if (Log.DebugMode > 0)
-                    Log.Write($"Transfer{(!string.IsNullOrEmpty(userAgent) ? $" [{userAgent}]" : string.Empty)}: Check with a timeout of '{_curTimeout}ms' if target '{item1}' is available.");
+                    Log.Write($"Transfer{(!string.IsNullOrEmpty(curUserAgent) ? $" [{curUserAgent}]" : string.Empty)}: Check with a timeout of '{_curTimeout}ms' if target '{srcUrl}' is available.");
 
-                if (!NetEx.FileIsAvailable(item1, UserData.Item1, UserData.Item2, _curTimeout, userAgent))
+                var (user, password) = UserData;
+                if (!NetEx.FileIsAvailable(srcUrl, user, password, _curTimeout, curUserAgent))
                 {
                     // Start with a slow timeout and increase it with each new mirror up
                     // to a maximum of 60 seconds to avoid connecting to slow servers.
@@ -264,22 +266,22 @@
 
                     // Otherwise, try a different user agent before
                     // going to the next mirror when retry is active.
-                    userAgent = UserAgents.Browser;
+                    curUserAgent = UserAgents.Browser;
                     if (Log.DebugMode > 0)
-                        Log.Write($"Transfer: User agent changed for target '{item1}'.");
+                        Log.Write($"Transfer: User agent changed for target '{srcUrl}'.");
 
-                    if (!NetEx.FileIsAvailable(item1, UserData.Item1, UserData.Item2, _curTimeout, userAgent))
+                    if (!NetEx.FileIsAvailable(srcUrl, user, password, _curTimeout, curUserAgent))
                     {
                         if (Log.DebugMode > 0)
-                            Log.Write($"Transfer{(!string.IsNullOrEmpty(userAgent) ? $" [{userAgent}]" : string.Empty)}: Could not find target '{item1}'.");
+                            Log.Write($"Transfer{(!string.IsNullOrEmpty(curUserAgent) ? $" [{curUserAgent}]" : string.Empty)}: Could not find target '{srcUrl}'.");
                         continue;
                     }
                 }
                 if (Log.DebugMode > 0)
-                    Log.Write($"Transfer{(!string.IsNullOrEmpty(userAgent) ? $" [{userAgent}]" : string.Empty)}: '{item1}' has been found.");
+                    Log.Write($"Transfer{(!string.IsNullOrEmpty(curUserAgent) ? $" [{curUserAgent}]" : string.Empty)}: '{srcUrl}' has been found.");
 
                 // Max timeout for download ensures that the download is as stable as possible.
-                Transfer.DownloadFile(item1, DestPath, UserData.Item1, UserData.Item2, true, MaxTimeout, userAgent, false);
+                Transfer.DownloadFile(srcUrl, DestPath, UserData.Item1, UserData.Item2, true, MaxTimeout, curUserAgent, false);
                 DownloadHost = _lastHostFromAll = fullHost;
                 DownloadStarted = true;
             }
@@ -307,14 +309,14 @@
                 return false;
 
             const string nonHash = "None";
-            var fileHash = default(string);
-            foreach (var (_, item2, _, item4) in SrcData)
+            var curHash = default(string);
+            foreach (var (_, checkHash, _, started) in SrcData)
             {
-                if (!item4)
+                if (!started)
                     continue;
 
-                if (fileHash is null or nonHash)
-                    fileHash = item2.Length switch
+                if (curHash is null or nonHash)
+                    curHash = checkHash.Length switch
                     {
                         Crypto.Md5.HashLength => DestPath.EncryptFile(),
                         Crypto.Sha1.HashLength => DestPath.EncryptFile(ChecksumAlgorithm.Sha1),
@@ -324,7 +326,7 @@
                         _ => nonHash
                     };
 
-                if (fileHash != nonHash && !fileHash.EqualsEx(item2))
+                if (!curHash.EqualsEx(checkHash, nonHash))
                     switch (MessageBoxEx.Show(LangStrings.ChecksumErrorMsg.FormatInvariant(Path.GetFileName(DestPath)),
                                               AssemblyInfo.Title,
                                               MessageBoxButtons.AbortRetryIgnore,
@@ -350,7 +352,7 @@
                         continue;
                     }
 
-                if (DestPath.EndsWithEx(".7z", ".rar", ".zip")) //|| (DestPath.EndsWithEx(".paf.exe") && AppData.InstallerVersion < Version.Parse("3.5.13.0")))
+                if (DestPath.EndsWithEx(".7z", ".rar", ".zip"))
                 {
                     if (!File.Exists(CorePaths.FileArchiver))
                         throw new PathNotFoundException(CorePaths.FileArchiver);
@@ -359,9 +361,6 @@
                     InstallProcessStartTime = DateTime.Now;
                     if (process?.HasExited == false)
                         process.WaitForExit();
-
-                    // ReSharper disable once CommentTypo
-                    //DirectoryEx.TryDelete(Path.Combine(AppData.InstallDir, "$PLUGINSDIR"));
                 }
                 else
                 {
@@ -443,7 +442,7 @@
                     return IntPtr.Zero;
                 title = proc.MainWindowTitle;
             }
-            return string.IsNullOrEmpty(title) ? IntPtr.Zero : WinApi.NativeHelper.FindWindow(null, title);
+            return string.IsNullOrEmpty(title) ? IntPtr.Zero : NativeHelper.FindWindow(null, title);
         }
 
         private static bool BreakFileLocks(string path, bool force = true)
@@ -484,15 +483,19 @@
             process.WaitForInputIdle(10000);
             try
             {
-                var buttons = CacheData.NsisButtons ?? throw new NotSupportedException();
+                var buttonsDict = CacheData.NsisButtons ?? throw new NotSupportedException();
                 var setupLangId = AppData.Settings.ArchiveLangCode;
-                var systemLangId = WinApi.NativeHelper.GetUserDefaultUILanguage();
-                var captions = buttons.OrderBy(x => x.Key != setupLangId)
-                                      .ThenBy(x => x.Key != systemLangId)
-                                      .ThenBy(x => x.Key)
-                                      .SelectMany(x => x.Value)
-                                      .Distinct()
-                                      .ToList();
+                var systemLangId = NativeHelper.GetUserDefaultUILanguage();
+
+                // Put all the button labels in a list and order the
+                // labels by installer language and system language
+                // so that important languages are listed at top.
+                var buttons = buttonsDict.OrderBy(x => x.Key != setupLangId)
+                                         .ThenBy(x => x.Key != systemLangId)
+                                         .ThenBy(x => x.Key)
+                                         .SelectMany(x => x.Value)
+                                         .Distinct()
+                                         .ToList();
 
                 var stopwatch = Stopwatch.StartNew();
                 var minimized = new List<IntPtr>();
@@ -505,11 +508,15 @@
                     if (window == IntPtr.Zero)
                         continue;
 
-                    if (!minimized.Contains(window) && WinApi.NativeHelper.ShowWindowAsync(window, WinApi.ShowWindowFlags.ShowMinNoActive))
+                    // Ensures that a window is minimized once
+                    // so that the user does not lose control.
+                    if (!minimized.Contains(window) && NativeHelper.ShowWindowAsync(window, ShowWindowFlags.ShowMinNoActive))
                         minimized.Add(window);
 
-                    foreach (var control in captions.Select(b => LocalFindControlByCaption(window, b)).Where(c => c != IntPtr.Zero))
-                        WinApi.NativeHelper.SendMessage(control, 0xf5u, IntPtr.Zero, IntPtr.Zero);
+                    // Look for available buttons that advance
+                    // the install progress and press them.
+                    foreach (var control in buttons.Select(b => LocalFindControlByCaption(window, b)).Where(c => c != IntPtr.Zero))
+                        NativeHelper.SendMessage(control, 0xf5u, IntPtr.Zero, IntPtr.Zero);
                 }
             }
             catch (Exception ex) when (ex.IsCaught())
@@ -517,6 +524,7 @@
                 Log.Write(ex);
             }
 
+            // In the unlikely case that the pilot failed.
             SetupSmasher(process);
             return;
 
@@ -526,12 +534,12 @@
                 var control = IntPtr.Zero;
                 do
                 {
-                    control = WinApi.NativeHelper.FindWindowEx(parent, control, null, null);
+                    control = NativeHelper.FindWindowEx(parent, control, null, null);
                     if (control == IntPtr.Zero)
                         continue;
 
                     var sb = new StringBuilder(byte.MaxValue);
-                    WinApi.NativeHelper.GetWindowText(control, sb, byte.MaxValue);
+                    NativeHelper.GetWindowText(control, sb, byte.MaxValue);
                     var current = sb.ToStringThenClear();
                     if (current == caption)
                         return control;
@@ -586,79 +594,42 @@
                     if (!process.Responding)
                         continue;
 
-                    // Lets check if the install process is doing something
+                    // Let's check if the installation process does
+                    // anything so we can wait before doing anything.
                     if (DirectoryEx.Exists(tmp7ZipDir))
                     {
                         waitTime = waitMax;
                         continue;
                     }
 
-                    // Check install directory updates, which may only work on a fresh reinstall.
+                    // Check install directory updates, which
+                    // may only work on a fresh reinstall.
                     if (!instDirExist && DirectoryEx.Exists(AppData.InstallDir))
-                    {
-                        // Try to find out if the last write time to the directory was changed.
-                        var time = Directory.GetLastWriteTime(AppData.InstallDir);
-                        if (instDirLastWriteTime != time)
+                        if (LocalHasChanged(ref instDirLastWriteTime, Directory.GetLastWriteTime(AppData.InstallDir)) ||
+                            LocalHasChanged(ref instDirCount, DirectoryEx.EnumerateDirectories(AppData.InstallDir, SearchOption.AllDirectories).Count()) ||
+                            LocalHasChanged(ref instFileCount, DirectoryEx.EnumerateFiles(AppData.InstallDir, SearchOption.AllDirectories).Count()) ||
+                            LocalHasChanged(ref instDirSize, DirectoryEx.GetSize(AppData.InstallDir)))
                         {
                             waitTime = waitMax;
-                            instDirLastWriteTime = time;
                             continue;
                         }
-
-                        // Try to find out if the directory's directory count have changed.
-                        var dirCount = DirectoryEx.EnumerateDirectories(AppData.InstallDir, SearchOption.AllDirectories).Count();
-                        if (instDirCount != dirCount)
-                        {
-                            waitTime = waitMax;
-                            instDirCount = dirCount;
-                            continue;
-                        }
-
-                        // Try to find out if the directory's file count have changed.
-                        var fileCount = DirectoryEx.EnumerateFiles(AppData.InstallDir, SearchOption.AllDirectories).Count();
-                        if (instFileCount != fileCount)
-                        {
-                            waitTime = waitMax;
-                            instFileCount = fileCount;
-                            continue;
-                        }
-
-                        // Try to find out if the directory's file sizes have changed.
-                        var size = DirectoryEx.GetSize(AppData.InstallDir);
-                        if (instDirSize != size)
-                        {
-                            waitTime = waitMax;
-                            instDirSize = size;
-                            continue;
-                        }
-                    }
 
                     // Check for temp setup directory changes.
                     if (File.Exists(tmpFile) && Directory.Exists(tmpDir))
-                    {
-                        // Try to find out if the directory's file count have changed.
-                        var fileCount = DirectoryEx.EnumerateFiles(tmpDir, SearchOption.AllDirectories).Count();
-                        if (tmpFileCount != fileCount)
+                        if (LocalHasChanged(ref tmpFileCount, DirectoryEx.EnumerateFiles(tmpDir, SearchOption.AllDirectories).Count()) ||
+                            LocalHasChanged(ref tmpDirSize, DirectoryEx.GetSize(tmpDir)))
                         {
                             waitTime = waitMax;
-                            tmpFileCount = fileCount;
                             continue;
                         }
 
-                        // Try to find out if the directory's file sizes have changed.
-                        var size = DirectoryEx.GetSize(tmpDir);
-                        if (tmpDirSize != size)
-                        {
-                            waitTime = waitMax;
-                            tmpDirSize = size;
-                            continue;
-                        }
-                    }
-
-                    // Send the `ENTER` keystroke to the window, hopefully only when it is no longer busy.
+                    // Send the `ENTER` keystroke to the window,
+                    // hopefully only when it is no longer busy.
                     var window = FindWindow(process);
-                    if (window != IntPtr.Zero)
-                        WinApi.NativeHelper.PostMessage(window, 0x100, (IntPtr)0x0d, (IntPtr)0);
+                    if (window == IntPtr.Zero)
+                        continue;
+                    NativeHelper.PostMessage(window, 0x100, (IntPtr)0xd, (IntPtr)0);
+                    waitTime = waitMin;
                 }
             }
             catch (Exception ex) when (ex.IsCaught())
@@ -666,8 +637,17 @@
                 Log.Write(ex);
             }
 
+            // In the almost impossible case that the
+            // smasher was not successful either.
             SetupManually(process);
             return;
+
+            static bool LocalHasChanged<T>(ref T curValue, T newValue)
+            {
+                var changed = !EqualityComparer<T>.Default.Equals(curValue, newValue);
+                curValue = newValue;
+                return changed;
+            }
 
             IEnumerable<string> LocalGetTempItems()
             {
@@ -704,11 +684,11 @@
             try
             {
                 using var proc = Process.GetProcessById(process.Id);
-                var hWnd = WinApi.NativeHelper.FindWindow(null, proc.MainWindowTitle);
-                WinApi.NativeHelper.ShowWindowAsync(hWnd, WinApi.ShowWindowFlags.ShowNormal);
-                WinApi.NativeHelper.SetForegroundWindow(hWnd);
-                WinApi.NativeHelper.SetWindowPos(hWnd, new IntPtr(-1), 0, 0, 0, 0, WinApi.SetWindowPosFlags.NoMove |
-                                                                                   WinApi.SetWindowPosFlags.NoSize);
+                var hWnd = NativeHelper.FindWindow(null, proc.MainWindowTitle);
+                NativeHelper.ShowWindowAsync(hWnd, ShowWindowFlags.ShowNormal);
+                NativeHelper.SetForegroundWindow(hWnd);
+                NativeHelper.SetWindowPos(hWnd, new IntPtr(-1), 0, 0, 0, 0, SetWindowPosFlags.NoMove |
+                                                                            SetWindowPosFlags.NoSize);
             }
             catch (Exception ex) when (ex.IsCaught())
             {
@@ -719,6 +699,8 @@
 
         private void MessyAppInstallerWorkaround(string appsDir)
         {
+            // I have come across a few cases where an app was installed
+            // in the parent directory rather than the install directory.
             var dirNames = new[]
             {
                 "App",
