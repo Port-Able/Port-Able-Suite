@@ -2,6 +2,7 @@ namespace AppsLauncher
 {
     using System;
     using System.Diagnostics;
+    using System.Drawing;
     using System.Globalization;
     using System.Linq;
     using System.Threading;
@@ -10,6 +11,7 @@ namespace AppsLauncher
     using Libraries;
     using SilDev;
     using SilDev.Forms;
+    using SilDev.Drawing;
 
     internal static class Program
     {

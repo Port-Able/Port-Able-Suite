@@ -29,7 +29,6 @@ namespace AppsLauncher.Windows
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MenuViewForm));
             this.appMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.appMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.appMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -74,7 +73,7 @@ namespace AppsLauncher.Windows
             this.appMenu.Name = "addMenu";
             this.appMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.appMenu.ShowItemToolTips = false;
-            this.appMenu.Size = new System.Drawing.Size(212, 176);
+            this.appMenu.Size = new System.Drawing.Size(212, 198);
             // 
             // appMenuItem1
             // 
@@ -85,7 +84,7 @@ namespace AppsLauncher.Windows
             // 
             // appMenuItem2
             // 
-            this.appMenuItem2.Image = ((System.Drawing.Image)(resources.GetObject("appMenuItem2.Image")));
+            this.appMenuItem2.Image = global::AppsLauncher.Properties.Resources.ShieldExclamation;
             this.appMenuItem2.Name = "appMenuItem2";
             this.appMenuItem2.Size = new System.Drawing.Size(211, 22);
             this.appMenuItem2.Text = "Run as administrator";
@@ -98,7 +97,7 @@ namespace AppsLauncher.Windows
             // 
             // appMenuItem3
             // 
-            this.appMenuItem3.Image = ((System.Drawing.Image)(resources.GetObject("appMenuItem3.Image")));
+            this.appMenuItem3.Image = global::AppsLauncher.Properties.Resources.Folder;
             this.appMenuItem3.Name = "appMenuItem3";
             this.appMenuItem3.Size = new System.Drawing.Size(211, 22);
             this.appMenuItem3.Text = "Open app location";
@@ -140,7 +139,7 @@ namespace AppsLauncher.Windows
             // 
             // appMenuItem8
             // 
-            this.appMenuItem8.Image = ((System.Drawing.Image)(resources.GetObject("appMenuItem8.Image")));
+            this.appMenuItem8.Image = global::AppsLauncher.Properties.Resources.Settings;
             this.appMenuItem8.Name = "appMenuItem8";
             this.appMenuItem8.Size = new System.Drawing.Size(211, 22);
             this.appMenuItem8.Text = "Options";
@@ -223,7 +222,7 @@ namespace AppsLauncher.Windows
             // 
             this.aboutBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.aboutBtn.BackColor = System.Drawing.Color.Transparent;
-            this.aboutBtn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("aboutBtn.BackgroundImage")));
+            this.aboutBtn.BackgroundImage = global::AppsLauncher.Properties.Resources.Interrogation;
             this.aboutBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.aboutBtn.Cursor = System.Windows.Forms.Cursors.Help;
             this.aboutBtn.Location = new System.Drawing.Point(227, 10);
@@ -240,7 +239,7 @@ namespace AppsLauncher.Windows
             // 
             this.profileBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.profileBtn.BackColor = System.Drawing.Color.Transparent;
-            this.profileBtn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("profileBtn.BackgroundImage")));
+            this.profileBtn.BackgroundImage = global::AppsLauncher.Properties.Resources.User;
             this.profileBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.profileBtn.Location = new System.Drawing.Point(211, 169);
             this.profileBtn.Name = "profileBtn";
@@ -256,7 +255,7 @@ namespace AppsLauncher.Windows
             // 
             this.settingsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.settingsBtn.BackColor = System.Drawing.Color.Transparent;
-            this.settingsBtn.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("settingsBtn.BackgroundImage")));
+            this.settingsBtn.BackgroundImage = global::AppsLauncher.Properties.Resources.Settings;
             this.settingsBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.settingsBtn.Location = new System.Drawing.Point(211, 253);
             this.settingsBtn.Name = "settingsBtn";
