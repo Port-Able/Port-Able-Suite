@@ -61,8 +61,10 @@ namespace AppsDownloader.Forms
             CacheData.SetComponentImageColor(appMenuItem3);
             _imageSwitcherCache.Add(nameof(appMenuItem3), (appMenuItem3.Image, Resources.Uncheck.RecolorPixels(Color.Black, SystemColors.Highlight.InvertRgb())));
 
-            CacheData.SetComponentImageColor(appMenuItem4);
-            CacheData.SetComponentImageColor(appMenuItem5);
+            CacheData.SetComponentImageColor(appMenuItem4, Color.DarkGoldenrod);
+
+            CacheData.SetComponentImageColor(appMenuItem5, Color.Firebrick);
+            CacheData.SetComponentImageColor(appMenuItem6, Color.ForestGreen);
 
             if (EnvironmentEx.IsAtLeastWindows(11))
                 Desktop.RoundCorners(appMenu.Handle, true);
@@ -274,44 +276,6 @@ namespace AppsDownloader.Forms
                 CmdExec.WaitThenDelete(_settings.TransferDir);
         }
 
-        private void MainFormSizeRefresh()
-        {
-            MinimumSize = MinimumSize.ScaleDimensions();
-            MaximumSize = SizeEx.GetDesktopSize(Location);
-
-            var changed = false;
-            var size = Size;
-            var minSize = MinimumSize;
-            var maxSize = MaximumSize;
-
-            if (size.Width < minSize.Width)
-                size.Width = minSize.Width;
-            if (size.Width > maxSize.Width)
-                size.Width = maxSize.Width;
-
-            if (size.Height < minSize.Height)
-                size.Height = minSize.Height;
-            if (size.Height > maxSize.Height)
-                size.Height = maxSize.Height;
-
-            if (Width != size.Width)
-            {
-                changed = true;
-                Width = size.Width;
-            }
-            if (Height != size.Height)
-            {
-                changed = true;
-                Height = size.Height;
-            }
-            if (!changed)
-                return;
-
-            NativeHelper.CenterWindow(Handle);
-            if (_settings.WindowState == FormWindowState.Maximized)
-                WindowState = FormWindowState.Maximized;
-        }
-
         private void AppsList_Enter(object sender, EventArgs e) =>
             AppsListShowColors(false);
 
@@ -352,287 +316,6 @@ namespace AppsDownloader.Forms
                 _transferManager.Values.Any(x => x.Transfer.IsBusy))
                 return;
             startBtn.Enabled = owner.CheckedItems.Count > 0;
-        }
-
-        private void AppsListResizeColumns()
-        {
-            if (appsList.Columns.Count < 5)
-                return;
-            var staticColumnsWidth = SystemInformation.VerticalScrollBarWidth + 2;
-            for (var i = 3; i < appsList.Columns.Count; i++)
-                staticColumnsWidth += appsList.Columns[i].Width;
-            var dynamicColumnsWidth = 0;
-            while (dynamicColumnsWidth < appsList.Width - staticColumnsWidth)
-                dynamicColumnsWidth++;
-            for (var i = 0; i < 3; i++)
-                appsList.Columns[i].Width = (int)Math.Ceiling(dynamicColumnsWidth / 100d * i switch
-                {
-                    0 => 35d,
-                    1 => 50d,
-                    _ => 15d
-                });
-        }
-
-        private void AppsListShowColors(bool searchResultColor = true)
-        {
-            if (searchResultBlinker.Enabled)
-                searchResultBlinker.Enabled = false;
-            var appInfo = new List<AppData>();
-            if (_settings.HighlightInstalled)
-                appInfo = AppSupply.FindInstalledApps();
-            appsList.SetDoubleBuffer(false);
-            appsList.BeginUpdate();
-            try
-            {
-                var lightGreen = Color.FromArgb(0xc0, 0xff, 0xc0);
-                var darkGreen = Color.FromArgb(0x20, 0x40, 0x20);
-                var seed = DateTime.Now.GetHashCode();
-                foreach (var item in appsList.Items.Cast<ListViewItem>())
-                {
-                    var groupName = item.Group.Name;
-                    if (searchResultColor && groupName.Equals("listViewGroup0", StringComparison.Ordinal))
-                    {
-                        item.BackColor = SystemColors.Highlight;
-                        item.ForeColor = SystemColors.HighlightText;
-                        continue;
-                    }
-                    if (_settings.HighlightInstalled && appInfo.Any(x => x.Key.EqualsEx(item.Name)))
-                    {
-                        item.Font = new Font(appsList.Font, FontStyle.Italic);
-                        item.BackColor = !_settings.ShowGroupColors && appsList.BackColor.IsDarkDark() ? darkGreen : lightGreen;
-                        item.ForeColor = !_settings.ShowGroupColors && appsList.BackColor.IsDarkDark() ? lightGreen : darkGreen;
-                        continue;
-                    }
-                    item.Font = appsList.Font;
-                    if (!_settings.ShowGroupColors)
-                    {
-                        item.BackColor = appsList.BackColor;
-                        item.ForeColor = appsList.ForeColor;
-                        continue;
-                    }
-                    switch (groupName)
-                    {
-                        case "listViewGroup0":
-                            item.BackColor = appsList.BackColor;
-                            item.ForeColor = appsList.ForeColor;
-                            break;
-                        default:
-                            if (_settings.GroupColors.TryGetValue(groupName, out var color))
-                            {
-                                item.BackColor = color;
-                                item.ForeColor = color.IsDark() ? Color.White : Color.Black;
-                                break;
-                            }
-
-                            // Create random group color.
-                            var range = _settings.GroupColors.Values.ToList();
-                            range.Add(lightGreen);
-                            range.Add(darkGreen);
-                            do
-                                color = ColorEx.GetRandomColor(seed);
-                            while (color.IsDark() || color.IsLightLight() || range.Any(x => x.IsInRange(color, 20)));
-
-                            item.BackColor = color;
-                            item.ForeColor = color.IsDark() ? Color.White : Color.Black;
-
-                            _settings.GroupColors.Add(groupName, color);
-                            break;
-                    }
-
-                    if (item.BackColor == appsList.BackColor)
-                        continue;
-
-                    if (_settings.HighlightInstalled && appInfo.Any(x => x.Key.EqualsEx(item.Name)))
-                        item.BackColor = ControlPaint.LightLight(item.BackColor);
-                }
-            }
-            finally
-            {
-                appsList.EndUpdate();
-                appsList.SetDoubleBuffer();
-            }
-        }
-
-        private void AppsListUpdate(List<AppData> appInfo = default)
-        {
-            var index = 0;
-            var appImages = CacheData.AppImages.ToDictionary(x => x.Key, x => x.Value);
-            var appImagesLarge = CacheData.AppImagesLarge.ToDictionary(x => x.Key, x => x.Value);
-
-            // Get app images of custom app suppliers.
-            if (CacheData.CustomAppSuppliers?.Any() == true)
-            {
-                var appImagesNames = new[]
-                {
-                    Path.GetFileName(CorePaths.AppImages),
-                    Path.GetFileName(CorePaths.AppImagesLarge)
-                };
-                foreach (var data in CacheData.CustomAppSuppliers)
-                {
-                    var address = data.Address;
-                    var user = data.User;
-                    var password = data.Password;
-                    var userAgent = data.UserAgent;
-                    for (var i = 0; i < appImagesNames.Length; i++)
-                    {
-                        var name = appImagesNames[i];
-                        var url = PathEx.AltCombine(default(char[]), address, name);
-                        if (Log.DebugMode > 0)
-                            Log.Write($"Custom: Looking for '{url}'.");
-                        if (!NetEx.FileIsAvailable(url, user, password, 60000, userAgent))
-                            continue;
-                        var customAppImages = WebTransfer.DownloadData(url, user, password, 60000, userAgent)?.DeserializeObject<Dictionary<string, Image>>();
-                        if (customAppImages == null)
-                            continue;
-                        foreach (var pair in customAppImages.Where(x => !(i == 0 ? appImages : appImagesLarge).ContainsKey(x.Key)))
-                            (i == 0 ? appImages : appImagesLarge).Add(pair.Key, pair.Value);
-                    }
-                }
-            }
-
-            appsList.BeginUpdate();
-            appsList.Items.Clear();
-            AppSupplierMirrors.UpdateSuppliers();
-            Image smallDef = default,
-                  largeDef = default,
-                  smallDepracted = default,
-                  largeDepracted = default;
-            var filter = new[] { "Depracted", "Discontinued", "Legacy" };
-            foreach (var appData in appInfo ?? CacheData.AppInfo)
-            {
-                var url = appData.DownloadCollection.First().Value.First().Item1;
-                if (string.IsNullOrWhiteSpace(url))
-                    continue;
-
-                var src = LangStrings.HostNotAvailable;
-                if (url.StartsWith("{", StringComparison.InvariantCulture) && url.EndsWith("}", StringComparison.InvariantCulture))
-                {
-                    var searchData = Json.Deserialize<Dictionary<string, string>>(url);
-                    if (searchData?.ContainsKey("source") != true)
-                        continue;
-                    url = searchData["source"];
-                }
-                if (url.StartsWithEx("http"))
-                    if (url.ContainsEx(AppSupplierHosts.Pac) && url.ContainsEx("/redirect/") && url.ContainsEx("&d=sfpa"))
-                        src = AppSupplierHosts.Sf;
-                    else
-                    {
-                        src = NetEx.GetShortHost(url);
-                        if (string.IsNullOrEmpty(src))
-                            continue;
-                    }
-                else
-                {
-                    if (appData.Supplier != null)
-                        src = NetEx.GetFullHost(appData.Supplier.Address);
-                }
-
-                var item = new ListViewItem(appData.Name)
-                {
-                    Name = appData.Key
-                };
-                item.SubItems.Add(appData.Description);
-                item.SubItems.Add(appData.DisplayVersion);
-                item.SubItems.Add(appData.DownloadSize.FormatSize(SizeOption.Trim));
-                item.SubItems.Add(appData.InstallSize.FormatSize(SizeOption.Trim));
-                item.SubItems.Add(src);
-                item.ImageIndex = index;
-
-                if (appData.Key.ContainsEx(filter) ||
-                    appData.Name.ContainsEx(filter) ||
-                    appData.Description.ContainsEx(filter) ||
-                    appData.DisplayVersion.ContainsEx(filter))
-                {
-                    smallDepracted ??= Resources.FishBones.RecolorPixels(Color.Black, Color.DarkGray).Redraw(16);
-                    smallImageList.Images.Add(appData.Key, smallDepracted);
-
-                    largeDepracted ??= Resources.FishBones.RecolorPixels(Color.Black, Color.DarkGray).Redraw(32);
-                    largeImageList.Images.Add(appData.Key, largeDepracted);
-                }
-                else
-                {
-                    if (appImages?.TryGetValue(appData.Key, out var image) == true)
-                        if (image != null)
-                            smallImageList.Images.Add(appData.Key, image);
-
-                    if (appImagesLarge?.TryGetValue(appData.Key, out var img) == true)
-                        if (img != null)
-                            largeImageList.Images.Add(appData.Key, img);
-                }
-
-                var smallImageAdded = smallImageList.Images.ContainsKey(appData.Key);
-                var largeImageAdded = largeImageList.Images.ContainsKey(appData.Key);
-                if (!smallImageAdded || !largeImageAdded)
-                {
-                    if (Log.DebugMode == 0)
-                        continue;
-                    appData.Advanced = true;
-                    if (!smallImageAdded)
-                    {
-                        Log.Write($"Cache: Could not find target '{CacheFiles.AppImages}:{appData.Key}'.");
-                        smallDef ??= Resources.ImageSlash.RecolorPixels(Color.Black, Color.DarkGray).Redraw(16);
-                        smallImageList.Images.Add(appData.Key, smallDef);
-                    }
-                    if (!largeImageAdded)
-                    {
-                        Log.Write($"Cache: Could not find target '{CacheFiles.AppImagesLarge}:{appData.Key}'.");
-                        largeDef ??= Resources.ImageSlash.RecolorPixels(Color.Black, Color.DarkGray);
-                        largeImageList.Images.Add(appData.Key, largeDef);
-                    }
-                }
-
-                if (appData.Supplier != null)
-                {
-                    var groupFound = false;
-
-                    Grouping:
-                    foreach (var group in appsList.Groups.Cast<ListViewGroup>())
-                    {
-                        var enName = group.Header;
-                        if (!enName.EqualsEx(appData.Category))
-                            continue;
-                        groupFound = true;
-                        appsList.Items.Add(item).Group = group;
-                        break;
-                    }
-
-                    if (!groupFound)
-                    {
-                        var newGroupName = appData.Category;
-                        var newGroup = new ListViewGroup(newGroupName, HorizontalAlignment.Left)
-                        {
-                            Header = newGroupName,
-                            Name = newGroupName
-                        };
-                        appsList.Groups.Add(newGroup);
-                        groupFound = true;
-                        goto Grouping;
-                    }
-                }
-                else
-                {
-                    var groups = appsList.Groups.Cast<ListViewGroup>().ToArray();
-                    var advanced = groups.Last().Header;
-                    foreach (var group in appsList.Groups.Cast<ListViewGroup>())
-                    {
-                        var groupName = group.Header;
-                        if ((appData.Advanced || !groupName.EqualsEx(appData.Category)) && !groupName.EqualsEx(advanced))
-                            continue;
-                        appsList.Items.Add(item).Group = group;
-                        break;
-                    }
-                }
-
-                index++;
-            }
-
-            if (Log.DebugMode > 0)
-                Log.Write($"Interface: {appsList.Items.Count} {(appsList.Items.Count == 1 ? "App" : "Apps")} has been added!");
-
-            appsList.ShowGroups = _settings.ShowGroups;
-            appsList.SmallImageList = _settings.LargeImages ? largeImageList : smallImageList;
-            appsList.EndUpdate();
-            AppsListShowColors();
         }
 
         private void AppMenu_Opening(object sender, CancelEventArgs e)
@@ -716,6 +399,20 @@ namespace AppsDownloader.Forms
                     break;
                 }
                 case nameof(appMenuItem5):
+                {
+                    var appData = CacheData.AppInfo.FirstOrDefault(x => x.Key.EqualsEx(selectedItem.Name));
+                    var language = DefineInstallerLanguage(appData, selectedItem);
+                    var fileHash = appData?.DownloadCollection.ContainsKey(language) switch
+                    {
+                        true => appData.DownloadCollection[language].FirstOrDefault()?.Item2,
+                        _ => appData?.DownloadCollection.First().Value.First().Item2
+                    };
+                    if (fileHash == null)
+                        return;
+                    Process.Start($"https://www.virustotal.com/gui/file/{fileHash}");
+                    break;
+                }
+                case nameof(appMenuItem6):
                 {
                     var appData = CacheData.AppInfo.FirstOrDefault(x => x.Key.EqualsEx(selectedItem.Name));
                     using var dialog = new AppInfoForm(appData, GetListViewItemImage(selectedItem));
@@ -868,24 +565,22 @@ namespace AppsDownloader.Forms
                 appsList.SetDoubleBuffer(false);
                 try
                 {
-                    foreach (var group in appsList.Groups.Cast<ListViewGroup>())
+                    foreach (var group in appsList.Groups.Cast<ListViewGroup>().Where(g => g.Name.Equals("listViewGroup0", StringComparison.Ordinal)))
                     {
-                        if (!group.Name.Equals("listViewGroup0", StringComparison.Ordinal))
-                            continue;
-                        if (group.Items.Count > 0)
-                            foreach (var item in appsList.Items.Cast<ListViewItem>())
-                            {
-                                if (!item.Group.Name.Equals(group.Name, StringComparison.Ordinal))
-                                    continue;
-                                if (!owner.Enabled || item.BackColor != SystemColors.Highlight)
-                                {
-                                    item.BackColor = SystemColors.Highlight;
-                                    continue;
-                                }
-                                item.BackColor = appsList.BackColor;
-                            }
-                        else
+                        if (group.Items.Count <= 0)
+                        {
                             owner.Enabled = false;
+                            continue;
+                        }
+                        foreach (var item in appsList.Items.Cast<ListViewItem>().Where(i => i.Group.Name.Equals(group.Name, StringComparison.Ordinal)))
+                        {
+                            if (!owner.Enabled || item.BackColor != SystemColors.Highlight)
+                            {
+                                item.BackColor = SystemColors.Highlight;
+                                continue;
+                            }
+                            item.BackColor = appsList.BackColor;
+                        }
                     }
                     owner.Interval = owner.Interval >= 200 ? 100 : 200;
                 }
@@ -954,32 +649,7 @@ namespace AppsDownloader.Forms
                 if (appData == default)
                     continue;
 
-                if (appData.DownloadCollection.Count > 1 && !appData.Settings.ArchiveLangConfirmed)
-                    try
-                    {
-                        DialogResult result;
-                        do
-                        {
-                            using Form dialog = new LangSelectionForm(appData, GetListViewItemImage(item));
-                            TopMost = false;
-                            result = dialog.ShowDialog(this);
-                            if (result == DialogResult.OK)
-                                break;
-                            TopMost = true;
-                            result = MessageBoxEx.Show(this, LangStrings.AreYouSureMsg, AssemblyInfo.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                            if (result != DialogResult.Yes)
-                                continue;
-                            _transferManager.Clear();
-                            ApplicationExit();
-                            return;
-                        }
-                        while (result != DialogResult.OK);
-                    }
-                    catch (Exception ex) when (ex.IsCaught())
-                    {
-                        Log.Write(ex);
-                    }
-
+                _ = DefineInstallerLanguage(appData, item, true);
                 _transferManager.Add(item, new AppTransferor(appData));
 
                 unchecked
@@ -1270,17 +940,6 @@ namespace AppsDownloader.Forms
             }
         }
 
-        private void DownloadProgressUpdate(int value)
-        {
-            var color = PanelFakeProgressBar.SetProgress(downloadProgress, value);
-            appStatus.ForeColor = color;
-            fileStatus.ForeColor = color;
-            urlStatus.ForeColor = color;
-            downloadReceived.ForeColor = color;
-            downloadSpeed.ForeColor = color;
-            timeStatus.ForeColor = color;
-        }
-
         private void UrlStatus_DoubleClick(object sender, EventArgs e)
         {
             if (appsList.Enabled)
@@ -1290,6 +949,373 @@ namespace AppsDownloader.Forms
                 return;
             appTransferor.Transfer.CancelAsync();
             SystemSounds.Hand.Play();
+        }
+
+        private void MainFormSizeRefresh()
+        {
+            MinimumSize = MinimumSize.ScaleDimensions();
+            MaximumSize = SizeEx.GetDesktopSize(Location);
+
+            var changed = false;
+            var size = Size;
+            var minSize = MinimumSize;
+            var maxSize = MaximumSize;
+
+            if (size.Width < minSize.Width)
+                size.Width = minSize.Width;
+            if (size.Width > maxSize.Width)
+                size.Width = maxSize.Width;
+
+            if (size.Height < minSize.Height)
+                size.Height = minSize.Height;
+            if (size.Height > maxSize.Height)
+                size.Height = maxSize.Height;
+
+            if (Width != size.Width)
+            {
+                changed = true;
+                Width = size.Width;
+            }
+            if (Height != size.Height)
+            {
+                changed = true;
+                Height = size.Height;
+            }
+            if (!changed)
+                return;
+
+            NativeHelper.CenterWindow(Handle);
+            if (_settings.WindowState == FormWindowState.Maximized)
+                WindowState = FormWindowState.Maximized;
+        }
+
+        private void AppsListResizeColumns()
+        {
+            if (appsList.Columns.Count < 5)
+                return;
+            var staticColumnsWidth = SystemInformation.VerticalScrollBarWidth + 2;
+            for (var i = 3; i < appsList.Columns.Count; i++)
+                staticColumnsWidth += appsList.Columns[i].Width;
+            var dynamicColumnsWidth = 0;
+            while (dynamicColumnsWidth < appsList.Width - staticColumnsWidth)
+                dynamicColumnsWidth++;
+            for (var i = 0; i < 3; i++)
+                appsList.Columns[i].Width = (int)Math.Ceiling(dynamicColumnsWidth / 100d * i switch
+                {
+                    0 => 35d,
+                    1 => 50d,
+                    _ => 15d
+                });
+        }
+
+        private void AppsListShowColors(bool searchResultColor = true)
+        {
+            if (searchResultBlinker.Enabled)
+                searchResultBlinker.Enabled = false;
+            var appInfo = new List<AppData>();
+            if (_settings.HighlightInstalled)
+                appInfo = AppSupply.FindInstalledApps();
+            appsList.SetDoubleBuffer(false);
+            appsList.BeginUpdate();
+            try
+            {
+                var lightGreen = Color.FromArgb(0xc0, 0xff, 0xc0);
+                var darkGreen = Color.FromArgb(0x20, 0x40, 0x20);
+                var seed = DateTime.Now.GetHashCode();
+                foreach (var item in appsList.Items.Cast<ListViewItem>())
+                {
+                    var groupName = item.Group.Name;
+                    if (searchResultColor && groupName.Equals("listViewGroup0", StringComparison.Ordinal))
+                    {
+                        item.BackColor = SystemColors.Highlight;
+                        item.ForeColor = SystemColors.HighlightText;
+                        continue;
+                    }
+                    if (_settings.HighlightInstalled && appInfo.Any(x => x.Key.EqualsEx(item.Name)))
+                    {
+                        item.Font = new Font(appsList.Font, FontStyle.Italic);
+                        item.BackColor = !_settings.ShowGroupColors && appsList.BackColor.IsDarkDark() ? darkGreen : lightGreen;
+                        item.ForeColor = !_settings.ShowGroupColors && appsList.BackColor.IsDarkDark() ? lightGreen : darkGreen;
+                        continue;
+                    }
+                    item.Font = appsList.Font;
+                    if (!_settings.ShowGroupColors)
+                    {
+                        item.BackColor = appsList.BackColor;
+                        item.ForeColor = appsList.ForeColor;
+                        continue;
+                    }
+                    switch (groupName)
+                    {
+                        case "listViewGroup0":
+                            item.BackColor = appsList.BackColor;
+                            item.ForeColor = appsList.ForeColor;
+                            break;
+                        default:
+                            if (_settings.GroupColors.TryGetValue(groupName, out var color))
+                            {
+                                item.BackColor = color;
+                                item.ForeColor = color.IsDark() ? Color.White : Color.Black;
+                                break;
+                            }
+
+                            // Create random group color.
+                            var range = _settings.GroupColors.Values.ToList();
+                            range.Add(lightGreen);
+                            range.Add(darkGreen);
+                            do
+                                color = ColorEx.GetRandomColor(seed);
+                            while (color.IsDark() || color.IsLightLight() || range.Any(x => x.IsInRange(color, 20)));
+
+                            item.BackColor = color;
+                            item.ForeColor = color.IsDark() ? Color.White : Color.Black;
+
+                            _settings.GroupColors.Add(groupName, color);
+                            break;
+                    }
+
+                    if (item.BackColor == appsList.BackColor)
+                        continue;
+
+                    if (_settings.HighlightInstalled && appInfo.Any(x => x.Key.EqualsEx(item.Name)))
+                        item.BackColor = ControlPaint.LightLight(item.BackColor);
+                }
+            }
+            finally
+            {
+                appsList.EndUpdate();
+                appsList.SetDoubleBuffer();
+            }
+        }
+
+        private void AppsListUpdate(List<AppData> appInfo = default)
+        {
+            var index = 0;
+            var appImages = CacheData.AppImages.ToDictionary(x => x.Key, x => x.Value);
+            var appImagesLarge = CacheData.AppImagesLarge.ToDictionary(x => x.Key, x => x.Value);
+
+            // Get app images of custom app suppliers.
+            if (CacheData.CustomAppSuppliers?.Any() == true)
+            {
+                var appImagesNames = new[]
+                {
+                    Path.GetFileName(CorePaths.AppImages),
+                    Path.GetFileName(CorePaths.AppImagesLarge)
+                };
+                foreach (var data in CacheData.CustomAppSuppliers)
+                {
+                    var address = data.Address;
+                    var user = data.User;
+                    var password = data.Password;
+                    var userAgent = data.UserAgent;
+                    for (var i = 0; i < appImagesNames.Length; i++)
+                    {
+                        var name = appImagesNames[i];
+                        var url = PathEx.AltCombine(default(char[]), address, name);
+                        if (Log.DebugMode > 0)
+                            Log.Write($"Custom: Looking for '{url}'.");
+                        if (!NetEx.FileIsAvailable(url, user, password, 60000, userAgent))
+                            continue;
+                        var customAppImages = WebTransfer.DownloadData(url, user, password, 60000, userAgent)?.DeserializeObject<Dictionary<string, Image>>();
+                        if (customAppImages == null)
+                            continue;
+                        foreach (var pair in customAppImages.Where(x => !(i == 0 ? appImages : appImagesLarge).ContainsKey(x.Key)))
+                            (i == 0 ? appImages : appImagesLarge).Add(pair.Key, pair.Value);
+                    }
+                }
+            }
+
+            appsList.BeginUpdate();
+            appsList.Items.Clear();
+            AppSupplierMirrors.UpdateSuppliers();
+            Image smallDef = default,
+                  largeDef = default,
+                  smallDepracted = default,
+                  largeDepracted = default;
+            var filter = new[] { "Depracted", "Discontinued", "Legacy" };
+            foreach (var appData in appInfo ?? CacheData.AppInfo)
+            {
+                var url = appData.DownloadCollection.First().Value.First().Item1;
+                if (string.IsNullOrWhiteSpace(url))
+                    continue;
+
+                var src = LangStrings.HostNotAvailable;
+                if (url.StartsWith("{", StringComparison.InvariantCulture) && url.EndsWith("}", StringComparison.InvariantCulture))
+                {
+                    var searchData = Json.Deserialize<Dictionary<string, string>>(url);
+                    if (searchData?.ContainsKey("source") != true)
+                        continue;
+                    url = searchData["source"];
+                }
+                if (url.StartsWithEx("http"))
+                    if (url.ContainsEx(AppSupplierHosts.Pac) && url.ContainsEx("/redirect/") && url.ContainsEx("&d=sfpa"))
+                        src = AppSupplierHosts.Sf;
+                    else
+                    {
+                        src = NetEx.GetShortHost(url);
+                        if (string.IsNullOrEmpty(src))
+                            continue;
+                    }
+                else
+                {
+                    if (appData.Supplier != null)
+                        src = NetEx.GetFullHost(appData.Supplier.Address);
+                }
+
+                var item = new ListViewItem(appData.Name)
+                {
+                    Name = appData.Key
+                };
+                item.SubItems.Add(appData.Description);
+                item.SubItems.Add(appData.DisplayVersion);
+                item.SubItems.Add(appData.DownloadSize.FormatSize(SizeOption.Trim));
+                item.SubItems.Add(appData.InstallSize.FormatSize(SizeOption.Trim));
+                item.SubItems.Add(src);
+                item.ImageIndex = index;
+
+                if (appData.Key.ContainsEx(filter) ||
+                    appData.Name.ContainsEx(filter) ||
+                    appData.Description.ContainsEx(filter) ||
+                    appData.DisplayVersion.ContainsEx(filter))
+                {
+                    smallDepracted ??= Resources.FishBones.RecolorPixels(Color.Black, Color.DarkGray).Redraw(16);
+                    smallImageList.Images.Add(appData.Key, smallDepracted);
+
+                    largeDepracted ??= Resources.FishBones.RecolorPixels(Color.Black, Color.DarkGray).Redraw(32);
+                    largeImageList.Images.Add(appData.Key, largeDepracted);
+                }
+                else
+                {
+                    if (appImages?.TryGetValue(appData.Key, out var image) == true)
+                        if (image != null)
+                            smallImageList.Images.Add(appData.Key, image);
+
+                    if (appImagesLarge?.TryGetValue(appData.Key, out var img) == true)
+                        if (img != null)
+                            largeImageList.Images.Add(appData.Key, img);
+                }
+
+                var smallImageAdded = smallImageList.Images.ContainsKey(appData.Key);
+                var largeImageAdded = largeImageList.Images.ContainsKey(appData.Key);
+                if (!smallImageAdded || !largeImageAdded)
+                {
+                    if (Log.DebugMode == 0)
+                        continue;
+                    appData.Advanced = true;
+                    if (!smallImageAdded)
+                    {
+                        Log.Write($"Cache: Could not find target '{CacheFiles.AppImages}:{appData.Key}'.");
+                        smallDef ??= Resources.ImageSlash.RecolorPixels(Color.Black, Color.DarkGray).Redraw(16);
+                        smallImageList.Images.Add(appData.Key, smallDef);
+                    }
+                    if (!largeImageAdded)
+                    {
+                        Log.Write($"Cache: Could not find target '{CacheFiles.AppImagesLarge}:{appData.Key}'.");
+                        largeDef ??= Resources.ImageSlash.RecolorPixels(Color.Black, Color.DarkGray);
+                        largeImageList.Images.Add(appData.Key, largeDef);
+                    }
+                }
+
+                if (appData.Supplier != null)
+                {
+                    var groupFound = false;
+
+                    Grouping:
+                    foreach (var group in appsList.Groups.Cast<ListViewGroup>())
+                    {
+                        var enName = group.Header;
+                        if (!enName.EqualsEx(appData.Category))
+                            continue;
+                        groupFound = true;
+                        appsList.Items.Add(item).Group = group;
+                        break;
+                    }
+
+                    if (!groupFound)
+                    {
+                        var newGroupName = appData.Category;
+                        var newGroup = new ListViewGroup(newGroupName, HorizontalAlignment.Left)
+                        {
+                            Header = newGroupName,
+                            Name = newGroupName
+                        };
+                        appsList.Groups.Add(newGroup);
+                        groupFound = true;
+                        goto Grouping;
+                    }
+                }
+                else
+                {
+                    var groups = appsList.Groups.Cast<ListViewGroup>().ToArray();
+                    var advanced = groups.Last().Header;
+                    foreach (var group in appsList.Groups.Cast<ListViewGroup>())
+                    {
+                        var groupName = group.Header;
+                        if ((appData.Advanced || !groupName.EqualsEx(appData.Category)) && !groupName.EqualsEx(advanced))
+                            continue;
+                        appsList.Items.Add(item).Group = group;
+                        break;
+                    }
+                }
+
+                index++;
+            }
+
+            if (Log.DebugMode > 0)
+                Log.Write($"Interface: {appsList.Items.Count} {(appsList.Items.Count == 1 ? "App" : "Apps")} has been added!");
+
+            appsList.ShowGroups = _settings.ShowGroups;
+            appsList.SmallImageList = _settings.LargeImages ? largeImageList : smallImageList;
+            appsList.EndUpdate();
+            AppsListShowColors();
+        }
+
+        private string DefineInstallerLanguage(AppData appData, ListViewItem item, bool needed = false)
+        {
+            var selected = appData?.DefaultLanguage ?? string.Empty;
+            if (!(appData?.DownloadCollection.Count > 1) || appData.Settings.ArchiveLangConfirmed)
+                return selected;
+            try
+            {
+                DialogResult result;
+                do
+                {
+                    using Form dialog = new LangSelectionForm(appData, GetListViewItemImage(item));
+                    TopMost = false;
+                    result = dialog.ShowDialog(this);
+                    if (result == DialogResult.OK)
+                    {
+                        selected = appData.Settings.ArchiveLang;
+                        break;
+                    }
+                    TopMost = true;
+                    result = MessageBoxEx.Show(this, LangStrings.AreYouSureMsg, AssemblyInfo.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result != DialogResult.Yes)
+                        continue;
+                    if (!needed)
+                        return selected;
+                    _transferManager.Clear();
+                    ApplicationExit();
+                    return selected;
+                }
+                while (result != DialogResult.OK);
+            }
+            catch (Exception ex) when (ex.IsCaught())
+            {
+                Log.Write(ex);
+            }
+            return selected;
+        }
+
+        private void DownloadProgressUpdate(int value)
+        {
+            var color = PanelFakeProgressBar.SetProgress(downloadProgress, value);
+            appStatus.ForeColor = color;
+            fileStatus.ForeColor = color;
+            urlStatus.ForeColor = color;
+            downloadReceived.ForeColor = color;
+            downloadSpeed.ForeColor = color;
+            timeStatus.ForeColor = color;
         }
     }
 }

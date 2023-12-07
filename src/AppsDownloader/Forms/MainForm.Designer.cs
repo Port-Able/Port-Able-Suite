@@ -80,8 +80,9 @@ namespace AppsDownloader.Forms
             this.appMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.appMenuItemSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.appMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.appMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.appMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.smallImageList = new System.Windows.Forms.ImageList(this.components);
             this.searchResultBlinker = new System.Windows.Forms.Timer(this.components);
             this.largeImageList = new System.Windows.Forms.ImageList(this.components);
@@ -528,18 +529,19 @@ namespace AppsDownloader.Forms
             this.appMenuItemSeparator1,
             this.appMenuItem4,
             this.toolStripSeparator1,
-            this.appMenuItem5});
+            this.appMenuItem5,
+            this.appMenuItem6});
             this.appMenu.Name = "addMenu";
             this.appMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.appMenu.ShowItemToolTips = false;
-            this.appMenu.Size = new System.Drawing.Size(224, 126);
+            this.appMenu.Size = new System.Drawing.Size(256, 170);
             this.appMenu.Opening += new System.ComponentModel.CancelEventHandler(this.AppMenu_Opening);
             // 
             // appMenuItem1
             // 
             this.appMenuItem1.Image = global::AppsDownloader.Properties.Resources.Check;
             this.appMenuItem1.Name = "appMenuItem1";
-            this.appMenuItem1.Size = new System.Drawing.Size(223, 22);
+            this.appMenuItem1.Size = new System.Drawing.Size(255, 22);
             this.appMenuItem1.Text = "Check";
             this.appMenuItem1.Click += new System.EventHandler(this.AppMenuItem_Click);
             // 
@@ -547,43 +549,51 @@ namespace AppsDownloader.Forms
             // 
             this.appMenuItem2.Image = global::AppsDownloader.Properties.Resources.CheckAll;
             this.appMenuItem2.Name = "appMenuItem2";
-            this.appMenuItem2.Size = new System.Drawing.Size(223, 22);
-            this.appMenuItem2.Text = "Check all in category";
+            this.appMenuItem2.Size = new System.Drawing.Size(255, 22);
+            this.appMenuItem2.Text = "Check all in &category";
             this.appMenuItem2.Click += new System.EventHandler(this.AppMenuItem_Click);
             // 
             // appMenuItem3
             // 
             this.appMenuItem3.Image = global::AppsDownloader.Properties.Resources.CheckAll;
             this.appMenuItem3.Name = "appMenuItem3";
-            this.appMenuItem3.Size = new System.Drawing.Size(223, 22);
-            this.appMenuItem3.Text = "Check all";
+            this.appMenuItem3.Size = new System.Drawing.Size(255, 22);
+            this.appMenuItem3.Text = "Check &all";
             this.appMenuItem3.Click += new System.EventHandler(this.AppMenuItem_Click);
             // 
             // appMenuItemSeparator1
             // 
             this.appMenuItemSeparator1.Name = "appMenuItemSeparator1";
-            this.appMenuItemSeparator1.Size = new System.Drawing.Size(220, 6);
+            this.appMenuItemSeparator1.Size = new System.Drawing.Size(252, 6);
             // 
             // appMenuItem4
             // 
             this.appMenuItem4.Image = global::AppsDownloader.Properties.Resources.World;
             this.appMenuItem4.Name = "appMenuItem4";
-            this.appMenuItem4.Size = new System.Drawing.Size(223, 22);
-            this.appMenuItem4.Text = "Visit the website";
+            this.appMenuItem4.Size = new System.Drawing.Size(255, 22);
+            this.appMenuItem4.Text = "Visit the &website";
             this.appMenuItem4.Click += new System.EventHandler(this.AppMenuItem_Click);
+            // 
+            // appMenuItem5
+            // 
+            this.appMenuItem5.Image = global::AppsDownloader.Properties.Resources.Bacterium;
+            this.appMenuItem5.Name = "appMenuItem5";
+            this.appMenuItem5.Size = new System.Drawing.Size(255, 22);
+            this.appMenuItem5.Text = "Search for previous anti&virus scans";
+            this.appMenuItem5.Click += new System.EventHandler(this.AppMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(220, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(252, 6);
             // 
-            // appMenuItem5
+            // appMenuItem6
             // 
-            this.appMenuItem5.Image = global::AppsDownloader.Properties.Resources.Info;
-            this.appMenuItem5.Name = "appMenuItem5";
-            this.appMenuItem5.Size = new System.Drawing.Size(223, 22);
-            this.appMenuItem5.Text = "Show advanced information";
-            this.appMenuItem5.Click += new System.EventHandler(this.AppMenuItem_Click);
+            this.appMenuItem6.Image = global::AppsDownloader.Properties.Resources.Info;
+            this.appMenuItem6.Name = "appMenuItem6";
+            this.appMenuItem6.Size = new System.Drawing.Size(255, 22);
+            this.appMenuItem6.Text = "Show advanced &information";
+            this.appMenuItem6.Click += new System.EventHandler(this.AppMenuItem_Click);
             // 
             // smallImageList
             // 
@@ -681,9 +691,10 @@ namespace AppsDownloader.Forms
         private System.Windows.Forms.ImageList smallImageList;
         private System.Windows.Forms.Timer searchResultBlinker;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem appMenuItem5;
+        private System.Windows.Forms.ToolStripMenuItem appMenuItem6;
         private System.Windows.Forms.ImageList largeImageList;
         private System.Windows.Forms.Panel settingsBtn;
+        private System.Windows.Forms.ToolStripMenuItem appMenuItem5;
     }
 }
 
