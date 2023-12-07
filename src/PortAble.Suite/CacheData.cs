@@ -8,6 +8,7 @@
     using System.IO;
     using System.Linq;
     using System.Net;
+    using System.Text.RegularExpressions;
     using System.Windows.Forms;
     using Newtonsoft.Json;
     using SilDev;
@@ -27,6 +28,11 @@
         ///     Gets a collection of <see cref="AppData"/> instances for all apps.
         /// </summary>
         public static IReadOnlyList<AppData> AppInfo { get; } = InitAppInfo();
+
+        /// <summary>
+        ///     Gets a collection of filters that applies when creating <see cref="AppInfo"/>.
+        /// </summary>
+        public static IReadOnlyDictionary<string, string[]> AppInfoFilters { get; private set; }
 
         /// <summary>
         ///     Gets the database containing small app images of all apps.
@@ -411,13 +417,10 @@
                     WebTransfer.DownloadFile(link, pac, 60000, UserAgents.Empty, false);
             }
 
-            // Load the PA`s INI config file, which
-            // also contains a global blacklist.
-            var blacklist = Array.Empty<string>();
+            // Load the PA`s INI config file
             if (File.Exists(pa))
             {
-                blacklist = Ini.GetSections(pa).Where(x => Ini.Read(x, "Disabled", false, pa)).ToArray();
-                enumAppInfo = AppInfoCollector(appInfo, pa, blacklist);
+                enumAppInfo = AppInfoCollector(appInfo, pa);
                 if (enumAppInfo != null)
                     appInfo.AddRange(enumAppInfo);
 
@@ -443,7 +446,7 @@
                 if (!File.Exists(pac))
                     throw new PathNotFoundException(pac);
 
-                enumAppInfo = AppInfoCollector(appInfo, pac, blacklist);
+                enumAppInfo = AppInfoCollector(appInfo, pac);
                 if (enumAppInfo != null)
                     appInfo.AddRange(enumAppInfo);
 
@@ -552,73 +555,72 @@
                 var customAppInfo = WebTransfer.DownloadString(url, user, password, 60000, userAgent);
                 if (string.IsNullOrWhiteSpace(customAppInfo))
                     continue;
-                foreach (var instance in AppInfoCollector(current, customAppInfo, null, data))
+                foreach (var instance in AppInfoCollector(current, customAppInfo, data))
                     yield return instance;
             }
         }
 
-        private static IEnumerable<AppData> AppInfoCollector(IReadOnlyList<AppData> current, string config, string[] blacklist = null, CustomAppSupplier supplier = default)
+        private static IEnumerable<AppData> AppInfoCollector(IReadOnlyList<AppData> current, string config, CustomAppSupplier supplier = default)
         {
-            var sectionSkipFilter = new[]
-            {
-                AppSupplierHosts.Pac,
-                "ByPortableApps"
-            };
-            var addonsFilter = new[]
-            {
-                "2ndProfile",
-                "AddressBook",
-                "Incognito",
-                "PrivateWindow",
-            };
-            var forceAdvancedFilter = new[]
-            {
-                "Ghostscript",
-                "Java",
-                "JRE",
-                "JDK",
-                "ESR",
-                "LTS",
-                "Nightly",
-                "Alpha",
-                "Beta",
-                "Test",
-                "Compat",
-                "Legacy",
-                "Discontinued",
-                "Warning",
-                "Vulnerability"
-            };
-            var nameStartsWithThenReplaceFilter = new[]
-            {
-                ("BlenderCompat", "Blender Win 7"),
-                ("CoolPlayer+ Portable (see warning on app's homepage)", "CoolPlayer+ \u26a0\ufe0f M3U File Vulnerability"),
-                ("Explorer++", "Explorer++ (Beta)"),
-                ("Firefox, Portable Edition (Nightly x64)", "Mozilla Firefox Nightly 64-bit"),
-                ("Firefox", "Mozilla Firefox"),
-                ("jdkPortable", "Java Development Kit"),
-                ("jPortable Browser Switch", "Java Browser Switch"),
-                ("jPortable", "Java Runtime Environment"),
-                ("KompoZer", "KompoZer (Beta)"),
-                ("OpenJDK JRE", "OpenJRE"),
-                ("Scribus Test", "Scribus (Test)"),
-                ("Thunderbird (Test)", "Mozilla Thunderbird (Beta)"),
-                ("Thunderbird", "Mozilla Thunderbird"),
-            };
             var sections = Ini.GetSections(config, false);
+
+            // Parsing the filter lists.
+            var sectionEqualsThenSkip = Array.Empty<string>();
+            var sectionContainsThenSkip = Array.Empty<string>();
+            var anyContainsThenIsAdvanced = Array.Empty<string>();
+            var anyContainsThenIsNotAdvanced = Array.Empty<string>();
+            var nameStartsWithThenReplace = Array.Empty<string>();
+            if (supplier == default)
+            {
+                if (AppInfoFilters == default)
+                {
+                    var filterKeys = new[]
+                    {
+                        "SectionEqualsThenSkip",
+                        "SectionContainsThenSkip",
+                        "AnyContainsThenIsAdvanced",
+                        "AnyContainsThenIsNotAdvanced",
+                        "NameStartsWithThenReplace"
+                    };
+                    var filters = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
+                    foreach (var section in sections.Where(x => filterKeys.Contains(x)))
+                    {
+                        var value = Ini.Read(section, "Filter", config);
+                        if (!value.StartsWithEx('[') || !value.EndsWithEx(']'))
+                            continue;
+                        var array = JsonConvert.DeserializeObject<string[]>(value);
+                        if (Log.DebugMode > 0 && array?.Length < 1)
+                            Log.Write($"Cache: Could not parse filters from '{section}'.");
+                        filters.Add(section, JsonConvert.DeserializeObject<string[]>(value));
+                    }
+                    AppInfoFilters = filters;
+                }
+                AppInfoFilters?.TryGetValue("SectionEqualsThenSkip", out sectionEqualsThenSkip);
+                AppInfoFilters?.TryGetValue("SectionContainsThenSkip", out sectionContainsThenSkip);
+                AppInfoFilters?.TryGetValue("AnyContainsThenIsAdvanced", out anyContainsThenIsAdvanced);
+                AppInfoFilters?.TryGetValue("AnyContainsThenIsNotAdvanced", out anyContainsThenIsNotAdvanced);
+                AppInfoFilters?.TryGetValue("NameStartsWithThenReplace", out nameStartsWithThenReplace);
+            }
+
             var merged = 0;
             foreach (var section in sections)
             {
-                if (blacklist?.ContainsItem(section) == true || section.ContainsEx(sectionSkipFilter))
+                if (sectionEqualsThenSkip.ContainsItem(section))
                 {
                     if (Log.DebugMode > 0)
-                        Log.Write($"Cache: App '{section}' skipped because it is blacklisted.");
+                        Log.Write($"Cache: Section '{section}' skipped because it is blacklisted.");
+                    continue;
+                }
+                if (section.ContainsEx(sectionContainsThenSkip))
+                {
+                    if (Log.DebugMode > 0)
+                        Log.Write($"Cache: Section '{section}' skipped because it contains blacklisted keywords.");
                     continue;
                 }
                 if (current.Any(x => x.Key.EqualsEx(section)))
                 {
                     if (Log.DebugMode > 0)
-                        Log.Write($"Cache: App '{section}' skipped because an app with the same key already exists.");
+                        Log.Write($"Cache: Section '{section}' skipped because an app with the same section already exists.");
                     continue;
                 }
 
@@ -626,11 +628,16 @@
                 var name = Ini.Read(section, "Name", config);
                 if (string.IsNullOrWhiteSpace(name))
                     continue;
-                foreach (var (item1, item2) in nameStartsWithThenReplaceFilter)
+                for (var i = 0; i < nameStartsWithThenReplace.Length - 1; i++)
                 {
-                    if (!name.StartsWith(item1))
+                    var j = i + 1;
+                    if (j >= nameStartsWithThenReplace.Length)
                         continue;
-                    name = name.Replace(item1, item2);
+                    var pattern = nameStartsWithThenReplace[i];
+                    var replace = nameStartsWithThenReplace[j];
+                    if (!name.StartsWith(pattern))
+                        continue;
+                    name = Regex.Replace(name, Regex.Escape(pattern), replace);
                     break;
                 }
 
@@ -873,14 +880,7 @@
                         requires = "Java|Java64";
                     else
                     {
-                        var keywords = new[]
-                        {
-                            "2ndProfile",
-                            "AddressBook",
-                            "Incognito",
-                            "PrivateWindow"
-                        };
-                        foreach (var reqirement in from keyword in keywords
+                        foreach (var reqirement in from keyword in anyContainsThenIsNotAdvanced
                                                    where section.EndsWithEx(keyword)
                                                    select section.RemoveText(keyword)
                                                    into reqirement
@@ -927,14 +927,14 @@
                 // Determines whether the app should be listed in the Advanced category.
                 var advanced = Ini.Read(section, "Advanced", false, config);
                 if (!advanced)
-                    advanced = section.ContainsEx(forceAdvancedFilter) ||
-                               name.ContainsEx(forceAdvancedFilter) ||
-                               displayVersion.ContainsEx(forceAdvancedFilter);
+                    advanced = section.ContainsEx(anyContainsThenIsAdvanced) ||
+                               name.ContainsEx(anyContainsThenIsAdvanced) ||
+                               displayVersion.ContainsEx(anyContainsThenIsAdvanced);
                 else
                 {
-                    if (section.ContainsEx(addonsFilter) ||
-                        name.ContainsEx(addonsFilter) ||
-                        displayVersion.ContainsEx(addonsFilter))
+                    if (section.ContainsEx(anyContainsThenIsNotAdvanced) ||
+                        name.ContainsEx(anyContainsThenIsNotAdvanced) ||
+                        displayVersion.ContainsEx(anyContainsThenIsNotAdvanced))
                         advanced = false;
                 }
 
