@@ -691,7 +691,7 @@
                 var website = Ini.Read(section, "Website", config);
                 if (string.IsNullOrWhiteSpace(website))
                     website = Ini.Read(section, "URL", config).ToLowerInvariant().Replace("https", "http");
-                if (string.IsNullOrWhiteSpace(website) || website.Any(char.IsUpper))
+                if (string.IsNullOrWhiteSpace(website) || !website.StartsWithEx("https:", "http:"))
                     website = default;
 
                 // Parsing the app`s version data.
@@ -798,7 +798,7 @@
                         }
                     }
                 };
-                if (path2.StartsWithEx("http") && !path2.EqualsEx(path1))
+                if (path2.StartsWithEx("https:", "http:") && !path2.EqualsEx(path1))
                     downloadDict[defLanguage].Add(Tuple.Create(path2, hash));
 
                 foreach (var lang in LocalGetInstallerLangs())
