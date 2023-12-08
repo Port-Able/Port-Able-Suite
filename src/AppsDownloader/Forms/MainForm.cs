@@ -28,7 +28,6 @@ namespace AppsDownloader.Forms
         private static readonly object DownloadHandler = new();
         private static readonly object DownloadStarter = new();
         private static readonly object SearchHandler = new();
-        private readonly AppsDownloaderSettings _settings = new();
         private readonly CounterInvestor<int> _counter = new();
         private readonly Dictionary<string, (Image, Image)> _imageSwitcherCache = new();
         private readonly NotifyBox _notifyBox;
@@ -39,6 +38,8 @@ namespace AppsDownloader.Forms
         private ListView _appsListBackupClone;
         private bool _autoRetry, _noAppsListItemCheckEvent;
         private KeyValuePair<ListViewItem, AppTransferor> _currentTransfer;
+
+        public AppsDownloaderSettings Settings { get; } = new();
 
         public MainForm(NotifyBox notifyBox = default)
         {
@@ -128,12 +129,12 @@ namespace AppsDownloader.Forms
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            if (_settings.WindowSize.Width > MinimumSize.Width)
-                Width = _settings.WindowSize.Width;
-            if (_settings.WindowSize.Height > MinimumSize.Height)
-                Height = _settings.WindowSize.Height;
+            if (Settings.WindowSize.Width > MinimumSize.Width)
+                Width = Settings.WindowSize.Width;
+            if (Settings.WindowSize.Height > MinimumSize.Height)
+                Height = Settings.WindowSize.Height;
             NativeHelper.CenterWindow(Handle);
-            if (_settings.WindowState == FormWindowState.Maximized)
+            if (Settings.WindowState == FormWindowState.Maximized)
                 WindowState = FormWindowState.Maximized;
             this.Dockable();
             MainFormSizeRefresh();
@@ -259,9 +260,9 @@ namespace AppsDownloader.Forms
 
             if (appsList.Enabled)
             {
-                _settings.WindowState = WindowState;
-                _settings.WindowSize = new(Width, Height);
-                _settings.SaveToFile();
+                Settings.WindowState = WindowState;
+                Settings.WindowSize = new(Width, Height);
+                Settings.SaveToFile();
             }
 
             if (downloadHandler.Enabled)
@@ -272,8 +273,8 @@ namespace AppsDownloader.Forms
             foreach (var appTransferor in _transferManager.Values)
                 appTransferor.Transfer.CancelAsync();
 
-            if (DirectoryEx.EnumerateFiles(_settings.TransferDir)?.Any() == true)
-                CmdExec.WaitThenDelete(_settings.TransferDir);
+            if (DirectoryEx.EnumerateFiles(Settings.TransferDir)?.Any() == true)
+                CmdExec.WaitThenDelete(Settings.TransferDir);
         }
 
         private void AppsList_Enter(object sender, EventArgs e) =>
@@ -436,7 +437,7 @@ namespace AppsDownloader.Forms
             var result = DialogResult.None;
             try
             {
-                using Form dialog = new SettingsForm(_settings);
+                using Form dialog = new SettingsForm(Settings);
                 dialog.TopMost = TopMost;
                 dialog.Plus();
                 result = dialog.ShowDialog(this);
@@ -450,9 +451,9 @@ namespace AppsDownloader.Forms
             if (result != DialogResult.Yes)
                 return;
             appsList.SuspendLayout();
-            appsList.ShowGroups = _settings.ShowGroups;
+            appsList.ShowGroups = Settings.ShowGroups;
             AppsListShowColors();
-            appsList.SmallImageList = _settings.LargeImages ? largeImageList : smallImageList;
+            appsList.SmallImageList = Settings.LargeImages ? largeImageList : smallImageList;
             appsList.ResumeLayout(true);
         }
 
@@ -475,7 +476,7 @@ namespace AppsDownloader.Forms
             if (_appsListBackupClone != default)
             {
                 appsList.BeginUpdate();
-                appsList.ShowGroups = _settings.ShowGroups;
+                appsList.ShowGroups = Settings.ShowGroups;
                 try
                 {
                     using var backupList = _appsListBackupClone;
@@ -634,9 +635,9 @@ namespace AppsDownloader.Forms
             searchBox.Enabled = false;
             cancelBtn.Enabled = false;
 
-            _settings.ShowGroups = false;
-            _settings.ShowGroupColors = false;
-            _settings.HighlightInstalled = false;
+            Settings.ShowGroups = false;
+            Settings.ShowGroupColors = false;
+            Settings.HighlightInstalled = false;
             appsList.ShowGroups = false;
             AppsListShowColors();
 
@@ -660,7 +661,7 @@ namespace AppsDownloader.Forms
             }
 
             (char, long, long)[] spaceData;
-            if (_settings.TransferDir.StartsWithEx(CorePaths.HomeDir))
+            if (Settings.TransferDir.StartsWithEx(CorePaths.HomeDir))
                 spaceData = new[]
                 {
                     (CorePaths.HomeDir.First(), unchecked(totalDownloadSize + totalInstallSize), DirectoryEx.GetFreeSpace(CorePaths.HomeDir))
@@ -668,7 +669,7 @@ namespace AppsDownloader.Forms
             else
                 spaceData = new[]
                 {
-                    (_settings.TransferDir.First(), totalDownloadSize, DirectoryEx.GetFreeSpace(_settings.TransferDir)),
+                    (Settings.TransferDir.First(), totalDownloadSize, DirectoryEx.GetFreeSpace(Settings.TransferDir)),
                     (CorePaths.HomeDir.First(), totalInstallSize, DirectoryEx.GetFreeSpace(CorePaths.HomeDir))
                 };
             foreach (var (item1, item2, item3) in spaceData)
@@ -985,7 +986,7 @@ namespace AppsDownloader.Forms
                 return;
 
             NativeHelper.CenterWindow(Handle);
-            if (_settings.WindowState == FormWindowState.Maximized)
+            if (Settings.WindowState == FormWindowState.Maximized)
                 WindowState = FormWindowState.Maximized;
         }
 
@@ -1013,7 +1014,7 @@ namespace AppsDownloader.Forms
             if (searchResultBlinker.Enabled)
                 searchResultBlinker.Enabled = false;
             var appInfo = new List<AppData>();
-            if (_settings.HighlightInstalled)
+            if (Settings.HighlightInstalled)
                 appInfo = AppSupply.FindInstalledApps();
             appsList.SetDoubleBuffer(false);
             appsList.BeginUpdate();
@@ -1031,15 +1032,15 @@ namespace AppsDownloader.Forms
                         item.ForeColor = SystemColors.HighlightText;
                         continue;
                     }
-                    if (_settings.HighlightInstalled && appInfo.Any(x => x.Key.EqualsEx(item.Name)))
+                    if (Settings.HighlightInstalled && appInfo.Any(x => x.Key.EqualsEx(item.Name)))
                     {
                         item.Font = new Font(appsList.Font, FontStyle.Italic);
-                        item.BackColor = !_settings.ShowGroupColors && appsList.BackColor.IsDarkDark() ? darkGreen : lightGreen;
-                        item.ForeColor = !_settings.ShowGroupColors && appsList.BackColor.IsDarkDark() ? lightGreen : darkGreen;
+                        item.BackColor = !Settings.ShowGroupColors && appsList.BackColor.IsDarkDark() ? darkGreen : lightGreen;
+                        item.ForeColor = !Settings.ShowGroupColors && appsList.BackColor.IsDarkDark() ? lightGreen : darkGreen;
                         continue;
                     }
                     item.Font = appsList.Font;
-                    if (!_settings.ShowGroupColors)
+                    if (!Settings.ShowGroupColors)
                     {
                         item.BackColor = appsList.BackColor;
                         item.ForeColor = appsList.ForeColor;
@@ -1052,7 +1053,7 @@ namespace AppsDownloader.Forms
                             item.ForeColor = appsList.ForeColor;
                             break;
                         default:
-                            if (_settings.GroupColors.TryGetValue(groupName, out var color))
+                            if (Settings.GroupColors.TryGetValue(groupName, out var color))
                             {
                                 item.BackColor = color;
                                 item.ForeColor = color.IsDark() ? Color.White : Color.Black;
@@ -1060,7 +1061,7 @@ namespace AppsDownloader.Forms
                             }
 
                             // Create random group color.
-                            var range = _settings.GroupColors.Values.ToList();
+                            var range = Settings.GroupColors.Values.ToList();
                             range.Add(lightGreen);
                             range.Add(darkGreen);
                             do
@@ -1070,14 +1071,14 @@ namespace AppsDownloader.Forms
                             item.BackColor = color;
                             item.ForeColor = color.IsDark() ? Color.White : Color.Black;
 
-                            _settings.GroupColors.Add(groupName, color);
+                            Settings.GroupColors.Add(groupName, color);
                             break;
                     }
 
                     if (item.BackColor == appsList.BackColor)
                         continue;
 
-                    if (_settings.HighlightInstalled && appInfo.Any(x => x.Key.EqualsEx(item.Name)))
+                    if (Settings.HighlightInstalled && appInfo.Any(x => x.Key.EqualsEx(item.Name)))
                         item.BackColor = ControlPaint.LightLight(item.BackColor);
                 }
             }
@@ -1209,7 +1210,7 @@ namespace AppsDownloader.Forms
                     }
                     if (!largeImageAdded)
                     {
-                        if (Log.DebugMode > 0)
+                        if (Log.DebugMode > 0) 
                             Log.Write($"Cache: Could not find target '{CacheFiles.AppImagesLarge}:{appData.Key}'.");
                         largeDef ??= Resources.ImageSlash.RecolorPixels(Color.Black, Color.DarkGray);
                         largeImageList.Images.Add(appData.Key, largeDef);
@@ -1264,8 +1265,8 @@ namespace AppsDownloader.Forms
             if (Log.DebugMode > 0)
                 Log.Write($"Interface: {appsList.Items.Count} {(appsList.Items.Count == 1 ? "App" : "Apps")} has been added!");
 
-            appsList.ShowGroups = _settings.ShowGroups;
-            appsList.SmallImageList = _settings.LargeImages ? largeImageList : smallImageList;
+            appsList.ShowGroups = Settings.ShowGroups;
+            appsList.SmallImageList = Settings.LargeImages ? largeImageList : smallImageList;
             appsList.EndUpdate();
             AppsListShowColors();
         }
