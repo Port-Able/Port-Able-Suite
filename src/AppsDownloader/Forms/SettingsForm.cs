@@ -257,21 +257,11 @@
             MessageBoxEx.Show(LangStrings.CustomAppSupplierUpdatedMsg, AssemblyInfo.Title, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
 
-        private void SetGroupColorFromPanel(string key, Control panel)
-        {
-            if (_settings.GroupColors.ContainsKey(key))
-            {
-                _settings.GroupColors[key] = panel.BackColor;
-                return;
-            }
-            _settings.GroupColors.Add(key, panel.BackColor);
-        }
+        private void SetGroupColorFromPanel(string key, Control panel) => 
+            _settings.GroupColors.TrySet(key, panel.BackColor);
 
-        private void RestorePanelGroupColor(Control panel, string key)
-        {
-            if (_settings.GroupColors.TryGetValue(key, out var color))
-                panel.BackColor = color;
-        }
+        private void RestorePanelGroupColor(Control panel, string key) => 
+            panel.BackColor = _settings.GroupColors.TryGetValue(key, panel.BackColor);
 
         private void SetGroupColors()
         {

@@ -28,11 +28,11 @@ namespace AppsDownloader.Forms
         private static readonly object DownloadHandler = new();
         private static readonly object DownloadStarter = new();
         private static readonly object SearchHandler = new();
+        private readonly AppsDownloaderSettings _settings = new();
         private readonly CounterInvestor<int> _counter = new();
         private readonly Dictionary<string, (Image, Image)> _imageSwitcherCache = new();
         private readonly NotifyBox _notifyBox;
         private readonly Dictionary<int, int> _reqCounter = new();
-        private readonly AppsDownloaderSettings _settings = new();
         private readonly List<AppData> _transferFails = new();
         private readonly Dictionary<ListViewItem, AppTransferor> _transferManager = new();
         private readonly Stopwatch _transferStopwatch = new();
@@ -294,8 +294,8 @@ namespace AppsDownloader.Forms
             {
                 foreach (var item in appsList.Items.Cast<ListViewItem>().Where(i => i.Name == req && installedApps.All(a => a.Key != i.Name)))
                 {
-                    if (!_reqCounter.ContainsKey(item.Index))
-                        _reqCounter.Add(item.Index, 0);
+                    _reqCounter.TryAdd(item.Index, 0);
+
                     if (e.NewValue == CheckState.Checked)
                         _reqCounter[item.Index]++;
                     else
@@ -1119,8 +1119,8 @@ namespace AppsDownloader.Forms
                         var customAppImages = WebTransfer.DownloadData(url, user, password, 60000, userAgent)?.DeserializeObject<Dictionary<string, Image>>();
                         if (customAppImages == null)
                             continue;
-                        foreach (var pair in customAppImages.Where(x => !(i == 0 ? appImages : appImagesLarge).ContainsKey(x.Key)))
-                            (i == 0 ? appImages : appImagesLarge).Add(pair.Key, pair.Value);
+                        foreach (var pair in customAppImages)
+                            (i == 0 ? appImages : appImagesLarge).TryAdd(pair.Key, pair.Value);
                     }
                 }
             }
@@ -1199,18 +1199,18 @@ namespace AppsDownloader.Forms
                 var largeImageAdded = largeImageList.Images.ContainsKey(appData.Key);
                 if (!smallImageAdded || !largeImageAdded)
                 {
-                    if (Log.DebugMode == 0)
-                        continue;
                     appData.Advanced = true;
                     if (!smallImageAdded)
                     {
-                        Log.Write($"Cache: Could not find target '{CacheFiles.AppImages}:{appData.Key}'.");
+                        if (Log.DebugMode > 0)
+                            Log.Write($"Cache: Could not find target '{CacheFiles.AppImages}:{appData.Key}'.");
                         smallDef ??= Resources.ImageSlash.RecolorPixels(Color.Black, Color.DarkGray).Redraw(16);
                         smallImageList.Images.Add(appData.Key, smallDef);
                     }
                     if (!largeImageAdded)
                     {
-                        Log.Write($"Cache: Could not find target '{CacheFiles.AppImagesLarge}:{appData.Key}'.");
+                        if (Log.DebugMode > 0)
+                            Log.Write($"Cache: Could not find target '{CacheFiles.AppImagesLarge}:{appData.Key}'.");
                         largeDef ??= Resources.ImageSlash.RecolorPixels(Color.Black, Color.DarkGray);
                         largeImageList.Images.Add(appData.Key, largeDef);
                     }
