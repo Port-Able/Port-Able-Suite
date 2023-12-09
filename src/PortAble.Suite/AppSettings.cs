@@ -16,7 +16,7 @@
     ///     Provides local app settings.
     /// </summary>
     [Serializable]
-    public sealed class AppSettings : ISerializable
+    public sealed class AppSettings : ISerializable, IEquatable<AppSettings>
     {
         /// <summary>
         ///     The app key.

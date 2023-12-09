@@ -19,7 +19,7 @@
     ///     Provides app information from a server.
     /// </summary>
     [Serializable]
-    public sealed class AppData : ISerializable
+    public sealed class AppData : ISerializable, IEquatable<AppData>
     {
         [NonSerialized]
         private string _installDir;
