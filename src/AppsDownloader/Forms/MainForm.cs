@@ -109,35 +109,16 @@ namespace AppsDownloader.Forms
             AppsListResizeColumns();
         }
 
-        private static void ApplicationExit(int exitCode = 0)
-        {
-            if (exitCode > 0)
-            {
-                Environment.ExitCode = exitCode;
-                Environment.Exit(Environment.ExitCode);
-            }
-            Application.Exit();
-        }
-
-        private static Image GetListViewItemImage(ListViewItem item)
-        {
-            if (item?.ImageList?.Images is not { } images)
-                return default;
-            var index = item.ImageIndex;
-            return index.IsBetween(0, images.Count - 1) ? images[index] : default;
-        }
-
         private void MainForm_Load(object sender, EventArgs e)
         {
-            if (Settings.WindowSize.Width > MinimumSize.Width)
-                Width = Settings.WindowSize.Width;
-            if (Settings.WindowSize.Height > MinimumSize.Height)
-                Height = Settings.WindowSize.Height;
+            Width = Settings.WindowSize.Width;
+            Height = Settings.WindowSize.Height;
+            MinimumSize = MinimumSize.ScaleDimensions();
+            MaximumSize = SizeEx.GetDesktopSize(Location);
             NativeHelper.CenterWindow(Handle);
             if (Settings.WindowState == FormWindowState.Maximized)
                 WindowState = FormWindowState.Maximized;
             this.Dockable();
-            MainFormSizeRefresh();
 
             if (!NetEx.IPv4IsAvalaible)
             {
@@ -242,7 +223,6 @@ namespace AppsDownloader.Forms
             appsList.EndUpdate();
             appsList.Visible = true;
             AppsListResizeColumns();
-            MainFormSizeRefresh();
         }
 
         private void MainForm_SystemColorsChanged(object sender, EventArgs e) =>
@@ -453,7 +433,7 @@ namespace AppsDownloader.Forms
             appsList.SuspendLayout();
             appsList.ShowGroups = Settings.ShowGroups;
             AppsListShowColors();
-            appsList.SmallImageList = Settings.LargeImages ? largeImageList : smallImageList;
+            appsList.SmallImageList = Settings.ShowLargeImages ? largeImageList : smallImageList;
             appsList.ResumeLayout(true);
         }
 
@@ -952,42 +932,22 @@ namespace AppsDownloader.Forms
             SystemSounds.Hand.Play();
         }
 
-        private void MainFormSizeRefresh()
+        private static void ApplicationExit(int exitCode = 0)
         {
-            MinimumSize = MinimumSize.ScaleDimensions();
-            MaximumSize = SizeEx.GetDesktopSize(Location);
-
-            var changed = false;
-            var size = Size;
-            var minSize = MinimumSize;
-            var maxSize = MaximumSize;
-
-            if (size.Width < minSize.Width)
-                size.Width = minSize.Width;
-            if (size.Width > maxSize.Width)
-                size.Width = maxSize.Width;
-
-            if (size.Height < minSize.Height)
-                size.Height = minSize.Height;
-            if (size.Height > maxSize.Height)
-                size.Height = maxSize.Height;
-
-            if (Width != size.Width)
+            if (exitCode > 0)
             {
-                changed = true;
-                Width = size.Width;
+                Environment.ExitCode = exitCode;
+                Environment.Exit(Environment.ExitCode);
             }
-            if (Height != size.Height)
-            {
-                changed = true;
-                Height = size.Height;
-            }
-            if (!changed)
-                return;
+            Application.Exit();
+        }
 
-            NativeHelper.CenterWindow(Handle);
-            if (Settings.WindowState == FormWindowState.Maximized)
-                WindowState = FormWindowState.Maximized;
+        private static Image GetListViewItemImage(ListViewItem item)
+        {
+            if (item?.ImageList?.Images is not { } images)
+                return default;
+            var index = item.ImageIndex;
+            return index.IsBetween(0, images.Count - 1) ? images[index] : default;
         }
 
         private void AppsListResizeColumns()
@@ -1128,7 +1088,6 @@ namespace AppsDownloader.Forms
 
             appsList.BeginUpdate();
             appsList.Items.Clear();
-            AppSupplierMirrors.UpdateSuppliers();
             Image smallDef = default,
                   largeDef = default,
                   smallDepracted = default,
@@ -1266,7 +1225,7 @@ namespace AppsDownloader.Forms
                 Log.Write($"Interface: {appsList.Items.Count} {(appsList.Items.Count == 1 ? "App" : "Apps")} has been added!");
 
             appsList.ShowGroups = Settings.ShowGroups;
-            appsList.SmallImageList = Settings.LargeImages ? largeImageList : smallImageList;
+            appsList.SmallImageList = Settings.ShowLargeImages ? largeImageList : smallImageList;
             appsList.EndUpdate();
             AppsListShowColors();
         }

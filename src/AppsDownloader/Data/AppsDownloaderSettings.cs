@@ -16,7 +16,7 @@
     ///     Provides local app settings.
     /// </summary>
     [Serializable]
-    public sealed class AppsDownloaderSettings : ISerializable
+    public sealed class AppsDownloaderSettings : ISerializable, IEquatable<AppsDownloaderSettings>
     {
         [NonSerialized]
         private string _filePath;
@@ -29,7 +29,7 @@
         /// <summary>
         ///     Determines whether the apps images are large.
         /// </summary>
-        public bool LargeImages { get; set; }
+        public bool ShowLargeImages { get; set; }
 
         /// <summary>
         ///     Determines whether the apps are listed within categories.
@@ -116,8 +116,8 @@
                     case nameof(TransferDir):
                         TransferDir = info.GetString(nameof(TransferDir));
                         break;
-                    case nameof(LargeImages):
-                        LargeImages = info.GetBoolean(nameof(LargeImages));
+                    case nameof(ShowLargeImages):
+                        ShowLargeImages = info.GetBoolean(nameof(ShowLargeImages));
                         break;
                     case nameof(ShowGroups):
                         ShowGroups = info.GetBoolean(nameof(ShowGroups));
@@ -162,7 +162,7 @@
                 throw new ArgumentNullException(nameof(info));
 
             info.AddValue(nameof(TransferDir), TransferDir);
-            info.AddValue(nameof(LargeImages), LargeImages);
+            info.AddValue(nameof(ShowLargeImages), ShowLargeImages);
             info.AddValue(nameof(ShowGroups), ShowGroups);
             info.AddValue(nameof(ShowGroupColors), ShowGroupColors);
             info.AddValue(nameof(HighlightInstalled), HighlightInstalled);
@@ -182,7 +182,7 @@
         public bool Equals(AppsDownloaderSettings other) =>
             other != null &&
             TransferDir == other.TransferDir &&
-            LargeImages == other.LargeImages &&
+            ShowLargeImages == other.ShowLargeImages &&
             ShowGroups == other.ShowGroups &&
             ShowGroupColors == other.ShowGroupColors &&
             HighlightInstalled == other.HighlightInstalled &&
@@ -218,7 +218,7 @@
         public void SetDefaults()
         {
             TransferDir = EnvironmentEx.GetVariableWithPath(CorePaths.TransferDir);
-            LargeImages = false;
+            ShowLargeImages = false;
             ShowGroups = true;
             ShowGroupColors = true;
             HighlightInstalled = true;
@@ -272,7 +272,7 @@
                 return;
             if (DirectoryEx.Exists(item.TransferDir))
                 TransferDir = item.TransferDir;
-            LargeImages = item.LargeImages;
+            ShowLargeImages = item.ShowLargeImages;
             ShowGroups = item.ShowGroups;
             ShowGroupColors = item.ShowGroupColors;
             HighlightInstalled = item.HighlightInstalled;

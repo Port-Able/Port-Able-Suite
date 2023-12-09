@@ -49,7 +49,7 @@
             _settings = settings ?? new AppsDownloaderSettings();
 
             highlightInstalledCheck.Checked = _settings.HighlightInstalled;
-            showLargeImagesCheck.Checked = _settings.LargeImages;
+            showLargeImagesCheck.Checked = _settings.ShowLargeImages;
             showGroupsCheck.Checked = _settings.ShowGroups;
             showColorsCheck.Checked = _settings.ShowGroupColors;
 
@@ -74,7 +74,7 @@
         private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             _settings.HighlightInstalled = highlightInstalledCheck.Checked;
-            _settings.LargeImages = showLargeImagesCheck.Checked;
+            _settings.ShowLargeImages = showLargeImagesCheck.Checked;
             _settings.ShowGroups = showGroupsCheck.Checked;
             _settings.ShowGroupColors = showColorsCheck.Checked;
             SetGroupColorFromPanel("listViewGroup1", group1ColorPanel);
