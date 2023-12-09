@@ -7,6 +7,7 @@ namespace AppsLauncher.Windows
     using System.IO;
     using System.Linq;
     using System.Windows.Forms;
+    using Data;
     using LangResources;
     using Libraries;
     using Microsoft.Win32;
@@ -17,32 +18,32 @@ namespace AppsLauncher.Windows
     using SilDev.Legacy;
     using static SilDev.WinApi;
 
-    public sealed partial class MenuViewForm :
-#if !DEBUG && BORDERLESS
-        FormBorderlessResizable
-#else
-        Form
-#endif
+    public sealed partial class MenuViewForm : Form
     {
         private bool _isMouseEnter;
-
-        private Point CursorLocation { get; set; }
-
-        private bool PreventClosure { get; set; }
-
-        private string SearchText { get; set; }
 
         protected override CreateParams CreateParams
         {
             get
             {
                 var cp = base.CreateParams;
-                cp.Style &= ~0xc00000; // Disable caption.
+                if (!SettingsNew.ShowCaption)
+                    cp.Style &= ~0xc00000;
 
-                //cp.Style &= ~0x40000; // Disable thick frame to enable special animation.
+                //              cp.Style &= ~0x40000; // Disable thick frame to enable special animation.
                 return cp;
             }
         }
+
+        private Point CursorLocation { get; set; }
+
+        private bool PreventResizeEvents { get; set; }
+
+        private bool PreventClosure { get; set; }
+
+        private string SearchText { get; set; }
+
+        private AppsLauncherSettings SettingsNew { get; } = new();
 
         public MenuViewForm()
         {
@@ -56,37 +57,39 @@ namespace AppsLauncher.Windows
                 appMenu.ChangeColorMode();
             }
 
-            Language.SetControlLang(this);
-            Text = Resources.GlobalTitle;
+            Icon = Resources.PaLogoSymbol;
 
-            BackColor = Settings.Window.Colors.BaseDark;
-            if (Settings.Window.BackgroundImage != default)
+            if (!SettingsNew.ShowCaption)
             {
-                BackgroundImage = Settings.Window.BackgroundImage;
-                BackgroundImageLayout = Settings.Window.BackgroundImageLayout;
+                var captionHeight = SystemInformation.CaptionHeight;
+                appsListViewPanel.Height += captionHeight;
+                searchBox.Top += captionHeight;
+                profileBtn.Top += captionHeight;
+                downloadBtn.Top += captionHeight;
+                settingsBtn.Top += captionHeight;
+            }
+
+            BackColor = SettingsNew.WindowColors.TryGetValue(ColorOption.Back, DefaultBackColor);
+            if (SettingsNew.WindowBackground != default)
+            {
+                BackgroundImage = SettingsNew.WindowBackground;
+                BackgroundImageLayout = SettingsNew.WindowBackgroundLayout;
             }
             else
                 BackgroundImageLayout = ImageLayout.Stretch;
 
-            Icon = Resources.PaLogoSymbol;
-
-            //ControlEx.DrawSizeGrip(this, Settings.Window.Colors.Base);
             if (!EnvironmentEx.IsAtLeastWindows(11))
-                ControlEx.DrawBorder(this, Settings.Window.Colors.Base);
+                ControlEx.DrawBorder(this, BackColor.IsDarkDark() ? BackColor.EnsureLightLight() : BackColor.EnsureDarkDark());
 
-            var captionHeight = NativeHelper.GetSystemMetrics(SystemMetric.CyCaption);
-            appsListViewPanel.Height += captionHeight;
-            searchBox.Top += captionHeight;
-
-            appsListViewPanel.BackColor = Settings.Window.Colors.Control;
-            appsListViewPanel.ForeColor = Settings.Window.Colors.ControlText;
-            appsListView.BackColor = Settings.Window.Colors.Control;
-            appsListView.ForeColor = Settings.Window.Colors.ControlText;
+            appsListViewPanel.BackColor = SettingsNew.WindowColors.TryGetValue(ColorOption.Control, DefaultBackColor);
+            appsListViewPanel.ForeColor = SettingsNew.WindowColors.TryGetValue(ColorOption.ControlText, DefaultForeColor);
+            appsListView.BackColor = appsListViewPanel.BackColor;
+            appsListView.ForeColor = appsListViewPanel.ForeColor;
             appsListView.SetMouseOverCursor();
 
-            searchBox.BackColor = Settings.Window.Colors.Control;
-            searchBox.ForeColor = Settings.Window.Colors.ControlText;
-            searchBox.DrawSearchSymbol(Settings.Window.Colors.ControlText);
+            searchBox.BackColor = appsListViewPanel.BackColor;
+            searchBox.ForeColor = appsListViewPanel.ForeColor;
+            searchBox.DrawSearchSymbol(appsListViewPanel.ForeColor);
             SearchBox_Leave(searchBox, EventArgs.Empty);
 
             CacheData.SetComponentImageColor(aboutBtn);
@@ -102,7 +105,7 @@ namespace AppsLauncher.Windows
             CacheData.SetComponentImageColor(appMenuItem3, true);
             CacheData.SetComponentImageColor(appMenuItem4);
             CacheData.SetComponentImageColor(appMenuItem6);
-            CacheData.SetComponentImageColor(appMenuItem7, Color.DarkRed);
+            CacheData.SetComponentImageColor(appMenuItem7, Color.Firebrick);
             CacheData.SetComponentImageColor(appMenuItem8);
 
             appMenu.CloseOnMouseLeave(32);
@@ -129,24 +132,17 @@ namespace AppsLauncher.Windows
 
         private void MenuViewForm_Load(object sender, EventArgs e)
         {
-            if (Settings.Window.Size.Width > MinimumSize.Width)
-                Width = Settings.Window.Size.Width;
-            if (Settings.Window.Size.Height > MinimumSize.Height)
-                Height = Settings.Window.Size.Height;
-            MenuViewFormSizeRefresh();
-            MenuViewFormUpdate();
-            Settings.Window.Opacity = 1f;
-            if (Settings.Window.Animation != AnimateWindowFlags.Slide)
-                return;
-            Opacity = Settings.Window.Opacity;
-
-            //WinApi.NativeHelper.AnimateWindow(Handle, Settings.Window.FadeInDuration,  WinApi.AnimateWindowFlags.VerNegative | WinApi.AnimateWindowFlags.Activate | WinApi.AnimateWindowFlags.Slide);
+            Width = SettingsNew.WindowSize.Width;
+            Height = SettingsNew.WindowSize.Height;
+            MinimumSize = MinimumSize.ScaleDimensions();
+            MaximumSize = SizeEx.GetDesktopSize(Location);
+            MenuViewFormPositionUpdate();
+            AppsListViewUpdate();
         }
 
         private void MenuViewForm_Shown(object sender, EventArgs e)
         {
-            //BackgroundImage ??= ChangeColorMatrix(Blur(CaptureDesktopBehindWindow(this), 90), 1f, 1f, 1f, .15f);
-            BackgroundImage ??= this.CaptureDesktopBehindWindow().Blur().SetAlpha(.2f);
+            BackgroundImage ??= SettingsNew.GetDesktopBehind(this);
             MenuViewForm_Resize(this, EventArgs.Empty);
             if (Opacity <= 0d)
             {
@@ -156,29 +152,30 @@ namespace AppsLauncher.Windows
                     Interval = 1,
                     Enabled = true
                 };
-                timer.Tick += (o, _) =>
-                {
-                    if (o is not Timer owner)
-                        return;
-                    if (Opacity < Settings.Window.Opacity)
-                    {
-                        var opacity = Settings.Window.Opacity / (Settings.Window.FadeInDuration / 10d) + Opacity;
-                        if (opacity <= Settings.Window.Opacity)
-                        {
-                            Opacity = opacity;
-                            return;
-                        }
-                    }
-                    owner.Enabled = false;
-                    Opacity = Settings.Window.Opacity;
-                    if (NativeHelper.GetForegroundWindow() != Handle)
-                        NativeHelper.SetForegroundWindow(Handle);
-                    owner.Dispose();
-                };
+                timer.Tick += LocalFadeInTick;
                 return;
             }
-            if (NativeHelper.GetForegroundWindow() != Handle)
+            NativeHelper.SetForegroundWindow(Handle);
+            return;
+
+            void LocalFadeInTick(object s, EventArgs _)
+            {
+                if (s is not Timer owner)
+                    return;
+                if (Opacity < SettingsNew.OpacityLevel)
+                {
+                    var opacity = SettingsNew.OpacityLevel / 3d + Opacity;
+                    if (opacity < (SettingsNew.BlurStrength.IsBetween(1, 99) ? 1d : SettingsNew.OpacityLevel))
+                    {
+                        Opacity = opacity;
+                        return;
+                    }
+                }
+                owner.Enabled = false;
+                Opacity = SettingsNew.BlurStrength.IsBetween(1, 99) ? 1f : SettingsNew.OpacityLevel;
                 NativeHelper.SetForegroundWindow(Handle);
+                owner.Dispose();
+            }
         }
 
         private void MenuViewForm_Deactivate(object sender, EventArgs e)
@@ -191,31 +188,42 @@ namespace AppsLauncher.Windows
 
         private void MenuViewForm_ResizeBegin(object sender, EventArgs e)
         {
+            if (PreventResizeEvents)
+                return;
+
             if (!appsListView.Scrollable)
                 appsListView.Scrollable = true;
-            BackColor = Settings.Window.Colors.Base;
+
             BackgroundImage?.Dispose();
             BackgroundImage = default;
+
             this.SetChildVisibility(false, appsListViewPanel);
         }
 
         private void MenuViewForm_ResizeEnd(object sender, EventArgs e)
         {
+            if (PreventResizeEvents)
+                return;
+
             if (!appsListView.Focus())
                 appsListView.Select();
-            BackColor = Settings.Window.Colors.BaseDark;
-            if (Settings.Window.BackgroundImage != default)
-                BackgroundImage = Settings.Window.BackgroundImage;
-            BackgroundImage ??= this.CaptureDesktopBehindWindow().Blur().SetAlpha(.2f);
+
+            if (SettingsNew.WindowBackground == default && (BackgroundImage ??= SettingsNew.GetDesktopBehind(this)) != default)
+                BackgroundImageLayout = ImageLayout.Stretch;
+            else
+                BackgroundImage = SettingsNew.WindowBackground;
+
             this.SetChildVisibility(true, appsListViewPanel);
-            Settings.Window.Size.Width = Width;
-            Settings.Window.Size.Height = Height;
-            MenuViewFormSizeRefresh();
+
+            SettingsNew.WindowSize = new(Width, Height);
+            MenuViewFormPositionUpdate();
         }
 
         private void MenuViewForm_Resize(object sender, EventArgs e)
         {
-            if (!Settings.Window.HideHScrollBar)
+            if (PreventResizeEvents)
+                return;
+            if (SettingsNew.ShowHorScrollBar)
             {
                 Refresh();
                 return;
@@ -234,7 +242,8 @@ namespace AppsLauncher.Windows
             PreventClosure = true;
             if (Opacity > 0)
                 Opacity = 0;
-            if (!Settings.StartMenuIntegration)
+            SettingsNew.SaveToFile();
+            if (!SettingsNew.SystemStartMenuIntegration)
                 return;
             try
             {
@@ -249,38 +258,58 @@ namespace AppsLauncher.Windows
 
         private void MenuViewForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Settings.WriteToFile();
-            Settings.StartUpdateSearch();
+            //Settings.StartUpdateSearch();
         }
 
-        private void MenuViewFormSizeRefresh()
+        private void MenuViewFormPositionUpdate()
         {
-            Settings.Window.Size.Refresh();
-
-            MinimumSize = Settings.Window.Size.Minimum;
-            MaximumSize = Settings.Window.Size.Maximum;
-
-            var size = Size;
-            var minSize = MinimumSize;
-            var maxSize = MaximumSize;
-
-            if (size.Width < minSize.Width)
-                size.Width = minSize.Width;
-            if (size.Width > maxSize.Width)
-                size.Width = maxSize.Width;
-
-            if (size.Height < minSize.Height)
-                size.Height = minSize.Height;
-            if (size.Height > maxSize.Height)
-                size.Height = maxSize.Height;
-
-            if (Width != size.Width)
-                Width = size.Width;
-            if (Height != size.Height)
-                Height = size.Height;
+            PreventResizeEvents = true;
+            var taskbarAlignment = TaskBar.GetAlignment();
+            var taskbarLocation = TaskBar.GetLocation(Handle);
+            if (SettingsNew.StartPosition == StartPositionOption.StartMenu && taskbarLocation != TaskBarLocation.Hidden)
+            {
+                var screen = Screen.PrimaryScreen.WorkingArea;
+                foreach (var scr in Screen.AllScreens.Where(s => s.Bounds.Contains(Cursor.Position)))
+                {
+                    screen = scr.WorkingArea;
+                    break;
+                }
+                if (taskbarAlignment == TaskBarAlignment.Center)
+                    Left = screen.Width / 2 - Width / 2;
+                switch (taskbarLocation)
+                {
+                    case TaskBarLocation.Left:
+                    case TaskBarLocation.Top:
+                        if (taskbarAlignment == TaskBarAlignment.Left)
+                            Left = screen.X;
+                        Top = screen.Y;
+                        break;
+                    case TaskBarLocation.Right:
+                        if (taskbarAlignment == TaskBarAlignment.Left)
+                            Left = screen.Width - Width;
+                        Top = screen.Y;
+                        break;
+                    default:
+                        if (taskbarAlignment == TaskBarAlignment.Left)
+                            Left = screen.X;
+                        Top = screen.Height - Height;
+                        break;
+                }
+            }
+            else
+            {
+                Left = Cursor.Position.X - Width / 2;
+                Top = Cursor.Position.Y - Height / 2;
+            }
+            if (NativeHelper.WindowIsOutOfScreenArea(Handle, out var newRect))
+            {
+                Left = newRect.X;
+                Top = newRect.Y;
+            }
+            PreventResizeEvents = false;
         }
 
-        private void MenuViewFormUpdate(bool setWindowLocation = true)
+        private void AppsListViewUpdate()
         {
             appsListView.BeginUpdate();
             try
@@ -291,7 +320,7 @@ namespace AppsLauncher.Windows
                 if (!appsListView.Scrollable)
                     appsListView.Scrollable = true;
 
-                var largeImages = Settings.Window.LargeImages;
+                var largeImages = SettingsNew.ShowLargeImages;
                 imageList.Images.Clear();
                 foreach (var appData in CacheData.CurrentAppInfo)
                 {
@@ -311,7 +340,7 @@ namespace AppsLauncher.Windows
                     }
                     if (CacheData.AppImages.ContainsKey(key))
                     {
-                        image = Settings.Window.LargeImages ? CacheData.AppImagesLarge[key] : CacheData.AppImages[key];
+                        image = SettingsNew.ShowLargeImages ? CacheData.AppImagesLarge[key] : CacheData.AppImages[key];
                         goto UpdateCache;
                     }
 
@@ -401,52 +430,6 @@ namespace AppsLauncher.Windows
                         break;
                 }
                 CacheData.UpdateCurrentImagesFile();
-
-                if (!setWindowLocation)
-                    return;
-                var taskbarAlignment = TaskBar.GetAlignment();
-                var taskbarLocation = TaskBar.GetLocation(Handle);
-                if (Settings.Window.DefaultPosition > 0 && taskbarLocation != TaskBarLocation.Hidden)
-                {
-                    var screen = Screen.PrimaryScreen.WorkingArea;
-                    foreach (var scr in Screen.AllScreens)
-                    {
-                        if (!scr.Bounds.Contains(Cursor.Position))
-                            continue;
-                        screen = scr.WorkingArea;
-                        break;
-                    }
-                    if (taskbarAlignment == TaskBarAlignment.Center)
-                        Left = screen.Width / 2 - Width / 2;
-                    switch (taskbarLocation)
-                    {
-                        case TaskBarLocation.Left:
-                        case TaskBarLocation.Top:
-                            if (taskbarAlignment == TaskBarAlignment.Left)
-                                Left = screen.X;
-                            Top = screen.Y;
-                            break;
-                        case TaskBarLocation.Right:
-                            if (taskbarAlignment == TaskBarAlignment.Left)
-                                Left = screen.Width - Width;
-                            Top = screen.Y;
-                            break;
-                        default:
-                            if (taskbarAlignment == TaskBarAlignment.Left)
-                                Left = screen.X;
-                            Top = screen.Height - Height;
-                            break;
-                    }
-                }
-                else
-                {
-                    Left = Cursor.Position.X - Width / 2;
-                    Top = Cursor.Position.Y - Height / 2;
-                }
-                if (!NativeHelper.WindowIsOutOfScreenArea(Handle, out var newRect))
-                    return;
-                Left = newRect.X;
-                Top = newRect.Y;
             }
             finally
             {
@@ -584,7 +567,7 @@ namespace AppsLauncher.Windows
                 Ini.Write("AppInfo", "Name", e.Label, appData.ConfigPath);
                 Ini.WriteAll(appData.ConfigPath, true, true);
                 CacheData.ResetCurrent();
-                MenuViewFormUpdate(false);
+                AppsListViewUpdate();
             }
             catch (Exception ex) when (ex.IsCaught())
             {
@@ -648,7 +631,7 @@ namespace AppsLauncher.Windows
                         MessageBoxEx.CenterMousePointer = !ClientRectangle.Contains(PointToClient(MousePosition));
                         PreventClosure = true;
                         if (appData.RemoveApplication(this))
-                            MenuViewFormUpdate(false);
+                            AppsListViewUpdate();
                         PreventClosure = false;
                     }
                     else
@@ -671,7 +654,7 @@ namespace AppsLauncher.Windows
             if (sender is not TextBox owner)
                 return;
             owner.Font = new Font("Segoe UI", owner.Font.Size);
-            owner.ForeColor = Settings.Window.Colors.ControlText;
+            owner.ForeColor = appsListViewPanel.ForeColor;
             owner.Text = SearchText ?? string.Empty;
             appsListView.HideSelection = true;
         }
@@ -680,7 +663,7 @@ namespace AppsLauncher.Windows
         {
             if (sender is not TextBox owner)
                 return;
-            var c = Settings.Window.Colors.ControlText;
+            var c = appsListViewPanel.ForeColor;
             owner.Font = new Font("Comic Sans MS", owner.Font.Size, FontStyle.Italic);
             owner.ForeColor = Color.FromArgb(c.A, c.R / 2, c.G / 2, c.B / 2);
             SearchText = owner.Text;
@@ -716,22 +699,23 @@ namespace AppsLauncher.Windows
                 var itemList = new List<string>();
                 foreach (ListViewItem item in appsListView.Items)
                 {
-                    item.ForeColor = Settings.Window.Colors.ControlText;
-                    item.BackColor = Settings.Window.Colors.Control;
+                    item.ForeColor = appsListViewPanel.ForeColor;
+                    item.BackColor = appsListViewPanel.BackColor;
                     itemList.Add(item.Text);
                 }
                 if (string.IsNullOrWhiteSpace(owner.Text) || owner.Font.Italic)
                     return;
-                foreach (ListViewItem item in appsListView.Items)
-                    if (item.Text.Equals(itemList.SearchItem(owner.Text), StringComparison.Ordinal))
-                    {
-                        item.ForeColor = Settings.Window.Colors.HighlightText;
-                        item.BackColor = Settings.Window.Colors.Highlight;
-                        item.Selected = true;
-                        item.Focused = true;
-                        item.EnsureVisible();
-                        break;
-                    }
+                var highlight = SettingsNew.WindowColors.TryGetValue(ColorOption.Highlight, SystemColors.Highlight);
+                var highlightText = SettingsNew.WindowColors.TryGetValue(ColorOption.HighlightText, SystemColors.HighlightText);
+                foreach (var item in appsListView.Items.Cast<ListViewItem>().Where(i => i.Text.Equals(itemList.SearchItem(owner.Text), StringComparison.Ordinal)))
+                {
+                    item.BackColor = highlight;
+                    item.ForeColor = highlightText;
+                    item.Selected = true;
+                    item.Focused = true;
+                    item.EnsureVisible();
+                    break;
+                }
                 CursorLocation = Cursor.Position;
             }
             finally
@@ -789,7 +773,7 @@ namespace AppsLauncher.Windows
 
         private void DownloadBtn_Click(object sender, EventArgs e)
         {
-            Settings.SkipUpdateSearch = true;
+            //Settings.SkipUpdateSearch = true;
             ProcessEx.Start(CorePaths.AppsDownloader);
             Application.Exit();
         }
@@ -822,19 +806,23 @@ namespace AppsLauncher.Windows
                 Application.Restart();
                 return;
             }
+            MaximumSize = SizeEx.GetDesktopSize(Location);
             var timer = new Timer(components)
             {
                 Interval = 1,
                 Enabled = true
             };
-            timer.Tick += (o, _) =>
+            timer.Tick += LocalCheckRestartTick;
+            return;
+
+            void LocalCheckRestartTick(object s, EventArgs _)
             {
-                if (o is not Timer owner || Application.OpenForms.Count > 1)
+                if (s is not Timer owner || Application.OpenForms.Count > 1)
                     return;
                 owner.Enabled = false;
                 Application.Restart();
                 owner.Dispose();
-            };
+            }
         }
     }
 }

@@ -34,6 +34,9 @@
             DailyFull,
             DailyOnlyApps,
             DailyOnlyAppsSuite,
+            WeeklyFull,
+            WeeklyOnlyApps,
+            WeeklyOnlyAppsSuite,
             MonthlyFull,
             MonthlyOnlyApps,
             MonthlyOnlyAppsSuite
@@ -187,6 +190,7 @@
 
         internal static bool WriteToFileInQueue { get; set; }
 
+        // ***WIP
         internal static void StartUpdateSearch()
         {
             if (SkipUpdateSearch)
@@ -198,7 +202,8 @@
             if (lastCheck != default &&
                 ((i.IsBetween(1, 3) && (DateTime.Now - lastCheck).TotalHours < 1d) ||
                  (i.IsBetween(4, 6) && (DateTime.Now - lastCheck).TotalDays < 1d) ||
-                 (i.IsBetween(7, 9) && (DateTime.Now - lastCheck).TotalDays < 30d)))
+                 (i.IsBetween(7, 9) && (DateTime.Now - lastCheck).TotalDays < 7d)) ||
+                 (i.IsBetween(10, 12) && (DateTime.Now - lastCheck).TotalDays < 30d))
                 return;
             if (i != 2 && i != 5 && i != 8)
                 ProcessEx.Start(CorePaths.AppsSuiteUpdater);
@@ -207,6 +212,7 @@
             LastUpdateCheck = DateTime.Now;
         }
 
+        // ***WIP
         internal static string SearchItem(this List<string> items, string search)
         {
             try
@@ -240,6 +246,7 @@
             return string.Empty;
         }
 
+        // ***WIP
         internal static void Initialize()
         {
             WinApi.NativeHelper.SetProcessDPIAware();

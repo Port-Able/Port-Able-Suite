@@ -73,7 +73,7 @@ namespace AppsLauncher.Windows
             this.appMenu.Name = "addMenu";
             this.appMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.appMenu.ShowItemToolTips = false;
-            this.appMenu.Size = new System.Drawing.Size(212, 198);
+            this.appMenu.Size = new System.Drawing.Size(212, 176);
             // 
             // appMenuItem1
             // 
@@ -166,11 +166,10 @@ namespace AppsLauncher.Windows
             this.appsListView.HideSelection = false;
             this.appsListView.LabelWrap = false;
             this.appsListView.Location = new System.Drawing.Point(4, 3);
-            this.appsListView.MinimumSize = new System.Drawing.Size(192, 275);
             this.appsListView.MultiSelect = false;
             this.appsListView.Name = "appsListView";
             this.appsListView.ShowGroups = false;
-            this.appsListView.Size = new System.Drawing.Size(192, 275);
+            this.appsListView.Size = new System.Drawing.Size(176, 258);
             this.appsListView.TabIndex = 0;
             this.appsListView.TileSize = new System.Drawing.Size(128, 30);
             this.appsListView.UseCompatibleStateImageBehavior = false;
@@ -194,10 +193,9 @@ namespace AppsLauncher.Windows
             this.appsListViewPanel.ForeColor = System.Drawing.SystemColors.WindowText;
             this.appsListViewPanel.Location = new System.Drawing.Point(5, 6);
             this.appsListViewPanel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 3);
-            this.appsListViewPanel.MinimumSize = new System.Drawing.Size(198, 284);
             this.appsListViewPanel.Name = "appsListViewPanel";
             this.appsListViewPanel.Padding = new System.Windows.Forms.Padding(4, 3, 0, 4);
-            this.appsListViewPanel.Size = new System.Drawing.Size(198, 284);
+            this.appsListViewPanel.Size = new System.Drawing.Size(182, 267);
             this.appsListViewPanel.TabIndex = 10;
             // 
             // searchBox
@@ -206,12 +204,11 @@ namespace AppsLauncher.Windows
             | System.Windows.Forms.AnchorStyles.Right)));
             this.searchBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.searchBox.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.searchBox.Location = new System.Drawing.Point(5, 294);
+            this.searchBox.Location = new System.Drawing.Point(5, 277);
             this.searchBox.MaximumSize = new System.Drawing.Size(256, 21);
-            this.searchBox.MinimumSize = new System.Drawing.Size(198, 21);
             this.searchBox.Multiline = true;
             this.searchBox.Name = "searchBox";
-            this.searchBox.Size = new System.Drawing.Size(198, 21);
+            this.searchBox.Size = new System.Drawing.Size(182, 21);
             this.searchBox.TabIndex = 3;
             this.searchBox.TextChanged += new System.EventHandler(this.SearchBox_TextChanged);
             this.searchBox.Enter += new System.EventHandler(this.SearchBox_Enter);
@@ -225,7 +222,7 @@ namespace AppsLauncher.Windows
             this.aboutBtn.BackgroundImage = global::AppsLauncher.Properties.Resources.Interrogation;
             this.aboutBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.aboutBtn.Cursor = System.Windows.Forms.Cursors.Help;
-            this.aboutBtn.Location = new System.Drawing.Point(227, 10);
+            this.aboutBtn.Location = new System.Drawing.Point(211, 10);
             this.aboutBtn.Name = "aboutBtn";
             this.aboutBtn.Size = new System.Drawing.Size(16, 16);
             this.aboutBtn.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -241,7 +238,7 @@ namespace AppsLauncher.Windows
             this.profileBtn.BackColor = System.Drawing.Color.Transparent;
             this.profileBtn.BackgroundImage = global::AppsLauncher.Properties.Resources.User;
             this.profileBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.profileBtn.Location = new System.Drawing.Point(211, 169);
+            this.profileBtn.Location = new System.Drawing.Point(195, 152);
             this.profileBtn.Name = "profileBtn";
             this.profileBtn.Size = new System.Drawing.Size(32, 32);
             this.profileBtn.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -257,7 +254,7 @@ namespace AppsLauncher.Windows
             this.settingsBtn.BackColor = System.Drawing.Color.Transparent;
             this.settingsBtn.BackgroundImage = global::AppsLauncher.Properties.Resources.Settings;
             this.settingsBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.settingsBtn.Location = new System.Drawing.Point(211, 253);
+            this.settingsBtn.Location = new System.Drawing.Point(195, 236);
             this.settingsBtn.Name = "settingsBtn";
             this.settingsBtn.Size = new System.Drawing.Size(32, 32);
             this.settingsBtn.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -273,7 +270,7 @@ namespace AppsLauncher.Windows
             this.downloadBtn.BackColor = System.Drawing.Color.Transparent;
             this.downloadBtn.BackgroundImage = global::AppsLauncher.Properties.Resources.AppsAdd;
             this.downloadBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.downloadBtn.Location = new System.Drawing.Point(212, 212);
+            this.downloadBtn.Location = new System.Drawing.Point(196, 195);
             this.downloadBtn.Name = "downloadBtn";
             this.downloadBtn.Size = new System.Drawing.Size(30, 30);
             this.downloadBtn.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -288,7 +285,7 @@ namespace AppsLauncher.Windows
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.SlateGray;
-            this.ClientSize = new System.Drawing.Size(252, 320);
+            this.ClientSize = new System.Drawing.Size(236, 303);
             this.Controls.Add(this.settingsBtn);
             this.Controls.Add(this.downloadBtn);
             this.Controls.Add(this.appsListViewPanel);

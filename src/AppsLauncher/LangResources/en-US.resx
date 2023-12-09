@@ -596,6 +596,18 @@ This will allow you to go back in time and undo the following changes.</value>
     <value>Hourly (full)</value>
     <comment>ComboBoxItem</comment>
   </data>
+  <data name="updateCheckOption10" xml:space="preserve">
+    <value>Monthly (full)</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="updateCheckOption11" xml:space="preserve">
+    <value>Monthly (only apps)</value>
+    <comment>ComboBoxItem</comment>
+  </data>
+  <data name="updateCheckOption12" xml:space="preserve">
+    <value>Monthly (only Port-Able)</value>
+    <comment>ComboBoxItem</comment>
+  </data>
   <data name="updateCheckOption2" xml:space="preserve">
     <value>Hourly (only apps)</value>
     <comment>ComboBoxItem</comment>
@@ -617,15 +629,15 @@ This will allow you to go back in time and undo the following changes.</value>
     <comment>ComboBoxItem</comment>
   </data>
   <data name="updateCheckOption7" xml:space="preserve">
-    <value>Monthly (full)</value>
+    <value>Weekly (full)</value>
     <comment>ComboBoxItem</comment>
   </data>
   <data name="updateCheckOption8" xml:space="preserve">
-    <value>Monthly (only apps)</value>
+    <value>Weekly (only apps)</value>
     <comment>ComboBoxItem</comment>
   </data>
   <data name="updateCheckOption9" xml:space="preserve">
-    <value>Monthly (only Port-Able)</value>
+    <value>Weekly (only Port-Able)</value>
     <comment>ComboBoxItem</comment>
   </data>
 </root>

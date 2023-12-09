@@ -1115,6 +1115,33 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Monthly (full).
+        /// </summary>
+        internal static string updateCheckOption10 {
+            get {
+                return ResourceManager.GetString("updateCheckOption10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Monthly (only apps).
+        /// </summary>
+        internal static string updateCheckOption11 {
+            get {
+                return ResourceManager.GetString("updateCheckOption11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Monthly (only Port-Able).
+        /// </summary>
+        internal static string updateCheckOption12 {
+            get {
+                return ResourceManager.GetString("updateCheckOption12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hourly (only apps).
         /// </summary>
         internal static string updateCheckOption2 {
@@ -1160,7 +1187,7 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Monthly (full).
+        ///   Looks up a localized string similar to Weekly (full).
         /// </summary>
         internal static string updateCheckOption7 {
             get {
@@ -1169,7 +1196,7 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Monthly (only apps).
+        ///   Looks up a localized string similar to Weekly (only apps).
         /// </summary>
         internal static string updateCheckOption8 {
             get {
@@ -1178,7 +1205,7 @@ namespace AppsLauncher.LangResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Monthly (only Port-Able).
+        ///   Looks up a localized string similar to Weekly (only Port-Able).
         /// </summary>
         internal static string updateCheckOption9 {
             get {
