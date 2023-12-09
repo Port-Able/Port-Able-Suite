@@ -78,12 +78,6 @@
         /// </summary>
         public static string AppImagesLarge { get; } = Path.Combine(HomeDir, "Assets\\AppImagesLarge.dat");
 
-        /// <summary>
-        ///     The path to the default database file that stores app provider server
-        ///     information.
-        /// </summary>
-        public static string AppSuppliers { get; } = Path.Combine(HomeDir, "Assets\\AppSuppliers.dat");
-
         /// ReSharper disable CommentTypo
         /// <summary>
         ///     The path to the default database file that stores the logic of the Nullsoft

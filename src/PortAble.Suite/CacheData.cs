@@ -23,6 +23,7 @@
     public static class CacheData
     {
         private static List<CustomAppSupplier> _customAppSuppliers;
+        private static readonly object InitHandler = new();
 
         /// <summary>
         ///     Gets a collection of <see cref="AppData"/> instances for all apps.
@@ -30,7 +31,8 @@
         public static IReadOnlyList<AppData> AppInfo { get; } = InitAppInfo();
 
         /// <summary>
-        ///     Gets a collection of filters that applies when creating <see cref="AppInfo"/>.
+        ///     Gets a collection of filters that applies when creating
+        ///     <see cref="AppInfo"/>.
         /// </summary>
         public static IReadOnlyDictionary<string, string[]> AppInfoFilters { get; private set; }
 
@@ -61,20 +63,11 @@
         ///         Otherwise, the following hierarchy is used:
         ///     </para>
         ///     <code>
-        ///         <see langword="this"/>["SUPPLIER_KEY"]["HTTPS_ADDRESS"] == "SERVER_LOCATION"
+        ///         <see langword="this"/>["HTTPS_ADDRESS"] == "SERVER_INFO"
         ///     </code>
-        ///     <para>
-        ///         For example, to retrieve a collection of SourceForge server addresses,
-        ///         apply:
-        ///     </para>
-        ///     <code>
-        ///         <see langword="this"/>["Sf"].Keys
-        ///      </code>
         /// </summary>
-        public static IReadOnlyDictionary<string, Dictionary<string, string>> AppSuppliers { get; } =
-            InitFromDat<Dictionary<string, Dictionary<string, string>>>(CacheFiles.AppSuppliers,
-                                                                        CorePaths.AppSuppliers,
-                                                                        StringComparer.OrdinalIgnoreCase);
+        public static IReadOnlyDictionary<string, string> AppSuppliers =>
+            LoadDat<Dictionary<string, string>>(CacheFiles.AppSuppliers);
 
         /// <summary>
         ///     Gets a collection of <see cref="CustomAppSupplier"/> instances.
@@ -85,12 +78,15 @@
             {
                 if (_customAppSuppliers != default)
                     return _customAppSuppliers;
-                var dir = CorePaths.CustomAppSuppliersDir;
-                if (Directory.Exists(dir))
-                    _customAppSuppliers = DirectoryEx.EnumerateFiles(dir)
-                                                     .Select(f => LoadDat<CustomAppSupplier>(f))
-                                                     .Where(x => x != default).ToList();
-                return _customAppSuppliers ?? new List<CustomAppSupplier>();
+                lock (InitHandler)
+                {
+                    var dir = CorePaths.CustomAppSuppliersDir;
+                    if (Directory.Exists(dir))
+                        _customAppSuppliers = DirectoryEx.EnumerateFiles(dir)
+                                                         .Select(f => LoadDat<CustomAppSupplier>(f))
+                                                         .Where(x => x != default).ToList();
+                    return _customAppSuppliers ?? new List<CustomAppSupplier>();
+                }
             }
         }
 
@@ -161,8 +157,12 @@
         ///     If successful, the saved instance of <typeparamref name="T"/>; otherwise
         ///     <paramref name="defValue"/>.
         /// </returns>
-        public static T LoadDat<T>(string path, T defValue = default) where T : class =>
-            FileEx.Deserialize(path, defValue);
+        public static T LoadDat<T>(string path, T defValue = default) where T : class
+        {
+            if (Log.DebugMode > 0)
+                Log.Write($"Cache: Load file from '{path}'.");
+            return FileEx.Deserialize(path, defValue);
+        }
 
         /// <summary>
         ///     Saves the data of the specified instance in human-readable JSON format to
@@ -341,14 +341,17 @@
 
         private static T InitFromDat<T>(string cachePath, string fallbackPath, params object[] parameters) where T : class
         {
-            LocalUpdateFileByDateTime(cachePath);
-            return LoadDat<T>(cachePath) ??
-                   LoadDat<T>(fallbackPath) ??
-                   parameters switch
-                   {
-                       null => (T)Activator.CreateInstance(typeof(T)),
-                       _ => (T)Activator.CreateInstance(typeof(T), parameters)
-                   };
+            lock (InitHandler)
+            {
+                LocalUpdateFileByDateTime(cachePath);
+                return LoadDat<T>(cachePath) ??
+                       LoadDat<T>(fallbackPath) ??
+                       parameters switch
+                       {
+                           null => (T)Activator.CreateInstance(typeof(T)),
+                           _ => (T)Activator.CreateInstance(typeof(T), parameters)
+                       };
+            }
 
             static void LocalUpdateFileByDateTime(string filePath)
             {
@@ -376,132 +379,135 @@
 
         private static List<AppData> InitAppInfo()
         {
-            if (!DirectoryEx.Create(CorePaths.TransferDir))
-                throw new IOException();
-
-            IEnumerable<AppData> enumAppInfo;
-            var appInfo = ApproveAppInfoDat();
-            if (appInfo.Any())
+            lock (InitHandler)
             {
+                if (!DirectoryEx.Create(CorePaths.TransferDir))
+                    throw new IOException();
+
+                IEnumerable<AppData> enumAppInfo;
+                var appInfo = ApproveAppInfoDat();
+                if (appInfo.Any())
+                {
+                    enumAppInfo = CustomAppSupplierInfoCollector(appInfo);
+                    if (enumAppInfo != null)
+                        appInfo.AddRange(enumAppInfo);
+                    return appInfo;
+                }
+
+                // Download all the data from PA servers.
+                var pa = Path.Combine(CorePaths.TransferDir, "AppInfo.ini");
+                var pac = Path.Combine(CorePaths.TransferDir, "AppInfo.7z");
+                foreach (var file in new[] { pa, pac })
+                {
+                    var name = Path.GetFileName(file);
+                    foreach (var link in AppSupplierMirrors.Pa.Keys.Select(x => PathEx.AltCombine(x, ".free", name)))
+                    {
+                        if (Log.DebugMode > 0)
+                            Log.Write($"Cache: Save '{link}' to '{file}'.");
+                        if (!NetEx.FileIsAvailable(link, 30000, UserAgents.Pa))
+                            continue;
+                        if (WebTransfer.DownloadFile(link, file, 60000, UserAgents.Pa, false))
+                            break;
+                    }
+                }
+
+                // Fallback, in the unlikely case
+                // that all PA servers are down.
+                if (!File.Exists(pac))
+                {
+                    var link = PathEx.AltCombine(AppSupplierHosts.Pac, "updater", "update.7z");
+                    if (Log.DebugMode > 0)
+                        Log.Write($"Cache: Save '{link}' to '{pac}'.");
+                    if (NetEx.FileIsAvailable(link, 60000, UserAgents.Empty))
+                        WebTransfer.DownloadFile(link, pac, 60000, UserAgents.Empty, false);
+                }
+
+                // Load the PA`s INI config file
+                if (File.Exists(pa))
+                {
+                    enumAppInfo = AppInfoCollector(appInfo, pa);
+                    if (enumAppInfo != null)
+                        appInfo.AddRange(enumAppInfo);
+
+                    if (FileEx.TryDelete(pa) && Log.DebugMode > 0)
+                        Log.Write($"Cache: '{pa}' deleted.");
+                }
+
+                // Extract the PAC`s INI config file and load it.
+                if (File.Exists(pac))
+                {
+                    if (!File.Exists(CorePaths.FileArchiver))
+                        throw new PathNotFoundException(CorePaths.FileArchiver);
+
+                    using (var process = SevenZip.DefaultArchiver.Extract(pac, CorePaths.TransferDir))
+                    {
+                        if (process?.HasExited == false)
+                            process.WaitForExit();
+                        if (FileEx.TryDelete(pac) && Log.DebugMode > 0)
+                            Log.Write($"Cache: '{pac}' deleted.");
+                    }
+
+                    pac = DirectoryEx.EnumerateFiles(CorePaths.TransferDir, "*.ini").FirstOrDefault(x => !x.EqualsEx(pa));
+                    if (!File.Exists(pac))
+                        throw new PathNotFoundException(pac);
+
+                    enumAppInfo = AppInfoCollector(appInfo, pac);
+                    if (enumAppInfo != null)
+                        appInfo.AddRange(enumAppInfo);
+
+                    if (FileEx.TryDelete(pac) && Log.DebugMode > 0)
+                        Log.Write($"Cache: '{pac}' deleted.");
+                }
+
+                // Sort the instances in the list by app name
+                // and place discontinued apps at the bottom.
+                var comparer = new AlphaNumericComparer<string>();
+                var keywords = new[]
+                {
+                    "Legacy",
+                    "Discontinued"
+                };
+                if (appInfo.Any())
+                    appInfo = appInfo.OrderBy(a => a.Key.ContainsEx(keywords) ||
+                                                   a.Name.ContainsEx(keywords) ||
+                                                   a.DisplayVersion.ContainsEx(keywords))
+                                     .ThenBy(x => x.Name, comparer)
+                                     .ToList();
+
+                switch (Log.DebugMode)
+                {
+                    // Save cleaned app image databases.
+                    case > 1:
+                    {
+                        var appImagesLarge = new Dictionary<string, Image>();
+                        var appImages = new Dictionary<string, Image>();
+                        foreach (var a in AppInfo.Where(a => !a.Key.ContainsEx(keywords) &&
+                                                             !a.Name.ContainsEx(keywords) &&
+                                                             !a.DisplayVersion.ContainsEx(keywords)))
+                        {
+                            if (AppImagesLarge.TryGetValue(a.Key, out var image))
+                                appImagesLarge.Add(a.Key, image);
+                            if (AppImages.TryGetValue(a.Key, out image))
+                                appImages.Add(a.Key, image);
+                        }
+                        SaveDat(appImagesLarge, Path.ChangeExtension(CacheFiles.AppImagesLarge, "cleaned.dat"));
+                        SaveDat(appImages, Path.ChangeExtension(CacheFiles.AppImages, "cleaned.dat"));
+                        break;
+                    }
+
+                    // Finally write the updated data to cache.
+                    default:
+                        SaveDat(appInfo, CacheFiles.AppInfo);
+                        break;
+                }
+
+                // Handle shared data without caching as the server
+                // data may also contain sensitive information.
                 enumAppInfo = CustomAppSupplierInfoCollector(appInfo);
                 if (enumAppInfo != null)
                     appInfo.AddRange(enumAppInfo);
                 return appInfo;
             }
-
-            // Download all the data from PA servers.
-            var pa = Path.Combine(CorePaths.TransferDir, "AppInfo.ini");
-            var pac = Path.Combine(CorePaths.TransferDir, "AppInfo.7z");
-            foreach (var file in new[] { pa, pac })
-            {
-                var name = Path.GetFileName(file);
-                foreach (var link in AppSupplierMirrors.Pa.Keys.Select(x => PathEx.AltCombine(x, ".free", name)))
-                {
-                    if (Log.DebugMode > 0)
-                        Log.Write($"Cache: Save '{link}' to '{file}'.");
-                    if (!NetEx.FileIsAvailable(link, 30000, UserAgents.Pa))
-                        continue;
-                    if (WebTransfer.DownloadFile(link, file, 60000, UserAgents.Pa, false))
-                        break;
-                }
-            }
-
-            // Fallback, in the unlikely case
-            // that all PA servers are down.
-            if (!File.Exists(pac))
-            {
-                var link = PathEx.AltCombine(AppSupplierHosts.Pac, "updater", "update.7z");
-                if (Log.DebugMode > 0)
-                    Log.Write($"Cache: Save '{link}' to '{pac}'.");
-                if (NetEx.FileIsAvailable(link, 60000, UserAgents.Empty))
-                    WebTransfer.DownloadFile(link, pac, 60000, UserAgents.Empty, false);
-            }
-
-            // Load the PA`s INI config file
-            if (File.Exists(pa))
-            {
-                enumAppInfo = AppInfoCollector(appInfo, pa);
-                if (enumAppInfo != null)
-                    appInfo.AddRange(enumAppInfo);
-
-                if (FileEx.TryDelete(pa) && Log.DebugMode > 0)
-                    Log.Write($"Cache: '{pa}' deleted.");
-            }
-
-            // Extract the PAC`s INI config file and load it.
-            if (File.Exists(pac))
-            {
-                if (!File.Exists(CorePaths.FileArchiver))
-                    throw new PathNotFoundException(CorePaths.FileArchiver);
-
-                using (var process = SevenZip.DefaultArchiver.Extract(pac, CorePaths.TransferDir))
-                {
-                    if (process?.HasExited == false)
-                        process.WaitForExit();
-                    if (FileEx.TryDelete(pac) && Log.DebugMode > 0)
-                        Log.Write($"Cache: '{pac}' deleted.");
-                }
-
-                pac = DirectoryEx.EnumerateFiles(CorePaths.TransferDir, "*.ini").FirstOrDefault(x => !x.EqualsEx(pa));
-                if (!File.Exists(pac))
-                    throw new PathNotFoundException(pac);
-
-                enumAppInfo = AppInfoCollector(appInfo, pac);
-                if (enumAppInfo != null)
-                    appInfo.AddRange(enumAppInfo);
-
-                if (FileEx.TryDelete(pac) && Log.DebugMode > 0)
-                    Log.Write($"Cache: '{pac}' deleted.");
-            }
-
-            // Sort the instances in the list by app name
-            // and place discontinued apps at the bottom.
-            var comparer = new AlphaNumericComparer<string>();
-            var keywords = new[]
-            {
-                "Legacy",
-                "Discontinued"
-            };
-            if (appInfo.Any())
-                appInfo = appInfo.OrderBy(a => a.Key.ContainsEx(keywords) ||
-                                               a.Name.ContainsEx(keywords) ||
-                                               a.DisplayVersion.ContainsEx(keywords))
-                                 .ThenBy(x => x.Name, comparer)
-                                 .ToList();
-
-            switch (Log.DebugMode)
-            {
-                // Save cleaned app image databases.
-                case > 1:
-                {
-                    var appImagesLarge = new Dictionary<string, Image>();
-                    var appImages = new Dictionary<string, Image>();
-                    foreach (var a in AppInfo.Where(a => !a.Key.ContainsEx(keywords) &&
-                                                         !a.Name.ContainsEx(keywords) &&
-                                                         !a.DisplayVersion.ContainsEx(keywords)))
-                    {
-                        if (AppImagesLarge.TryGetValue(a.Key, out var image))
-                            appImagesLarge.Add(a.Key, image);
-                        if (AppImages.TryGetValue(a.Key, out image))
-                            appImages.Add(a.Key, image);
-                    }
-                    SaveDat(appImagesLarge, Path.ChangeExtension(CacheFiles.AppImagesLarge, "cleaned.dat"));
-                    SaveDat(appImages, Path.ChangeExtension(CacheFiles.AppImages, "cleaned.dat"));
-                    break;
-                }
-
-                // Finally write the updated data to cache.
-                default:
-                    SaveDat(appInfo, CacheFiles.AppInfo);
-                    break;
-            }
-
-            // Handle shared data without caching as the server
-            // data may also contain sensitive information.
-            enumAppInfo = CustomAppSupplierInfoCollector(appInfo);
-            if (enumAppInfo != null)
-                appInfo.AddRange(enumAppInfo);
-            return appInfo;
         }
 
         private static List<AppData> ApproveAppInfoDat()
@@ -879,7 +885,6 @@
                     if (section == "jPortableBrowserSwitch")
                         requires = "Java|Java64";
                     else
-                    {
                         foreach (var reqirement in from keyword in anyContainsThenIsNotAdvanced
                                                    where section.EndsWithEx(keyword)
                                                    select section.RemoveText(keyword)
@@ -890,7 +895,6 @@
                             requires = reqirement;
                             break;
                         }
-                    }
                 }
                 var requiresList = new List<string>();
                 if (!string.IsNullOrEmpty(requires))
