@@ -159,7 +159,7 @@
         /// </returns>
         public static T LoadDat<T>(string path, T defValue = default) where T : class
         {
-            if (Log.DebugMode > 0)
+            if (Log.DebugMode > 1)
                 Log.Write($"Cache: Load file from '{path}'.");
             return FileEx.Deserialize(path, defValue);
         }
