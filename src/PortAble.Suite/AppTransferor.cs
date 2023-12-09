@@ -112,23 +112,23 @@
             DestPath = default;
             UserData = default;
 
-            var downloadCollection = AppData.DownloadCollection;
+            var downloadCollection = appData.DownloadCollection;
             var packageVersion = default(string);
             if (ActionGuid.IsUpdateInstance &&
-                AppData?.UpdateCollection?.SelectMany(x => x.Value).All(x => x?.Item1?.StartsWithEx("http:", "https:") == true) == true)
+                appData.UpdateCollection?.SelectMany(x => x.Value).All(x => x?.Item1?.StartsWithEx("http:", "https:") == true) == true)
             {
                 var appIniDir = Path.Combine(appData.InstallDir, "App\\AppInfo");
                 var appIniPath = Path.Combine(appIniDir, "appinfo.ini");
                 if (!File.Exists(appIniPath))
                     appIniPath = Path.Combine(appIniDir, "plugininstaller.ini");
                 packageVersion = Ini.Read("Version", nameof(appData.PackageVersion), default(string), appIniPath);
-                if (!string.IsNullOrEmpty(packageVersion) && AppData?.UpdateCollection?.ContainsKey(packageVersion) == true)
-                    downloadCollection = AppData.UpdateCollection;
+                if (!string.IsNullOrEmpty(packageVersion) && appData.UpdateCollection?.ContainsKey(packageVersion) == true)
+                    downloadCollection = appData.UpdateCollection;
             }
 
             foreach (var pair in downloadCollection)
             {
-                if (!pair.Key.EqualsEx(AppData.Settings.ArchiveLang) && (string.IsNullOrEmpty(packageVersion) ||
+                if (!pair.Key.EqualsEx(appData.Settings.ArchiveLang) && (string.IsNullOrEmpty(packageVersion) ||
                                                                          !pair.Key.EqualsEx(packageVersion)))
                     continue;
 
@@ -148,32 +148,32 @@
                         DestPath = PathEx.Combine(CacheFiles.TransferDir, fileName);
                     }
 
-                    var shortHost = AppData.Supplier == default ? NetEx.GetShortHost(srcUrl) : default;
+                    var shortHost = appData.Supplier == default ? NetEx.GetShortHost(srcUrl) : default;
                     var redirect = !NetEx.IPv4IsAvalaible &&
                                    !string.IsNullOrWhiteSpace(shortHost) &&
                                    !shortHost.EqualsEx(AppSupplierHosts.Pa);
 
-                    ReadOnlyDictionary<string, string>.KeyCollection mirrors;
+                    ReadOnlyDictionary<string, string> mirrors;
                     var userAgent = UserAgents.Wget;
                     switch (shortHost)
                     {
                         case AppSupplierHosts.Pa:
-                            mirrors = AppSupplierMirrors.Pa.Keys;
+                            mirrors = AppSupplierMirrors.Pa;
                             userAgent = UserAgents.Pa;
                             break;
                         case AppSupplierHosts.Pac:
-                            mirrors = AppSupplierMirrors.Pac.Keys;
+                            mirrors = AppSupplierMirrors.Pac;
                             break;
                         case AppSupplierHosts.Sf:
-                            mirrors = AppSupplierMirrors.Sf.Keys;
+                            mirrors = AppSupplierMirrors.Sf;
                             break;
                         default:
-                            if (AppData.Supplier != default)
+                            if (appData.Supplier != default)
                             {
                                 if (!srcUrl.StartsWithEx("http:", "https:"))
-                                    srcUrl = PathEx.AltCombine(default(char[]), AppData.Supplier.Address, srcUrl);
-                                userAgent = AppData.Supplier.UserAgent;
-                                UserData = Tuple.Create(AppData.Supplier.User, AppData.Supplier.Password);
+                                    srcUrl = PathEx.AltCombine(default(char[]), appData.Supplier.Address, srcUrl);
+                                userAgent = appData.Supplier.UserAgent;
+                                UserData = Tuple.Create(appData.Supplier.User, appData.Supplier.Password);
                             }
                             _srcData.Add(Tuple.Create(srcUrl, checkHash, userAgent, false));
                             continue;
@@ -181,7 +181,7 @@
 
                     var sHost = NetEx.GetShortHost(srcUrl);
                     var fhost = srcUrl.Substring(0, srcUrl.IndexOf(sHost, StringComparison.OrdinalIgnoreCase) + sHost.Length);
-                    foreach (var mirror in mirrors)
+                    foreach (var mirror in mirrors.Where(x => x.Value != "DISABLED").Select(x => x.Key))
                     {
                         var url = srcUrl;
                         if (!fhost.EqualsEx(mirror))

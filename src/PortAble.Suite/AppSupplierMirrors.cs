@@ -45,7 +45,7 @@
             { "https://downloads.portableapps.com", "DISABLED" },
             { "https://downloads2.portableapps.com", "DISABLED" },
             { "https://download3.portableapps.com", "DISABLED" },
-            { "https://portableapps.com/bouncer?t=", "BOUNCER" }
+            { "https://portableapps.com/bouncer?t=", "DISABLED" }
         });
 
         /// <summary>
