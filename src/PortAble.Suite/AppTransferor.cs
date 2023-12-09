@@ -239,10 +239,8 @@
             for (var i = 0; i < SrcData.Count; i++)
             {
                 var (srcUrl, checkHash, userAgent, started) = SrcData[i];
-                if (started)
-                    continue;
-                if (!FileEx.Delete(DestPath))
-                    throw new InvalidOperationException();
+                if (started || !FileEx.TryDelete(DestPath))
+                    break;
 
                 _srcData[i] = Tuple.Create(srcUrl, checkHash, userAgent, true);
 
@@ -286,6 +284,7 @@
                 DownloadHost = _lastHostFromAll = fullHost;
                 DownloadStarted = true;
             }
+            return;
 
             static void LocalSetTimeout(ref int timeout)
             {
