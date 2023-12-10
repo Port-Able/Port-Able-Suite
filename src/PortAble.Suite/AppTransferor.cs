@@ -492,7 +492,6 @@
                 // so that important languages are listed at top.
                 var buttons = buttonsDict.OrderBy(x => x.Key != setupLangId)
                                          .ThenBy(x => x.Key != systemLangId)
-                                         .ThenBy(x => x.Key)
                                          .SelectMany(x => x.Value)
                                          .Distinct()
                                          .ToList();
@@ -544,8 +543,8 @@
                     if (current == caption)
                         return control;
 
-                    var cur = Regex.Replace(current, pattern, string.Empty);
-                    var cap = Regex.Replace(caption, pattern, string.Empty);
+                    var cur = Regex.Replace(Regex.Escape(current), pattern, string.Empty, RegexOptions.CultureInvariant);
+                    var cap = Regex.Replace(Regex.Escape(caption), pattern, string.Empty, RegexOptions.CultureInvariant);
                     if (cur == cap)
                         return control;
                 }
