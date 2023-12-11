@@ -45,6 +45,13 @@ namespace AppsDownloader.Forms
         {
             InitializeComponent();
 
+            if (Desktop.AppsUseDarkTheme)
+            {
+                Desktop.EnableDarkMode(Handle);
+                Desktop.EnableDarkMode(startBtn.Handle);
+                Desktop.EnableDarkMode(cancelBtn.Handle);
+            }
+
             SuspendLayout();
 
             Icon = Resources.PaLogoGreenSymbol;
@@ -79,9 +86,6 @@ namespace AppsDownloader.Forms
             if (Desktop.AppsUseDarkTheme)
             {
                 settingsBtn.BackgroundImage = settingsBtn.BackgroundImage.SwitchGrayScale(settingsBtn);
-                Desktop.EnableDarkMode(Handle);
-                Desktop.EnableDarkMode(startBtn.Handle);
-                Desktop.EnableDarkMode(cancelBtn.Handle);
                 appMenu.ChangeColorMode();
                 searchBox.ChangeColorMode(ControlExColorMode.DarkDark, ControlExColorMode.LightLightLight);
             }

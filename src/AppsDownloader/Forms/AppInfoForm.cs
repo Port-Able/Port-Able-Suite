@@ -25,6 +25,9 @@
 
             InitializeComponent();
 
+            if (Desktop.AppsUseDarkTheme)
+                this.ChangeColorMode(ControlExColorMode.DarkDarkDark);
+
             SuspendLayout();
 
             Text = appData.Name;
@@ -34,9 +37,6 @@
 
             if (appImage != default)
                 Icon = appImage.ToIcon();
-
-            if (Desktop.AppsUseDarkTheme)
-                this.ChangeColorMode(ControlExColorMode.DarkDarkDark);
 
             infoBox.AppendText(Environment.NewLine);
             infoBox.AppendText(text);
@@ -147,13 +147,12 @@
                 foreach (var s in color.Value)
                     infoBox.MarkText(s, color.Key);
 
-            if (Desktop.AppsUseDarkTheme)
-            {
-                Desktop.EnableDarkMode(Handle);
-                Desktop.EnableDarkMode(infoBox.Handle);
-            }
-
             ResumeLayout(false);
+
+            if (!Desktop.AppsUseDarkTheme)
+                return;
+            Desktop.EnableDarkMode(Handle);
+            Desktop.EnableDarkMode(infoBox.Handle);
         }
 
         private void InfoForm_Load(object sender, EventArgs e) =>

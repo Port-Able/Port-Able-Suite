@@ -27,6 +27,9 @@ namespace AppsLauncher.Windows
         {
             InitializeComponent();
 
+            if (Desktop.AppsUseDarkTheme)
+                Desktop.EnableDarkMode(Handle);
+
             SuspendLayout();
 
             Language.SetControlLang(this);
@@ -90,9 +93,6 @@ namespace AppsLauncher.Windows
             aboutInfoLabelData.ForEach(x => aboutInfoLabel.LinkText(x.First(), x.Last()));
 
             copyrightLabel.Text = string.Format(CultureInfo.InvariantCulture, copyrightLabel.Text, DateTime.Now.Year);
-
-            if (Desktop.AppsUseDarkTheme)
-                Desktop.EnableDarkMode(Handle);
 
             ResumeLayout(false);
         }

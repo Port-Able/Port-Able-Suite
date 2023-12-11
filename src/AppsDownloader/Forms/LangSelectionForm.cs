@@ -53,6 +53,8 @@ namespace AppsDownloader.Forms
 
             rememberLangCheck.Checked = _appData.Settings.ArchiveLangConfirmed;
 
+            ResumeLayout(false);
+
             if (Desktop.AppsUseDarkTheme)
             {
                 Desktop.EnableDarkMode(Handle);
@@ -61,8 +63,6 @@ namespace AppsDownloader.Forms
                 Desktop.EnableDarkMode(cancelBtn.Handle);
                 langBox.ChangeColorMode();
             }
-
-            ResumeLayout(false);
         }
 
         private static string GetShortName(string longName) =>

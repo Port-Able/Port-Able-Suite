@@ -19,16 +19,17 @@
         public SourceManagerForm()
         {
             InitializeComponent();
-            SuspendLayout();
-
-            Icon = Resources.PaLogoGreenSymbol;
-            cancelBtn.Click += (_, _) => Close();
 
             if (Desktop.AppsUseDarkTheme)
             {
                 this.ChangeColorMode(ControlExColorMode.DarkDarkDark);
                 this.EnableDarkMode();
             }
+
+            SuspendLayout();
+
+            Icon = Resources.PaLogoGreenSymbol;
+            cancelBtn.Click += (_, _) => Close();
 
             ResumeLayout(false);
         }

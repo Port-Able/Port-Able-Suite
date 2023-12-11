@@ -29,8 +29,6 @@ namespace AppsLauncher.Windows
                 var cp = base.CreateParams;
                 if (!SettingsNew.ShowCaption)
                     cp.Style &= ~0xc00000;
-
-                //              cp.Style &= ~0x40000; // Disable thick frame to enable special animation.
                 return cp;
             }
         }
@@ -49,25 +47,15 @@ namespace AppsLauncher.Windows
         {
             InitializeComponent();
 
-            SuspendLayout();
-
             if (Desktop.AppsUseDarkTheme)
             {
                 Desktop.EnableDarkMode(Handle);
                 appMenu.ChangeColorMode();
             }
 
-            Icon = Resources.PaLogoSymbol;
+            SuspendLayout();
 
-            if (!SettingsNew.ShowCaption)
-            {
-                var captionHeight = SystemInformation.CaptionHeight;
-                appsListViewPanel.Height += captionHeight;
-                searchBox.Top += captionHeight;
-                profileBtn.Top += captionHeight;
-                downloadBtn.Top += captionHeight;
-                settingsBtn.Top += captionHeight;
-            }
+            Icon = Resources.PaLogoSymbol;
 
             BackColor = SettingsNew.WindowColors.TryGetValue(ColorOption.Back, DefaultBackColor);
             if (SettingsNew.WindowBackground != default)
@@ -93,8 +81,6 @@ namespace AppsLauncher.Windows
             SearchBox_Leave(searchBox, EventArgs.Empty);
 
             CacheData.SetComponentImageColor(aboutBtn);
-            aboutBtn.BackgroundImage = aboutBtn.BackgroundImage.SwitchGrayScale($"{aboutBtn.Name}BackgroundImage");
-
             CacheData.SetComponentImageColor(profileBtn);
             CacheData.SetComponentImageColor(downloadBtn);
             CacheData.SetComponentImageColor(settingsBtn);

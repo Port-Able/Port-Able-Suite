@@ -28,6 +28,9 @@
         {
             InitializeComponent();
 
+            if (Desktop.AppsUseDarkTheme)
+                Desktop.EnableDarkMode(Handle);
+
             SuspendLayout();
 
             Icon = Resources.PaLogoGreenSymbol;
@@ -43,7 +46,6 @@
                 groupColorsGroupBox.ForeColor = groupColorsGroupBox.ForeColor.EnsureLightLightLight();
                 transferGroupBox.ForeColor = transferGroupBox.ForeColor.EnsureLightLightLight();
                 advancedGroupBox.ForeColor = advancedGroupBox.ForeColor.EnsureLightLightLight();
-                Desktop.EnableDarkMode(Handle);
             }
 
             _settings = settings ?? new AppsDownloaderSettings();

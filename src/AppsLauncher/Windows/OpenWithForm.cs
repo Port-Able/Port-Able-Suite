@@ -29,6 +29,9 @@ namespace AppsLauncher.Windows
         {
             InitializeComponent();
 
+            if (Desktop.AppsUseDarkTheme)
+                Desktop.EnableDarkMode(Handle);
+
             SuspendLayout();
 
             Language.SetControlLang(this);
@@ -66,7 +69,6 @@ namespace AppsLauncher.Windows
 
             if (Desktop.AppsUseDarkTheme)
             {
-                Desktop.EnableDarkMode(Handle);
                 appsBox.ChangeColorMode(ControlExColorMode.DarkDarkDark);
                 appMenu.ChangeColorMode();
             }

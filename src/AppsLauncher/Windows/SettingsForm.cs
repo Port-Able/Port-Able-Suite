@@ -31,6 +31,13 @@ namespace AppsLauncher.Windows
 
             InitializeComponent();
 
+            if (Desktop.AppsUseDarkTheme)
+            {
+                Desktop.EnableDarkMode(Handle);
+                Desktop.EnableDarkMode(saveBtn.Handle);
+                Desktop.EnableDarkMode(exitBtn.Handle);
+            }
+
             SuspendLayout();
 
             Icon = Resources.PaLogoSymbol;
@@ -86,13 +93,6 @@ namespace AppsLauncher.Windows
                 appsBox.SelectedIndex = 0;
 
             appDirs.AutoVerticalScrollBar();
-
-            if (Desktop.AppsUseDarkTheme)
-            {
-                Desktop.EnableDarkMode(Handle);
-                Desktop.EnableDarkMode(saveBtn.Handle);
-                Desktop.EnableDarkMode(exitBtn.Handle);
-            }
 
             ResumeLayout(false);
         }
