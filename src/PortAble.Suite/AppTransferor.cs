@@ -590,8 +590,6 @@
                     process.WaitForExit(waitTime);
                     if (process.HasExited)
                         break;
-                    if (!process.Responding)
-                        continue;
 
                     // Let's check if the installation process does
                     // anything so we can wait before doing anything.
@@ -627,7 +625,7 @@
                     var window = FindWindow(process);
                     if (window == IntPtr.Zero)
                         continue;
-                    NativeHelper.PostMessage(window, 0x100, (IntPtr)0xd, (IntPtr)0);
+                    InputDevice.PostKeyState(window, VirtualKey.Enter, VirtualKeyState.KeyDown);
                     waitTime = waitMin;
                 }
             }
