@@ -1,7 +1,7 @@
 ﻿namespace PortAble
 {
     using System;
-    using System.Collections.ObjectModel;
+    using System.Collections.Generic;
     using System.IO;
     using SilDev;
     using SilDev.Compression.Archiver;
@@ -12,7 +12,28 @@
     /// </summary>
     public static class CorePaths
     {
-        private static string _homeDir, _dataDir, _fileArchiver;
+        private static string[] _appDirs;
+
+        private static string _homeDir,
+                              _appsDir,
+                              _appImages,
+                              _appImagesLarge,
+                              _appsLauncher,
+                              _appsDownloader,
+                              _appsSuiteUpdater,
+                              _userDir,
+                              _userDocumentsDir,
+                              _userPicturesDir,
+                              _userMusicDir,
+                              _userVideosDir,
+                              _dataDir,
+                              _settingsDir,
+                              _appSettingsDir,
+                              _logsDir,
+                              _fileArchiver,
+                              _transferDir,
+                              _customAppSuppliersDir,
+                              _nsisButtons;
 
         /// <summary>
         ///     The apps suite root directory.
@@ -32,81 +53,68 @@
         /// <summary>
         ///     The root directory where installed apps are located.
         /// </summary>
-        public static string AppsDir { get; } = Path.Combine(HomeDir, "Apps");
+        public static string AppsDir => _appsDir ??= Path.Combine(HomeDir, "Apps");
 
         /// <summary>
         ///     A collection of subdirectories where installed apps are located.
         /// </summary>
-        public static ReadOnlyCollection<string> AppDirs { get; } = new(new[]
+        public static IReadOnlyList<string> AppDirs => _appDirs ??= new[]
         {
             AppsDir,
             Path.Combine(AppsDir, ".free"),
             Path.Combine(AppsDir, ".repack"),
             Path.Combine(AppsDir, ".share")
-        });
+        };
 
         /// <summary>
         ///     The path to the default database file where small app images are stored.
         /// </summary>
-        public static string AppImages { get; } = Path.Combine(HomeDir, "Assets\\AppImages.dat");
+        public static string AppImages => _appImages ??= Path.Combine(HomeDir, "Assets\\AppImages.dat");
 
         /// <summary>
         ///     The path to the default database file where large app images are stored.
         /// </summary>
-        public static string AppImagesLarge { get; } = Path.Combine(HomeDir, "Assets\\AppImagesLarge.dat");
-
-        /// <summary>
-        ///     The path to the default database file that stores app provider server
-        ///     information.
-        /// </summary>
-        public static string AppSuppliers { get; } = Path.Combine(HomeDir, "Assets\\AppSuppliers.dat");
-
-        /// ReSharper disable CommentTypo
-        /// <summary>
-        ///     The path to the default database file that stores the logic of the Nullsoft
-        ///     Scriptable Install System (NSIS) buttons used by some app installers.
-        /// </summary>
-        public static string NsisButtons { get; } = Path.Combine(HomeDir, "Assets\\NsisButtons.dat");
+        public static string AppImagesLarge => _appImagesLarge ??= Path.Combine(HomeDir, "Assets\\AppImagesLarge.dat");
 
         /// <summary>
         ///     The path to the apps suite launcher executable.
         /// </summary>
-        public static string AppsLauncher { get; } = Path.Combine(HomeDir, "AppsLauncher.exe");
+        public static string AppsLauncher => _appsLauncher ??= Path.Combine(HomeDir, "AppsLauncher.exe");
 
         /// <summary>
         ///     The path to the apps downloader executable.
         /// </summary>
-        public static string AppsDownloader { get; } = Path.Combine(HomeDir, "Binaries\\AppsDownloader.exe");
+        public static string AppsDownloader => _appsDownloader ??= Path.Combine(HomeDir, "Binaries\\AppsDownloader.exe");
 
         /// <summary>
         ///     The path to the apps suite updater executable.
         /// </summary>
-        public static string AppsSuiteUpdater { get; } = Path.Combine(HomeDir, "Binaries\\Updater.exe");
+        public static string AppsSuiteUpdater => _appsSuiteUpdater ??= Path.Combine(HomeDir, "Binaries\\Updater.exe");
 
         /// <summary>
         ///     The users portable profile directory.
         /// </summary>
-        public static string UserDir { get; } = Path.Combine(HomeDir, "Documents");
+        public static string UserDir => _userDir ??= Path.Combine(HomeDir, "Documents");
 
         /// <summary>
         ///     The users portable documents directory.
         /// </summary>
-        public static string UserDocumentsDir { get; } = Path.Combine(UserDir, "Documents");
+        public static string UserDocumentsDir => _userDocumentsDir ??= Path.Combine(UserDir, "Documents");
 
         /// <summary>
         ///     The users portable music directory.
         /// </summary>
-        public static string UserMusicDir { get; } = Path.Combine(UserDir, "Music");
+        public static string UserMusicDir => _userMusicDir ??= Path.Combine(UserDir, "Music");
 
         /// <summary>
         ///     The users portable pictures directory.
         /// </summary>
-        public static string UserPicturesDir { get; } = Path.Combine(UserDir, "Pictures");
+        public static string UserPicturesDir => _userPicturesDir ??= Path.Combine(UserDir, "Pictures");
 
         /// <summary>
         ///     The users portable videos directory.
         /// </summary>
-        public static string UserVideosDir { get; } = Path.Combine(UserDir, "Videos");
+        public static string UserVideosDir => _userVideosDir ??= Path.Combine(UserDir, "Videos");
 
         /// <summary>
         ///     The path to the directory used for temporary files, cached data, and
@@ -136,12 +144,12 @@
         /// <summary>
         ///     The directory where all settings are stored.
         /// </summary>
-        public static string SettingsDir { get; } = Path.Combine(DataDir, "Settings");
+        public static string SettingsDir => _settingsDir ??= Path.Combine(DataDir, "Settings");
 
         /// <summary>
         ///     The directory where app settings are stored.
         /// </summary>
-        public static string AppSettingsDir { get; } = Path.Combine(SettingsDir, "AppSettings");
+        public static string AppSettingsDir => _appSettingsDir ??= Path.Combine(SettingsDir, "AppSettings");
 
         /// <summary>
         ///     The LOG file directory for extended information and debugging.
@@ -150,7 +158,7 @@
         ///         logging.
         ///     </para>
         /// </summary>
-        public static string LogsDir { get; } = Path.Combine(DataDir, "Logs");
+        public static string LogsDir => _logsDir ??= Path.Combine(DataDir, "Logs");
 
         /// <summary>
         ///     The URL to the Port-Able apps suite project's GitHub repository.
@@ -184,12 +192,19 @@
         /// <summary>
         ///     The default directory for downloaded files.
         /// </summary>
-        public static string TransferDir { get; } = Path.Combine(DataDir, "Transfer");
+        public static string TransferDir => _transferDir ??= Path.Combine(DataDir, "Transfer");
 
         /// <summary>
         ///     The path to the downloaded database file that stores app provider server
         ///     information.
         /// </summary>
-        public static string CustomAppSuppliersDir { get; } = Path.Combine(DataDir, "CustomAppSuppliers");
+        public static string CustomAppSuppliersDir => _customAppSuppliersDir ??= Path.Combine(DataDir, "CustomAppSuppliers");
+
+        /// ReSharper disable CommentTypo
+        /// <summary>
+        ///     The path to the default database file that stores the logic of the Nullsoft
+        ///     Scriptable Install System (NSIS) buttons used by some app installers.
+        /// </summary>
+        public static string NsisButtons => _nsisButtons ??= Path.Combine(HomeDir, "Assets\\NsisButtons.dat");
     }
 }

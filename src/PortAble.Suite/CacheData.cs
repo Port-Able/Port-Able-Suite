@@ -22,13 +22,17 @@
     /// </summary>
     public static class CacheData
     {
+        private static List<AppData> _appData;
+        private static Dictionary<string, Image> _appImages, _appImagesLarge;
+        private static Dictionary<string, string> _appSuppliers;
         private static List<CustomAppSupplier> _customAppSuppliers;
+        private static Dictionary<int, List<string>> _nsisButtons;
         private static readonly object InitHandler = new();
 
         /// <summary>
         ///     Gets a collection of <see cref="AppData"/> instances for all apps.
         /// </summary>
-        public static IReadOnlyList<AppData> AppInfo { get; } = InitAppInfo();
+        public static IReadOnlyList<AppData> AppInfo => _appData ??= InitAppInfo();
 
         /// <summary>
         ///     Gets a collection of filters that applies when creating
@@ -39,18 +43,18 @@
         /// <summary>
         ///     Gets the database containing small app images of all apps.
         /// </summary>
-        public static IReadOnlyDictionary<string, Image> AppImages { get; } =
-            InitFromDat<Dictionary<string, Image>>(CacheFiles.AppImages,
-                                                   CorePaths.AppImages,
-                                                   StringComparer.OrdinalIgnoreCase);
+        public static IReadOnlyDictionary<string, Image> AppImages =>
+            _appImages ??= InitFromDat<Dictionary<string, Image>>(CacheFiles.AppImages,
+                                                                  CorePaths.AppImages,
+                                                                  StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         ///     Gets the database containing large app images of all apps.
         /// </summary>
-        public static IReadOnlyDictionary<string, Image> AppImagesLarge { get; } =
-            InitFromDat<Dictionary<string, Image>>(CacheFiles.AppImagesLarge,
-                                                   CorePaths.AppImagesLarge,
-                                                   StringComparer.OrdinalIgnoreCase);
+        public static IReadOnlyDictionary<string, Image> AppImagesLarge =>
+            _appImagesLarge ??= InitFromDat<Dictionary<string, Image>>(CacheFiles.AppImagesLarge,
+                                                                       CorePaths.AppImagesLarge,
+                                                                       StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         ///     Gets the database containing server information of official app suppliers.
@@ -67,7 +71,7 @@
         ///     </code>
         /// </summary>
         public static IReadOnlyDictionary<string, string> AppSuppliers =>
-            LoadDat<Dictionary<string, string>>(CacheFiles.AppSuppliers);
+            _appSuppliers ??= LoadDat<Dictionary<string, string>>(CacheFiles.AppSuppliers);
 
         /// <summary>
         ///     Gets a collection of <see cref="CustomAppSupplier"/> instances.
@@ -111,9 +115,9 @@
         ///         <see langword="this"/>[1033][2] == "&amp;Next &gt;"
         ///      </code>
         /// </summary>
-        public static IReadOnlyDictionary<int, List<string>> NsisButtons { get; } =
-            InitFromDat<Dictionary<int, List<string>>>(CacheFiles.NsisButtons,
-                                                       CorePaths.NsisButtons);
+        public static IReadOnlyDictionary<int, List<string>> NsisButtons =>
+            _nsisButtons ??= InitFromDat<Dictionary<int, List<string>>>(CacheFiles.NsisButtons,
+                                                                        CorePaths.NsisButtons);
 
         /// <summary>
         ///     Saves the data of the specified instance in binary form to the specified
