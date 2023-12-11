@@ -297,6 +297,7 @@ namespace AppsLauncher.Windows
 
         private void AppsListViewUpdate()
         {
+            PreventClosure = true;
             appsListView.BeginUpdate();
             try
             {
@@ -306,104 +307,73 @@ namespace AppsLauncher.Windows
                 if (!appsListView.Scrollable)
                     appsListView.Scrollable = true;
 
-                var largeImages = SettingsNew.ShowLargeImages;
                 imageList.Images.Clear();
+                var large = SettingsNew.ShowLargeImages;
+                var size = large ? 32 : 16;
                 foreach (var appData in CacheData.CurrentAppInfo)
                 {
                     var key = appData.Key;
-                    if (string.IsNullOrWhiteSpace(key))
+                    if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(appData.Name))
                         continue;
 
-                    var name = appData.Name;
-                    if (string.IsNullOrWhiteSpace(name))
-                        continue;
-
-                    Image image;
-                    if (CacheData.CurrentImages.ContainsKey(key))
+                    if (CacheData.CurrentImages.TryGetValue(key, out var fromSlimCache))
                     {
-                        image = CacheData.CurrentImages[key];
-                        goto Finalize;
+                        LocalAddToListView(appData, fromSlimCache, true);
+                        continue;
                     }
-                    if (CacheData.AppImages.ContainsKey(key))
+
+                    if ((large ? CacheData.AppImagesLarge : CacheData.AppImages).TryGetValue(key, out var fromBigCache))
                     {
-                        image = SettingsNew.ShowLargeImages ? CacheData.AppImagesLarge[key] : CacheData.AppImages[key];
-                        goto UpdateCache;
+                        LocalAddToListView(appData, fromBigCache);
+                        continue;
                     }
 
                     var exePath = appData.FilePath;
                     if (!File.Exists(exePath))
                         continue;
-                    try
-                    {
-                        var imgPath = Path.ChangeExtension(exePath, ".ico");
-                        var indicator = largeImages ? 32 : 16;
-                        if (File.Exists(imgPath))
-                        {
-                            exePath = imgPath;
-                            goto FromFile;
-                        }
-                        imgPath = Path.ChangeExtension(exePath, ".png");
-                        if (!File.Exists(imgPath))
-                        {
-                            var appDir = Path.GetDirectoryName(exePath);
-                            var imgDir = Path.Combine(appDir, "App\\AppInfo");
-                            if (largeImages)
-                            {
-                                var sizes = new[] { 32, 40, 48, 64, 96, 128, 256 };
-                                foreach (var size in sizes)
-                                {
-                                    imgPath = Path.Combine(imgDir, $"appicon_{size}.png");
-                                    if (File.Exists(imgPath))
-                                        break;
-                                }
-                            }
-                            else
-                                imgPath = Path.Combine(imgDir, "appicon_16.png");
-                        }
-                        if (File.Exists(imgPath))
-                        {
-                            image = Image.FromFile(imgPath);
-                            if (image != default)
-                            {
-                                if (image.Width != image.Height || image.Width != indicator)
-                                    image = image.Redraw(indicator, indicator);
-                                goto UpdateCache;
-                            }
-                        }
-                        if (exePath.EndsWithEx(".bat", ".cmd", ".jse", ".vbe", ".vbs"))
-                        {
-                            image = CacheData.GetImage(Resources.Terminal, nameof(Resources.Terminal), Settings.Window.Colors.BaseLight, largeImages ? 32 : 16);
-                            goto UpdateCache;
-                        }
-                        FromFile:
 
-                        // ReSharper disable once ConvertToUsingDeclaration
-                        using (var ico = ResourcesEx.GetIconFromFile(exePath, 0, largeImages))
-                        {
-                            image = ico?.ToBitmap()?.Redraw(indicator, indicator);
-                            if (image != default)
-                                goto UpdateCache;
-                        }
-                    }
-                    catch (Exception ex) when (ex.IsCaught())
+                    if (LocalGetFromRes(Path.ChangeExtension(exePath, ".ico"), size) is { } fromIco)
                     {
-                        Log.Write(ex);
+                        LocalAddToListView(appData, fromIco);
+                        continue;
                     }
 
-                    image = CacheData.GetImage(Resources.Application, nameof(Resources.Application), Settings.Window.Colors.BaseLight, largeImages ? 32 : 16);
-                    if (image == default)
+                    if (LocalGetFromPng(Path.ChangeExtension(exePath, ".png"), size) is { } fromPng)
+                    {
+                        LocalAddToListView(appData, fromPng);
+                        continue;
+                    }
+
+                    var exeDir = Path.GetDirectoryName(exePath);
+                    if (!Directory.Exists(exeDir))
                         continue;
 
-                    UpdateCache:
-                    if (!CacheData.CurrentImages.ContainsKey(key))
-                        CacheData.CurrentImages.Add(key, image);
+                    var infoDir = Path.Combine(exeDir, "App\\AppInfo");
+                    var sizes = IconFactory.GetSizes(IconFactorySizeOption.Additional).Reverse().SkipWhile(x => x != size);
+                    var pngFile = sizes.Select(x => Path.Combine(infoDir, $"appicon_{x}.png")).FirstOrDefault(File.Exists);
+                    if (LocalGetFromPng(pngFile, size) is { } fromOtherPng)
+                    {
+                        LocalAddToListView(appData, fromOtherPng);
+                        continue;
+                    }
 
-                    Finalize:
-                    imageList.Images.Add(image);
-                    appsListView.Items.Add(name, imageList.Images.Count - 1);
+                    if (exePath.EndsWithEx(".exe") && LocalGetFromRes(exePath, size) is { } fromExe)
+                    {
+                        LocalAddToListView(appData, fromExe);
+                        continue;
+                    }
+
+                    var color = SettingsNew.WindowColors.TryGetValue(ColorOption.Highlight, SystemColors.Highlight);
+                    if (exePath.EndsWithEx(".bat", ".cmd", ".jse", ".vbe", ".vbs"))
+                    {
+                        LocalAddToListView(appData, CacheData.GetImage(Resources.Terminal, nameof(Resources.Terminal), color, size));
+                        continue;
+                    }
+
+                    LocalAddToListView(appData, CacheData.GetImage(Resources.Application, nameof(Resources.Application), color, size));
                 }
 
-                if (largeImages)
+                if (large)
                     imageList.ImageSize = new Size(32, 32);
                 switch (appsListView.View)
                 {
@@ -423,6 +393,45 @@ namespace AppsLauncher.Windows
                 Text = string.Format(CultureInfo.InvariantCulture, Language.GetText(Name), appsListView.Items.Count, appsListView.Items.Count == 1 ? Language.GetText(nameof(en_US.App)) : Language.GetText(nameof(en_US.Apps)));
                 if (!appsListView.Focus())
                     appsListView.Select();
+                PreventClosure = false;
+            }
+            return;
+
+            Image LocalGetFromRes(string path, int size)
+            {
+                if (!File.Exists(path))
+                    return default;
+                var large = SettingsNew.ShowLargeImages;
+                using var ico = ResourcesEx.GetIconFromFile(path, 0, large);
+                return ico?.ToBitmap().Redraw(size, size);
+            }
+
+            Image LocalGetFromPng(string path, int size)
+            {
+                if (!File.Exists(path))
+                    return default;
+                try
+                {
+                    var image = Image.FromFile(path);
+                    if (image.Width != size || image.Width != size)
+                        image = image.Redraw(size, size);
+                    return image;
+                }
+                catch (Exception ex) when (ex.IsCaught())
+                {
+                    Log.Write(ex);
+                    return default;
+                }
+            }
+
+            void LocalAddToListView(LocalAppData appData, Image image, bool skipCaching = false)
+            {
+                if (appData == default || image == default)
+                    return;
+                if (!skipCaching)
+                    CacheData.CurrentImages.TryAdd(appData.Key, image);
+                imageList.Images.Add(image);
+                appsListView.Items.Add(appData.Name, imageList.Images.Count - 1);
             }
         }
 
