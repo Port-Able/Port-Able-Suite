@@ -55,14 +55,13 @@ namespace AppsDownloader.Forms
 
             ResumeLayout(false);
 
-            if (Desktop.AppsUseDarkTheme)
-            {
-                Desktop.EnableDarkMode(Handle);
-                Desktop.EnableDarkMode(rememberLangCheck.Handle);
-                Desktop.EnableDarkMode(okBtn.Handle);
-                Desktop.EnableDarkMode(cancelBtn.Handle);
-                langBox.ChangeColorMode();
-            }
+            if (!Desktop.AppsUseDarkTheme)
+                return;
+            Desktop.EnableDarkMode(Handle);
+            Desktop.EnableDarkMode(rememberLangCheck.Handle);
+            Desktop.EnableDarkMode(okBtn.Handle);
+            Desktop.EnableDarkMode(cancelBtn.Handle);
+            this.ChangeColorMode(false);
         }
 
         private static string GetShortName(string longName) =>

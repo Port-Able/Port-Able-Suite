@@ -53,7 +53,6 @@ namespace AppsDownloader.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.rememberLangCheck.BackColor = System.Drawing.Color.Transparent;
             this.rememberLangCheck.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rememberLangCheck.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.rememberLangCheck.Location = new System.Drawing.Point(15, 68);
             this.rememberLangCheck.Name = "rememberLangCheck";
             this.rememberLangCheck.Size = new System.Drawing.Size(221, 17);
@@ -90,7 +89,6 @@ namespace AppsDownloader.Forms
             this.appNameLabel.BackColor = System.Drawing.Color.Transparent;
             this.appNameLabel.Dock = System.Windows.Forms.DockStyle.Top;
             this.appNameLabel.Font = new System.Drawing.Font("Tahoma", 9.25F, System.Drawing.FontStyle.Bold);
-            this.appNameLabel.ForeColor = System.Drawing.Color.LightSteelBlue;
             this.appNameLabel.Location = new System.Drawing.Point(0, 0);
             this.appNameLabel.Name = "appNameLabel";
             this.appNameLabel.Size = new System.Drawing.Size(248, 28);
@@ -102,8 +100,7 @@ namespace AppsDownloader.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.BackColor = System.Drawing.Color.Gray;
-            this.BackgroundImage = global::AppsDownloader.Properties.Resources.PatternDiagonal;
+            this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(248, 136);
             this.Controls.Add(this.appNameLabel);
             this.Controls.Add(this.cancelBtn);
@@ -111,6 +108,7 @@ namespace AppsDownloader.Forms
             this.Controls.Add(this.rememberLangCheck);
             this.Controls.Add(this.langBox);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ForeColor = System.Drawing.SystemColors.WindowText;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;

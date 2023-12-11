@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Drawing;
     using System.Linq;
     using System.Media;
     using System.Windows.Forms;
@@ -22,8 +23,10 @@
 
             if (Desktop.AppsUseDarkTheme)
             {
-                this.ChangeColorMode(ControlExColorMode.DarkDarkDark);
                 this.EnableDarkMode();
+                this.ChangeColorMode();
+                srcMngDataGridView.DefaultCellStyle.SelectionBackColor = SystemColors.Highlight;
+                srcMngDataGridView.DefaultCellStyle.SelectionForeColor = SystemColors.HighlightText;
             }
 
             SuspendLayout();

@@ -80,8 +80,8 @@ namespace AppsDownloader.Forms
             this.appMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.appMenuItemSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.appMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
-            this.appMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.appMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
             this.appMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.smallImageList = new System.Windows.Forms.ImageList(this.components);
             this.searchResultBlinker = new System.Windows.Forms.Timer(this.components);
@@ -171,7 +171,7 @@ namespace AppsDownloader.Forms
             // searchBox
             // 
             this.searchBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.searchBox.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.searchBox.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.searchBox.Location = new System.Drawing.Point(104, 15);
             this.searchBox.Multiline = true;
             this.searchBox.Name = "searchBox";
@@ -534,7 +534,7 @@ namespace AppsDownloader.Forms
             this.appMenu.Name = "addMenu";
             this.appMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.appMenu.ShowItemToolTips = false;
-            this.appMenu.Size = new System.Drawing.Size(256, 170);
+            this.appMenu.Size = new System.Drawing.Size(256, 148);
             this.appMenu.Opening += new System.ComponentModel.CancelEventHandler(this.AppMenu_Opening);
             // 
             // appMenuItem1
@@ -574,6 +574,11 @@ namespace AppsDownloader.Forms
             this.appMenuItem4.Text = "Visit the &website";
             this.appMenuItem4.Click += new System.EventHandler(this.AppMenuItem_Click);
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(252, 6);
+            // 
             // appMenuItem5
             // 
             this.appMenuItem5.Image = global::AppsDownloader.Properties.Resources.Bacterium;
@@ -581,11 +586,6 @@ namespace AppsDownloader.Forms
             this.appMenuItem5.Size = new System.Drawing.Size(255, 22);
             this.appMenuItem5.Text = "Search for previous anti&virus scans";
             this.appMenuItem5.Click += new System.EventHandler(this.AppMenuItem_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(252, 6);
             // 
             // appMenuItem6
             // 

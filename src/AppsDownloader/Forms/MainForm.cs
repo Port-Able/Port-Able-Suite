@@ -93,8 +93,8 @@ namespace AppsDownloader.Forms
 
             ResumeLayout(false);
 
-            if (!appsList.Focus())
-                appsList.Select();
+            if (!searchBox.Focus())
+                searchBox.Select();
 
             if (ActionGuid.IsUpdateInstance)
                 return;

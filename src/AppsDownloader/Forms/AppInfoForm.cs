@@ -26,7 +26,7 @@
             InitializeComponent();
 
             if (Desktop.AppsUseDarkTheme)
-                this.ChangeColorMode(ControlExColorMode.DarkDarkDark);
+                this.ChangeColorMode();
 
             SuspendLayout();
 

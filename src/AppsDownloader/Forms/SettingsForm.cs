@@ -40,12 +40,12 @@
 
             if (Desktop.AppsUseDarkTheme)
             {
-                logoBox.BackgroundImage = logoBox.BackgroundImage.InvertColors().HueRotate(180);
-                BackColor = BackColor.EnsureDarkDarkDark();
+                this.ChangeColorMode(false);
                 appListGroupBox.ForeColor = appListGroupBox.ForeColor.EnsureLightLightLight();
                 groupColorsGroupBox.ForeColor = groupColorsGroupBox.ForeColor.EnsureLightLightLight();
                 transferGroupBox.ForeColor = transferGroupBox.ForeColor.EnsureLightLightLight();
                 advancedGroupBox.ForeColor = advancedGroupBox.ForeColor.EnsureLightLightLight();
+                logoBox.BackgroundImage = logoBox.BackgroundImage.InvertColors().HueRotate(180);
             }
 
             _settings = settings ?? new AppsDownloaderSettings();
