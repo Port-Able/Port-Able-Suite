@@ -56,6 +56,8 @@ namespace AppsLauncher.Windows
             SuspendLayout();
 
             Icon = Resources.PaLogoSymbol;
+            if (SettingsNew.ShowInTaskbar)
+                ShowInTaskbar = true;
 
             BackColor = SettingsNew.WindowColors.TryGetValue(ColorOption.Back, DefaultBackColor);
             if (SettingsNew.WindowBackground != default)

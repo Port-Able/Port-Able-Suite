@@ -74,6 +74,8 @@
         /// </summary>
         public bool ShowCaption { get; set; }
 
+        public bool ShowInTaskbar { get; set; }
+
         /// <summary>
         ///     Determines whether the apps images are large.
         /// </summary>
@@ -174,6 +176,9 @@
                     case nameof(ShowCaption):
                         ShowCaption = info.GetBoolean(nameof(ShowCaption));
                         break;
+                    case nameof(ShowInTaskbar):
+                        ShowInTaskbar = info.GetBoolean(nameof(ShowInTaskbar));
+                        break;
                     case nameof(ShowLargeImages):
                         ShowLargeImages = info.GetBoolean(nameof(ShowLargeImages));
                         break;
@@ -264,6 +269,7 @@
 
             /*
             info.AddValue(nameof(ShowCaption), ShowCaption);
+            info.AddValue(nameof(ShowInTaskbar), ShowInTaskbar);
             info.AddValue(nameof(ShowLargeImages), ShowLargeImages);
             info.AddValue(nameof(ShowHorScrollBar), ShowHorScrollBar);
             info.AddValue(nameof(OpacityLevel), OpacityLevel);
@@ -299,6 +305,7 @@
         public bool Equals(AppsLauncherSettings other) =>
             other != null &&
             ShowCaption == other.ShowCaption &&
+            ShowInTaskbar == other.ShowInTaskbar &&
             ShowLargeImages == other.ShowLargeImages &&
             ShowHorScrollBar == other.ShowHorScrollBar &&
             Math.Abs(OpacityLevel - other.OpacityLevel) < 0d &&
@@ -351,6 +358,7 @@
         public void SetDefaults()
         {
             ShowCaption = false;
+            ShowInTaskbar = false;
             ShowLargeImages = false;
             ShowHorScrollBar = false;
             OpacityLevel = .85d;
@@ -434,6 +442,7 @@
             if (item == default)
                 return;
             ShowCaption = item.ShowCaption;
+            ShowInTaskbar = item.ShowInTaskbar;
             ShowLargeImages = item.ShowLargeImages;
             ShowHorScrollBar = item.ShowHorScrollBar;
             OpacityLevel = item.OpacityLevel;
@@ -498,6 +507,7 @@
             pi?.Name switch
             {
                 nameof(ShowCaption) => !ShowCaption,
+                nameof(ShowInTaskbar) => !ShowInTaskbar,
                 nameof(ShowLargeImages) => !ShowLargeImages,
                 nameof(ShowHorScrollBar) => !ShowHorScrollBar,
                 nameof(OpacityLevel) => Math.Abs(OpacityLevel - .85d) == 0,
