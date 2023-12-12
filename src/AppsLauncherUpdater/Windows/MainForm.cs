@@ -308,16 +308,16 @@ namespace Updater.Windows
             {
                 if (string.IsNullOrEmpty(CorePaths.FileArchiver))
                 {
-                    if (MessageBox.Show(Language.GetText(nameof(en_US.RequirementsErrorMsg)), Text, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+                    if (MessageBoxEx.Show(this, Language.GetText(nameof(en_US.RequirementsErrorMsg)), Text, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
                         Process.Start(CorePaths.RepoReleasesUrl);
                     Environment.ExitCode = 1;
                     Environment.Exit(Environment.ExitCode);
                 }
-                if (MessageBox.Show(Language.GetText(nameof(en_US.UpdateAvailableMsg)), Text, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                if (MessageBoxEx.Show(this, Language.GetText(nameof(en_US.UpdateAvailableMsg)), Text, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     SetChangeLog(DownloadMirrors.ToArray());
                     ShowInTaskbar = true;
-                    FormEx.Dockable(this);
+                    this.Dockable();
                     return;
                 }
                 DirectoryEx.TryDelete(CachePaths.UpdateDir);

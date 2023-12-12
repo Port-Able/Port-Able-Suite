@@ -9,6 +9,7 @@
     using LangResources;
     using Microsoft.Win32;
     using SilDev;
+    using SilDev.Forms;
 
     internal static class SystemIntegration
     {
@@ -79,12 +80,12 @@
                                 process.WaitForExit();
 
                     if (!quiet)
-                        MessageBox.Show(Language.GetText(nameof(en_US.OperationCompletedMsg)), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxEx.Show(Language.GetText(nameof(en_US.OperationCompletedMsg)), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
             if (!quiet)
-                MessageBox.Show(Language.GetText(nameof(en_US.OperationCanceledMsg)), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBoxEx.Show(Language.GetText(nameof(en_US.OperationCanceledMsg)), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         internal static void UpdateStartMenuShortcuts(IEnumerable<string> longAppNames)

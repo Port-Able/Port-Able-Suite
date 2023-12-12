@@ -129,16 +129,16 @@ namespace AppsDownloader.Forms
                 if (!NetEx.IPv6IsAvalaible)
                 {
                     if (!ActionGuid.IsUpdateInstance)
-                        MessageBoxEx.Show(LangStrings.InternetIsNotAvailableMsg, AssemblyInfo.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBoxEx.Show(LangStrings.InternetIsNotAvailableMsg, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     ApplicationExit(1);
                     return;
                 }
-                MessageBoxEx.Show(LangStrings.InternetProtocolWarningMsg, AssemblyInfo.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBoxEx.Show(LangStrings.InternetProtocolWarningMsg, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
             if (!ActionGuid.IsUpdateInstance && !AppSupplierMirrors.Pa.Any())
             {
-                MessageBoxEx.Show(LangStrings.NoServerAvailableMsg, AssemblyInfo.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBoxEx.Show(LangStrings.NoServerAvailableMsg, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 ApplicationExit(1);
                 return;
             }
@@ -165,7 +165,7 @@ namespace AppsDownloader.Forms
                         throw new InvalidOperationException(LangStrings.NoAppsFound);
 
                     var asterisk = (appsList.Items.Count == 1 ? LangStrings.AppUpdateAvailableMsg : LangStrings.AppUpdatesAvailableMsg).FormatInvariant(appsList.Items.Count);
-                    if (MessageBoxEx.Show(asterisk, AssemblyInfo.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) != DialogResult.Yes)
+                    if (MessageBoxEx.Show(asterisk, MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) != DialogResult.Yes)
                         throw new WarningException(LangStrings.UpdateCanceled);
 
                     foreach (var item in appsList.Items.Cast<ListViewItem>())
@@ -189,7 +189,7 @@ namespace AppsDownloader.Forms
             {
                 Log.Write(ex);
                 if (!ActionGuid.IsUpdateInstance)
-                    MessageBoxEx.Show(LangStrings.NoServerAvailableMsg, AssemblyInfo.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBoxEx.Show(LangStrings.NoServerAvailableMsg, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 ApplicationExit(1);
             }
         }
@@ -204,16 +204,22 @@ namespace AppsDownloader.Forms
                 Interval = 1,
                 Enabled = true
             };
-            timer.Tick += (_, _) =>
+            timer.Tick += LocalFadeInTick;
+            NativeHelper.SetForegroundWindow(Handle);
+            return;
+
+            void LocalFadeInTick(object s, EventArgs _)
             {
+                if (s is not Timer owner)
+                    return;
                 if (Opacity < 1d)
                 {
                     AppsListResizeColumns();
                     Opacity += .05d;
                     return;
                 }
-                timer.Dispose();
-            };
+                owner.Dispose();
+            }
         }
 
         private void MainForm_ResizeBegin(object sender, EventArgs e)
@@ -234,7 +240,7 @@ namespace AppsDownloader.Forms
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_transferManager.Any() && MessageBoxEx.Show(this, LangStrings.AreYouSureMsg, AssemblyInfo.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (_transferManager.Any() && MessageBoxEx.Show(this, LangStrings.AreYouSureMsg, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             {
                 e.Cancel = true;
                 return;
@@ -661,7 +667,7 @@ namespace AppsDownloader.Forms
                 if (item2 < item3)
                     continue;
                 var warning = LangStrings.NotEnoughSpaceMsg.FormatInvariant(item1, (item2 - item3).FormatSize());
-                switch (MessageBoxEx.Show(this, warning, AssemblyInfo.Title, MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Warning))
+                switch (MessageBoxEx.Show(this, warning, MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Warning))
                 {
                     case DialogResult.Abort:
                         _transferManager.Clear();
@@ -821,7 +827,6 @@ namespace AppsDownloader.Forms
                 var windowState = WindowState;
                 WindowState = FormWindowState.Minimized;
 
-                Text = AssemblyInfo.Title;
                 _transferStopwatch.Stop();
                 TaskBarProgress.SetState(Handle, TaskBarProgressState.Indeterminate);
 
@@ -846,7 +851,7 @@ namespace AppsDownloader.Forms
                     TaskBarProgress.SetState(Handle, TaskBarProgressState.Error);
                     var fails = _transferFails.Select(x => x.Name).Distinct().ToArray();
                     var warning = (fails.Length == 1 ? LangStrings.AppDownloadErrorMsg : LangStrings.AppsDownloadErrorMsg).FormatInvariant(fails.Join(Environment.NewLine));
-                    switch (_autoRetry ? DialogResult.Retry : MessageBoxEx.Show(this, warning, AssemblyInfo.Title, MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning))
+                    switch (_autoRetry ? DialogResult.Retry : MessageBoxEx.Show(this, warning, MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning))
                     {
                         case DialogResult.Retry:
                             _autoRetry = false;
@@ -920,7 +925,7 @@ namespace AppsDownloader.Forms
                         _ => LangStrings.AppsDownloadedMsg
                     }
                 };
-                MessageBoxEx.Show(this, information, AssemblyInfo.Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBoxEx.Show(this, information, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ApplicationExit();
             }
         }
@@ -1253,7 +1258,7 @@ namespace AppsDownloader.Forms
                         break;
                     }
                     TopMost = true;
-                    result = MessageBoxEx.Show(this, LangStrings.AreYouSureMsg, AssemblyInfo.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    result = MessageBoxEx.Show(this, LangStrings.AreYouSureMsg, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result != DialogResult.Yes)
                         continue;
                     if (!needed)

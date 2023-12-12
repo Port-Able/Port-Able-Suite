@@ -100,7 +100,7 @@
                                                  row.Cells[nameof(UserAgent)].Value as string);
 
                 if (!data.IsValid())
-                    MessageBoxEx.Show(LangStrings.CustomAppSupplierInvalidMsg.FormatInvariant(address), AssemblyInfo.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBoxEx.Show(LangStrings.CustomAppSupplierInvalidMsg.FormatInvariant(address), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 else
                     _result = DialogResult.Yes;
 

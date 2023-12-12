@@ -26,6 +26,7 @@
         private const int MaxTimeout = 60 * 1000;
         private static string _lastHostFromAll;
         private readonly List<string> _hostBlacklist = new();
+        private readonly IWin32Window _parentWindow;
         private readonly List<Tuple<string, string, string, bool>> _srcData = new();
         private int _curTimeout = 4 * 1000;
 
@@ -103,14 +104,19 @@
         /// <param name="appData">
         ///     The <see cref="AppData"/> instance from which to create this instance.
         /// </param>
+        /// <param name="parentWindow">
+        ///     The parent window, which is used to center message boxes based on its
+        ///     window position.
+        /// </param>
         /// <exception cref="ArgumentNullException">
         ///     appData is null.
         /// </exception>
-        public AppTransferor(AppData appData)
+        public AppTransferor(AppData appData, IWin32Window parentWindow = default)
         {
             AppData = appData ?? throw new ArgumentNullException(nameof(appData));
             DestPath = default;
             UserData = default;
+            _parentWindow = parentWindow;
 
             var downloadCollection = appData.DownloadCollection;
             var packageVersion = default(string);
@@ -327,8 +333,8 @@
                     };
 
                 if (!curHash.EqualsEx(checkHash, nonHash))
-                    switch (MessageBoxEx.Show(LangStrings.ChecksumErrorMsg.FormatInvariant(Path.GetFileName(DestPath)),
-                                              AssemblyInfo.Title,
+                    switch (MessageBoxEx.Show(_parentWindow,
+                                              LangStrings.ChecksumErrorMsg.FormatInvariant(Path.GetFileName(DestPath)),
                                               MessageBoxButtons.AbortRetryIgnore,
                                               MessageBoxIcon.Warning,
                                               MessageBoxDefaultButton.Button3))
@@ -345,8 +351,8 @@
                 if (Directory.Exists(AppData.InstallDir))
                     if (!BreakFileLocks(AppData.InstallDir, false))
                     {
-                        MessageBoxEx.Show(LangStrings.ChecksumErrorMsg.FormatInvariant(AppData.Name),
-                                          AssemblyInfo.Title,
+                        MessageBoxEx.Show(_parentWindow,
+                                          LangStrings.ChecksumErrorMsg.FormatInvariant(AppData.Name),
                                           MessageBoxButtons.OK,
                                           MessageBoxIcon.Information);
                         continue;
@@ -445,7 +451,7 @@
             return string.IsNullOrEmpty(title) ? IntPtr.Zero : NativeHelper.FindWindow(null, title);
         }
 
-        private static bool BreakFileLocks(string path, bool force = true)
+        private bool BreakFileLocks(string path, bool force = true)
         {
             if (!PathEx.DirOrFileExists(path))
                 return true;
@@ -463,7 +469,7 @@
                 {
                     var data = locks.Select(p => $"ID: {p.Id:d5}; Name: '{p.ProcessName}.exe'").OrderBy(x => x).ToArray();
                     var info = (data.Length == 1 ? LangStrings.FileLockMsg : LangStrings.FileLocksMsg).FormatInvariant(data.Join(Environment.NewLine));
-                    if (MessageBoxEx.Show(info, AssemblyInfo.Title, MessageBoxButtons.OKCancel, MessageBoxIcon.Information) != DialogResult.OK)
+                    if (MessageBoxEx.Show(_parentWindow, info, MessageBoxButtons.OKCancel, MessageBoxIcon.Information) != DialogResult.OK)
                         return false;
                 }
                 locks.Where(p => !p.ProcessName.EndsWithEx("64Portable", "Portable64", "Portable")).ForEach(p => ProcessEx.Close(p));

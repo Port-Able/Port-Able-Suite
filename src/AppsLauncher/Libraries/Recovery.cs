@@ -9,6 +9,7 @@
     using Microsoft.Win32;
     using Properties;
     using SilDev;
+    using SilDev.Forms;
     using SilDev.Legacy;
 
     internal static class Recovery
@@ -81,7 +82,7 @@
             else
             {
                 Language.ResourcesNamespace = typeof(Program).Namespace;
-                if (MessageBox.Show(Language.GetText(nameof(en_US.RequirementsErrorMsg)), Resources.GlobalTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+                if (MessageBoxEx.Show(Language.GetText(nameof(en_US.RequirementsErrorMsg)), Resources.GlobalTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
                 {
                     var path = PathEx.AltCombine(CorePaths.RepositoryUrl, "releases/latest");
                     Process.Start(path);

@@ -187,7 +187,7 @@
             dialog.SelectedPath = Path.GetTempPath();
             if (dialog.ShowDialog() != DialogResult.OK)
             {
-                MessageBoxEx.Show(this, LangStrings.OperationCanceledMsg, AssemblyInfo.Title, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                MessageBoxEx.Show(this, LangStrings.OperationCanceledMsg, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 return;
             }
 
@@ -195,7 +195,7 @@
             var transferEnv = EnvironmentEx.GetVariableWithPath(transferDir);
             if (transferEnv.EqualsEx(_settings.TransferDir))
             {
-                MessageBoxEx.Show(this, LangStrings.OperationCanceledMsg, AssemblyInfo.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBoxEx.Show(this, LangStrings.OperationCanceledMsg, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -203,13 +203,13 @@
             var transferDrive = transferDir.ToUpperInvariant().First();
             if (currentDrive.Equals(transferDrive))
             {
-                MessageBoxEx.Show(this, LangStrings.TransferDirMsg, AssemblyInfo.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBoxEx.Show(this, LangStrings.TransferDirMsg, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (!Elevation.WritableLocation(transferDir))
             {
-                MessageBoxEx.Show(this, LangStrings.NoWritePermissionsMsg, AssemblyInfo.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBoxEx.Show(this, LangStrings.NoWritePermissionsMsg, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -220,7 +220,7 @@
                 transferPathUndoBtn.Enabled = true;
                 transferPathUndoBtn.BackgroundImage = transferPathUndoBtn.BackgroundImage.SwitchGrayScale(transferPathUndoBtn);
             }
-            MessageBoxEx.Show(this, LangStrings.OperationCompletedMsg, AssemblyInfo.Title, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            MessageBoxEx.Show(this, LangStrings.OperationCompletedMsg, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
 
         private void TransferPathUndoBtn_Click(object sender, EventArgs _)
@@ -234,7 +234,7 @@
                 transferPathUndoBtn.Enabled = false;
                 transferPathUndoBtn.BackgroundImage = transferPathUndoBtn.BackgroundImage.SwitchGrayScale(transferPathUndoBtn);
             }
-            MessageBoxEx.Show(this, LangStrings.OperationCompletedMsg, AssemblyInfo.Title, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            MessageBoxEx.Show(this, LangStrings.OperationCompletedMsg, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
 
         private void OpenSrcManBtn_Click(object sender, EventArgs _)
@@ -256,7 +256,7 @@
             }
             if (result != DialogResult.Yes)
                 return;
-            MessageBoxEx.Show(LangStrings.CustomAppSupplierUpdatedMsg, AssemblyInfo.Title, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            MessageBoxEx.Show(LangStrings.CustomAppSupplierUpdatedMsg, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
 
         private void SetGroupColorFromPanel(string key, Control panel) => 
