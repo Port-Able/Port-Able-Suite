@@ -4,7 +4,7 @@
     using System.Collections.ObjectModel;
     using System.Linq;
     using SilDev;
-    using SilDev.Legacy;
+    using SilDev.Ini.Legacy;
 
     public sealed class LocalAppSettings
     {
@@ -180,6 +180,6 @@
             _section = key;
 
         internal void WriteValue<TValue>(string key, TValue value, TValue defValue = default, bool direct = false) =>
-            Settings.WriteValue(_section, key, value, defValue, direct);
+            _Settings.WriteValue(_section, key, value, defValue, direct);
     }
 }

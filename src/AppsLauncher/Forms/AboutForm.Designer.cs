@@ -1,4 +1,4 @@
-namespace AppsLauncher.Windows
+namespace AppsLauncher.Forms
 {
     partial class AboutForm
     {

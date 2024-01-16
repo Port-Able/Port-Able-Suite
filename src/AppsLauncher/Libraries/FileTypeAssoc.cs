@@ -2,10 +2,9 @@
 {
     using System.ComponentModel;
     using System.Globalization;
-    using System.Linq;
-    using System.Runtime.CompilerServices;
     using System.Windows.Forms;
     using LangResources;
+    using PortAble;
     using Properties;
     using SilDev;
     using SilDev.Forms;
@@ -16,7 +15,7 @@
 
         internal static void Associate(LocalAppData appData, bool quiet = false, Form owner = default)
         {
-            if (appData?.Settings?.FileTypes?.Any() != true)
+            if (appData?.Settings?.FileTypes?.Count is null or < 1)
             {
                 if (!quiet)
                     MessageBoxEx.Show(owner, Language.GetText(nameof(en_US.associateBtnMsg)), Resources.GlobalTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -56,10 +55,10 @@
             var assocData = new FileTypeAssocData
             {
                 AppKey = appData.Key,
-                InstallId = Settings.SystemInstallId
+                InstallId = _Settings.SystemInstallId
             };
 
-            using (var dialog = new IconBrowserDialog(Settings.IconResourcePath))
+            using (var dialog = new IconBrowserDialog(_Settings.IconResourcePath))
             {
                 dialog.TopMost = true;
                 dialog.Plus();
@@ -86,7 +85,7 @@
             switch (result)
             {
                 case DialogResult.Yes:
-                    assocData.StarterPath = EnvironmentEx.GetVariableWithPath(appData.FilePath, false, false);
+                    assocData.StarterPath = EnvironmentEx.GetVariableWithPath(appData.ExecutablePath, false, false);
                     break;
                 case DialogResult.No:
                     assocData.StarterPath = EnvironmentEx.GetVariableWithPath(PathEx.LocalPath, false, false);
@@ -95,13 +94,15 @@
                     goto Cancel;
             }
 
+            /*
             if (FileEx.Exists(assocData.StarterPath))
                 appData.Settings.FileTypeAssoc = assocData;
             else
                 goto Cancel;
 
             assocData = appData.Settings?.FileTypeAssoc;
-            assocData?.SystemRegistryAccess?.AssociateFileTypes(false);
+            */
+            assocData.SystemRegistryAccess?.AssociateFileTypes(false);
             return;
 
             Cancel:
@@ -113,10 +114,10 @@
             Associate(appData, false, owner);
 
         internal static void Associate(string appName, bool quiet = false, Form owner = default) =>
-            Associate(CacheData.FindAppData(appName), quiet, owner);
+            Associate(CacheData.FindInCurrentAppInfo(appName), quiet, owner);
 
         internal static void Associate(string appName, Form owner) =>
-            Associate(CacheData.FindAppData(appName), false, owner);
+            Associate(CacheData.FindInCurrentAppInfo(appName), false, owner);
 
         internal static void Restore(LocalAppData appData, bool quiet = false, Form owner = default)
         {
@@ -127,10 +128,12 @@
                 owner.TopMost = false;
                 owner.Enabled = false;
                 TaskBarProgress.SetState(owner.Handle, TaskBarProgressState.Indeterminate);
-                Settings.WriteToFile(true);
+                _Settings.WriteToFile(true);
             }
+            /*
             var assocData = appData.Settings.FileTypeAssoc;
             assocData?.SystemRegistryAccess?.LoadRestorePoint(quiet);
+            */
             if (owner == default)
                 return;
             TaskBarProgress.SetState(owner.Handle, TaskBarProgressState.NoProgress);
@@ -144,9 +147,9 @@
             Restore(appData, false, owner);
 
         internal static void Restore(string appName, bool quiet = false, Form owner = default) =>
-            Restore(CacheData.FindAppData(appName), quiet, owner);
+            Restore(CacheData.FindInCurrentAppInfo(appName), quiet, owner);
 
         internal static void Restore(string appName, Form owner) =>
-            Restore(CacheData.FindAppData(appName), false, owner);
+            Restore(CacheData.FindInCurrentAppInfo(appName), false, owner);
     }
 }

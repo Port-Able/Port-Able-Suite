@@ -1,4 +1,4 @@
-namespace AppsLauncher.Windows
+namespace AppsLauncher.Forms
 {
     sealed partial class MenuViewForm
     {
@@ -29,6 +29,16 @@ namespace AppsLauncher.Windows
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Accessibility", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Education", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Development", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Office", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Internet", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Graphics and Pictures", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("Music and Video", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Security", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("Utilities", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup("Games", System.Windows.Forms.HorizontalAlignment.Left);
             this.appMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.appMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.appMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -157,21 +167,51 @@ namespace AppsLauncher.Windows
             this.appsListView.BackColor = System.Drawing.SystemColors.Window;
             this.appsListView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.appsListView.ContextMenuStrip = this.appMenu;
-            this.appsListView.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.appsListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.appsListView.Font = new System.Drawing.Font("Calibri", 9F);
+            this.appsListView.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.appsListView.ForeColor = System.Drawing.SystemColors.WindowText;
             this.appsListView.FullRowSelect = true;
-            this.appsListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            listViewGroup1.Header = "Accessibility";
+            listViewGroup1.Name = "listViewGroup1";
+            listViewGroup2.Header = "Education";
+            listViewGroup2.Name = "listViewGroup2";
+            listViewGroup3.Header = "Development";
+            listViewGroup3.Name = "listViewGroup3";
+            listViewGroup4.Header = "Office";
+            listViewGroup4.Name = "listViewGroup4";
+            listViewGroup5.Header = "Internet";
+            listViewGroup5.Name = "listViewGroup5";
+            listViewGroup6.Header = "Graphics and Pictures";
+            listViewGroup6.Name = "listViewGroup6";
+            listViewGroup7.Header = "Music and Video";
+            listViewGroup7.Name = "listViewGroup7";
+            listViewGroup8.Header = "Security";
+            listViewGroup8.Name = "listViewGroup8";
+            listViewGroup9.Header = "Utilities";
+            listViewGroup9.Name = "listViewGroup9";
+            listViewGroup10.Header = "Games";
+            listViewGroup10.Name = "listViewGroup10";
+            this.appsListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4,
+            listViewGroup5,
+            listViewGroup6,
+            listViewGroup7,
+            listViewGroup8,
+            listViewGroup9,
+            listViewGroup10});
             this.appsListView.HideSelection = false;
             this.appsListView.LabelWrap = false;
             this.appsListView.Location = new System.Drawing.Point(4, 3);
             this.appsListView.MultiSelect = false;
             this.appsListView.Name = "appsListView";
-            this.appsListView.ShowGroups = false;
-            this.appsListView.Size = new System.Drawing.Size(176, 258);
+            this.appsListView.ShowItemToolTips = true;
+            this.appsListView.Size = new System.Drawing.Size(176, 257);
             this.appsListView.TabIndex = 0;
             this.appsListView.TileSize = new System.Drawing.Size(128, 30);
+            this.toolTip.SetToolTip(this.appsListView, "Start portable application");
             this.appsListView.UseCompatibleStateImageBehavior = false;
             this.appsListView.View = System.Windows.Forms.View.List;
             this.appsListView.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.AppsListView_AfterLabelEdit);
@@ -195,7 +235,7 @@ namespace AppsLauncher.Windows
             this.appsListViewPanel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 3);
             this.appsListViewPanel.Name = "appsListViewPanel";
             this.appsListViewPanel.Padding = new System.Windows.Forms.Padding(4, 3, 0, 4);
-            this.appsListViewPanel.Size = new System.Drawing.Size(182, 267);
+            this.appsListViewPanel.Size = new System.Drawing.Size(182, 266);
             this.appsListViewPanel.TabIndex = 10;
             // 
             // searchBox
@@ -203,12 +243,12 @@ namespace AppsLauncher.Windows
             this.searchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.searchBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.searchBox.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.searchBox.Location = new System.Drawing.Point(5, 277);
-            this.searchBox.MaximumSize = new System.Drawing.Size(256, 21);
+            this.searchBox.Font = new System.Drawing.Font("Segoe UI", 11.25F);
+            this.searchBox.Location = new System.Drawing.Point(5, 276);
+            this.searchBox.MaximumSize = new System.Drawing.Size(256, 22);
             this.searchBox.Multiline = true;
             this.searchBox.Name = "searchBox";
-            this.searchBox.Size = new System.Drawing.Size(182, 21);
+            this.searchBox.Size = new System.Drawing.Size(182, 22);
             this.searchBox.TabIndex = 3;
             this.searchBox.TextChanged += new System.EventHandler(this.SearchBox_TextChanged);
             this.searchBox.Enter += new System.EventHandler(this.SearchBox_Enter);
@@ -228,6 +268,7 @@ namespace AppsLauncher.Windows
             this.aboutBtn.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.aboutBtn.TabIndex = 6;
             this.aboutBtn.TabStop = false;
+            this.toolTip.SetToolTip(this.aboutBtn, "About Port-Able apps suite");
             this.aboutBtn.Click += new System.EventHandler(this.AboutBtn_Click);
             this.aboutBtn.MouseEnter += new System.EventHandler(this.ImageButton_MouseEnterLeave);
             this.aboutBtn.MouseLeave += new System.EventHandler(this.ImageButton_MouseEnterLeave);
@@ -244,6 +285,7 @@ namespace AppsLauncher.Windows
             this.profileBtn.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.profileBtn.TabIndex = 8;
             this.profileBtn.TabStop = false;
+            this.toolTip.SetToolTip(this.profileBtn, "Open profile directory");
             this.profileBtn.Click += new System.EventHandler(this.ProfileBtn_Click);
             this.profileBtn.MouseEnter += new System.EventHandler(this.ImageButton_MouseEnterLeave);
             this.profileBtn.MouseLeave += new System.EventHandler(this.ImageButton_MouseEnterLeave);
@@ -260,6 +302,7 @@ namespace AppsLauncher.Windows
             this.settingsBtn.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.settingsBtn.TabIndex = 12;
             this.settingsBtn.TabStop = false;
+            this.toolTip.SetToolTip(this.settingsBtn, "Open settings");
             this.settingsBtn.Click += new System.EventHandler(this.SettingsBtn_Click);
             this.settingsBtn.MouseEnter += new System.EventHandler(this.ImageButton_MouseEnterLeave);
             this.settingsBtn.MouseLeave += new System.EventHandler(this.ImageButton_MouseEnterLeave);
@@ -276,6 +319,7 @@ namespace AppsLauncher.Windows
             this.downloadBtn.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.downloadBtn.TabIndex = 11;
             this.downloadBtn.TabStop = false;
+            this.toolTip.SetToolTip(this.downloadBtn, "Get more apps");
             this.downloadBtn.Click += new System.EventHandler(this.DownloadBtn_Click);
             this.downloadBtn.MouseEnter += new System.EventHandler(this.ImageButton_MouseEnterLeave);
             this.downloadBtn.MouseLeave += new System.EventHandler(this.ImageButton_MouseEnterLeave);
@@ -284,7 +328,6 @@ namespace AppsLauncher.Windows
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.BackColor = System.Drawing.Color.SlateGray;
             this.ClientSize = new System.Drawing.Size(236, 303);
             this.Controls.Add(this.settingsBtn);
             this.Controls.Add(this.downloadBtn);

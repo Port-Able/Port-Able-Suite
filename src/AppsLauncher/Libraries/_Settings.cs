@@ -9,15 +9,21 @@
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Windows.Forms;
-    using Windows;
+    using Forms;
+    using PortAble;
     using Properties;
     using SilDev;
     using SilDev.Drawing;
-    using SilDev.Legacy;
+    using SilDev.Ini.Legacy;
     using SilDev.QuickWmi;
     using DrawingSize = System.Drawing.Size;
 
-    internal static class Settings
+
+    /// <summary>
+    ///     Outdated sh*t we want to replace completely!
+    /// </summary>
+    /// ReSharper disable once InconsistentNaming
+    internal static class _Settings
     {
         internal enum UpdateChannelOptions
         {
@@ -140,7 +146,7 @@
         }
 
         internal static string SystemInstallId =>
-            _systemInstallId ??= (Win32_OperatingSystem.InstallDate?.ToString("F", CultureInfo.InvariantCulture) ?? EnvironmentEx.MachineId.ToString(CultureInfo.InvariantCulture)).Encrypt().Substring(24);
+            _systemInstallId ??= Win32_OperatingSystem.InstallDate.ToString("F", CultureInfo.InvariantCulture).Encrypt(ChecksumAlgorithm.Md5).Substring(24);
 
         internal static DateTime LastUpdateCheck
         {
@@ -285,7 +291,7 @@
                 }
             }
 
-            CacheData.RemoveInvalidFiles();
+            //CacheData.RemoveInvalidFiles();
             if (Recovery.AppsSuiteIsHealthy())
                 return;
             Environment.ExitCode = 1;
@@ -294,7 +300,8 @@
 
         internal static void WriteValue<TValue>(string section, string key, TValue value, TValue defValue = default, bool direct = false)
         {
-            CacheData.UpdateSettingsMerges(section);
+            //CacheData.UpdateSettingsMerges(section);
+            /*
             bool equals;
             try
             {
@@ -322,6 +329,7 @@
                 return;
             }
             WriteToFileInQueue = true;
+            */
         }
 
         internal static void WriteValueDirect<TValue>(string section, string key, TValue value, TValue defValue = default) =>
@@ -329,7 +337,7 @@
 
         internal static void WriteToFile(bool forceMerge = false)
         {
-            MergeSettings(forceMerge);
+            //MergeSettings(forceMerge);
             if (!WriteToFileInQueue)
                 return;
             Ini.WriteAll();
@@ -354,6 +362,7 @@
             return sb.ToString();
         }
 
+        /*
         private static void MergeSettings(bool force)
         {
             if (!force && (ProcessEx.InstancesCount(PathEx.LocalPath) > 1 || !File.Exists(CacheFiles.SettingsMerges)))
@@ -379,6 +388,7 @@
             }
             FileEx.Delete(CacheFiles.SettingsMerges);
         }
+        */
 
         private static int ValidateValue(int value, int minValue, int maxValue)
         {
@@ -439,8 +449,7 @@
                 }
             }
 
-            internal static Image BackgroundImage =>
-                CacheData.CurrentImageBg;
+            internal static Image BackgroundImage => default; //CacheData.CurrentImageBg;
 
             internal static ImageLayout BackgroundImageLayout
             {
@@ -568,8 +577,10 @@
                 set
                 {
                     var key = GetConfigKey(nameof(Window), nameof(LargeImages));
+                    /*
                     if (_largeImages != value)
                         FileEx.TryDelete(CacheFiles.CurrentImages);
+                    */
                     _largeImages = value;
                     WriteValue(Resources.ConfigSection, key, _largeImages, false);
                 }

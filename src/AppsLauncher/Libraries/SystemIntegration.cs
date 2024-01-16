@@ -2,127 +2,211 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Drawing;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using LangResources;
     using Microsoft.Win32;
+    using PortAble;
+    using PortAble.Properties;
     using SilDev;
+    using SilDev.Drawing;
     using SilDev.Forms;
+    using static SilDev.WinApi;
 
-    internal static class SystemIntegration
+    public static class SystemIntegration
     {
-        internal static bool IsEnabled =>
-            !Settings.DeveloperVersion && !string.IsNullOrEmpty(EnvironmentEx.GetVariableValue(Settings.EnvironmentVariable));
+        private const string SysEnvRegPath = "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment";
 
-        internal static bool IsAccurate =>
-            Settings.DeveloperVersion || !IsEnabled || EnvironmentEx.GetVariableValue(Settings.EnvironmentVariable).EqualsEx(PathEx.LocalDir);
+        public static string EnvVarName => "AppsSuiteDir";
 
-        internal static void Enable(bool enabled, bool quiet = false)
+        public static string CurEnvVarPath => Environment.GetEnvironmentVariable(EnvVarName);
+
+        public static string SysEnvVarPath => Reg.ReadString(SysEnvRegPath, EnvVarName);
+
+        public static bool IsEnabled =>
+            !FileEx.Exists(".\\..\\Port-Able-Suite.sln") && PathEx.IsValidPath(SysEnvVarPath);
+
+        public static bool IsAccurate => !IsEnabled || SysEnvVarPath.EqualsEx(CorePaths.HomeDir);
+
+        public static void Apply(bool quiet = false) =>
+            ApplyRemove(true, quiet);
+
+        public static void Remove(bool quiet = false) =>
+            ApplyRemove(false, quiet);
+
+        public static bool CreateAppShortcut(string longAppName, string destDir)
         {
-            if (!Elevation.IsAdministrator)
-            {
-                using var process = ProcessEx.Start(PathEx.LocalPath, $"{ActionGuid.SystemIntegration} {enabled} {quiet}", true, false);
-                if (process?.HasExited == false)
-                    process.WaitForExit();
-                return;
-            }
-            var varKey = "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment";
-            var varDir = Reg.ReadString(Registry.LocalMachine, varKey, Settings.EnvironmentVariable);
-            var curDir = PathEx.LocalDir;
-            if (!enabled || !varDir.EqualsEx(curDir))
-            {
-                var curPath = EnvironmentEx.GetVariableWithPath(PathEx.LocalPath, false);
-                var sendToPath = PathEx.Combine(Environment.SpecialFolder.SendTo, "Apps Launcher.lnk");
-                if (enabled)
-                {
-                    Reg.Write(Registry.LocalMachine, varKey, Settings.EnvironmentVariable, curDir);
-                    FileEx.CreateShellLink(curPath, sendToPath);
-                }
-                else
-                {
-                    Reg.RemoveEntry(Registry.LocalMachine, varKey, Settings.EnvironmentVariable);
-                    PathEx.ForceDelete(sendToPath);
-                }
-                if (WinApi.NativeHelper.SendNotifyMessage((IntPtr)0xffff, (uint)WinApi.WindowMenuFlags.WmSettingChange, (UIntPtr)0, "Environment"))
-                {
-                    foreach (var baseKey in new[]
-                    {
-                        "*",
-                        "Folder"
-                    })
-                    {
-                        varKey = Path.Combine(baseKey, "shell\\portableapps");
-                        if (enabled)
-                        {
-                            if (string.IsNullOrWhiteSpace(Reg.ReadString(Registry.ClassesRoot, varKey, null)))
-                                Reg.Write(Registry.ClassesRoot, varKey, null, Language.GetText(nameof(en_US.shellText)));
-                            Reg.Write(Registry.ClassesRoot, varKey, "Icon", $"\"{PathEx.LocalPath}\"");
-                        }
-                        else
-                            Reg.RemoveSubKey(Registry.ClassesRoot, varKey);
-                        varKey = Path.Combine(varKey, "command");
-                        if (enabled)
-                            Reg.Write(Registry.ClassesRoot, varKey, null, $"\"{PathEx.LocalPath}\" \"%1\"");
-                        else
-                            Reg.RemoveSubKey(Registry.ClassesRoot, varKey);
-                    }
-                    var desktopPath = PathEx.Combine(Environment.SpecialFolder.Desktop, "Apps Launcher.lnk");
-                    if (enabled)
-                        FileEx.CreateShellLink(curPath, desktopPath);
-                    else
-                        PathEx.ForceDelete(sendToPath);
+            var appData = CacheData.FindInCurrentAppInfo(longAppName);
+            if (appData == null)
+                return false;
+            if (!SysEnvVarPath.EqualsEx(CorePaths.HomeDir))
+                Environment.SetEnvironmentVariable(EnvVarName, null);
+            var exe = appData.ExecutablePath;
+            var ini = appData.ConfigPath;
+            var lnk = Path.Combine(destDir, longAppName);
+            var args = appData.Settings.StartArgsDef;
+            return exe.EndsWithEx(".exe")
+                ? LocalCreateLink(exe, lnk, args, default)
+                : LocalSetFromIco(exe, out var icon) ||
+                  LocalSetFromIco(ini, out icon) ||
+                  LocalSetFromPng(exe, out icon) ||
+                  LocalSetFromPng(ini, out icon)
+                    ? LocalCreateLink(exe, lnk, args, icon)
+                    : LocalCreateLink(exe, lnk, args, CorePaths.AppsLauncher);
 
-                    if (enabled)
-                        using (var process = ProcessEx.Start(PathEx.LocalPath, ActionGuid.FileTypeAssociationAll, true, false))
-                            if (process?.HasExited == false)
-                                process.WaitForExit();
-
-                    if (!quiet)
-                        MessageBoxEx.Show(Language.GetText(nameof(en_US.OperationCompletedMsg)), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
+            static bool LocalCreateLink(string path, string link, string args, string icon)
+            {
+                var result = FileEx.CreateShellLink(path, link, args, icon);
+                if (!SysEnvVarPath.EqualsEx(CorePaths.HomeDir))
+                    Environment.SetEnvironmentVariable(EnvVarName, CorePaths.HomeDir);
+                return result;
             }
-            if (!quiet)
-                MessageBoxEx.Show(Language.GetText(nameof(en_US.OperationCanceledMsg)), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            static bool LocalSetFromIco(string source, out string icon)
+            {
+                icon = default;
+
+                var ico = Path.ChangeExtension(source, ".ico");
+                if (!File.Exists(ico))
+                    return false;
+
+                icon = ico;
+                return true;
+            }
+
+            static bool LocalSetFromPng(string source, out string icon)
+            {
+                icon = default;
+
+                var png = Path.ChangeExtension(source, ".png");
+                if (!File.Exists(png))
+                    return false;
+
+                var img = default(Image);
+                try
+                {
+                    img = Image.FromFile(png);
+
+                    var ico = Path.ChangeExtension(source, ".ico");
+                    IconFactory.Save(img, ico);
+
+                    icon = ico;
+                    return true;
+                }
+                catch (Exception ex) when (ex.IsCaught())
+                {
+                    Log.Write(ex);
+                }
+                finally
+                {
+                    img?.Dispose();
+                }
+
+                return false;
+            }
         }
 
-        internal static void UpdateStartMenuShortcuts(IEnumerable<string> longAppNames)
+        public static void UpdateStartMenuShortcuts(IEnumerable<string> longAppNames, bool waitToComplete)
         {
             var appNames = longAppNames?.ToArray();
-            if (appNames?.Any() != true)
+            if (appNames?.Length is null or < 1)
                 return;
+
             try
             {
                 var startMenuDir = PathEx.Combine(Environment.SpecialFolder.StartMenu, "Programs");
+                if (!DirectoryEx.Create(startMenuDir))
+                    throw new PathNotFoundException(startMenuDir);
+
                 var shortcutPath = Path.Combine(startMenuDir, "Apps Launcher.lnk");
-                if (Directory.Exists(startMenuDir))
-                {
-                    var shortcuts = Directory.GetFiles(startMenuDir, "Apps Launcher*.lnk", SearchOption.TopDirectoryOnly);
-                    if (shortcuts.Length > 0)
-                        foreach (var shortcut in shortcuts)
-                            File.Delete(shortcut);
-                }
-                if (!Directory.Exists(startMenuDir))
-                    Directory.CreateDirectory(startMenuDir);
-                FileEx.CreateShellLink(EnvironmentEx.GetVariableWithPath(PathEx.LocalPath, false), shortcutPath);
-                startMenuDir = Path.Combine(startMenuDir, "Portable Apps");
-                if (Directory.Exists(startMenuDir))
-                {
-                    var shortcuts = Directory.GetFiles(startMenuDir, "*.lnk", SearchOption.TopDirectoryOnly);
-                    if (shortcuts.Length > 0)
-                        foreach (var shortcut in shortcuts)
-                            File.Delete(shortcut);
-                }
-                if (!Directory.Exists(startMenuDir))
-                    Directory.CreateDirectory(startMenuDir);
-                Parallel.ForEach(appNames, x => FileEx.CreateShellLink(EnvironmentEx.GetVariableWithPath(CacheData.FindAppData(x)?.FilePath, false, false), Path.Combine(startMenuDir, x)));
+                var shortcuts = Directory.GetFiles(startMenuDir, "Apps Launcher*.lnk");
+                if (shortcuts.Length > 0)
+                    foreach (var shortcut in shortcuts)
+                        File.Delete(shortcut);
+                FileEx.CreateShellLink(CorePaths.AppsLauncher, shortcutPath);
+
+                var appsStartMenuDir = Path.Combine(startMenuDir, "Portable Apps");
+                if (!DirectoryEx.Create(appsStartMenuDir))
+                    throw new PathNotFoundException(appsStartMenuDir);
+                shortcuts = Directory.GetFiles(appsStartMenuDir, "*.lnk");
+                if (shortcuts.Length > 0)
+                    foreach (var shortcut in shortcuts)
+                        File.Delete(shortcut);
+
+                var result = Parallel.ForEach(appNames, name => CreateAppShortcut(name, startMenuDir));
+                while (waitToComplete)
+                    waitToComplete = !result.IsCompleted;
             }
             catch (Exception ex) when (ex.IsCaught())
             {
                 Log.Write(ex);
             }
+        }
+
+        private static void ApplyRemove(bool apply, bool quiet = false)
+        {
+            if (!Elevation.IsAdministrator)
+            {
+                using var process = ProcessEx.Start(CorePaths.AppsLauncher, $"{ActionGuid.SystemIntegration} {apply} {quiet}", true, false);
+                if (process?.HasExited == false)
+                    process.WaitForExit();
+                return;
+            }
+            var varDir = Reg.ReadString(SysEnvRegPath, EnvVarName);
+            var curDir = PathEx.LocalDir;
+            if (!apply || !varDir.EqualsEx(curDir))
+            {
+                var curPath = EnvironmentEx.GetVariableWithPath(CorePaths.AppsLauncher, false);
+                var sendToPath = PathEx.Combine(Environment.SpecialFolder.SendTo, "Apps Launcher.lnk");
+                if (apply)
+                {
+                    Reg.Write(SysEnvRegPath, EnvVarName, curDir);
+                    FileEx.CreateShellLink(curPath, sendToPath);
+                }
+                else
+                {
+                    Reg.RemoveEntry(SysEnvRegPath, EnvVarName);
+                    PathEx.ForceDelete(sendToPath);
+                }
+                if (NativeHelper.SendNotifyMessage((IntPtr)0xffff, (uint)WindowMenuFlags.WmSettingChange, (UIntPtr)0, "Environment"))
+                {
+                    foreach (var shellKey in new[] { "*", "Folder" }.Select(k => Path.Combine(k, "shell\\portableapps")))
+                    {
+                        var cmdKey = Path.Combine(shellKey, "command");
+                        if (apply)
+                        {
+                            if (string.IsNullOrWhiteSpace(Reg.ReadString(Registry.ClassesRoot, shellKey, null)))
+                                Reg.Write(Registry.ClassesRoot, shellKey, null, Language.GetText(nameof(en_US.shellText)));
+                            Reg.Write(Registry.ClassesRoot, shellKey, "Icon", $"\"{CorePaths.AppsLauncher}\"");
+                            Reg.Write(Registry.ClassesRoot, cmdKey, null, $"\"{CorePaths.AppsLauncher}\" \"%1\"");
+                            continue;
+                        }
+                        Reg.RemoveSubKey(Registry.ClassesRoot, cmdKey);
+                        Reg.RemoveSubKey(Registry.ClassesRoot, shellKey);
+                    }
+                    var desktopPath = PathEx.Combine(Environment.SpecialFolder.Desktop, "Apps Launcher.lnk");
+                    if (apply)
+                        FileEx.CreateShellLink(curPath, desktopPath);
+                    else
+                        PathEx.ForceDelete(sendToPath);
+
+                    if (apply)
+                        using (var process = ProcessEx.Start(CorePaths.AppsLauncher, ActionGuid.FileTypeAssociationAll, true, false))
+                            if (process?.HasExited == false)
+                                process.WaitForExit();
+
+                    if (!quiet)
+                        MessageBoxEx.Show(LangStrings.OperationCompletedMsg, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    return;
+                }
+            }
+
+            if (!quiet)
+                MessageBoxEx.Show(LangStrings.OperationCanceledMsg, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

@@ -101,7 +101,7 @@ namespace AppsDownloader.Forms
             this.appStatus.ForeColor = System.Drawing.Color.PaleTurquoise;
             this.appStatus.Location = new System.Drawing.Point(128, 0);
             this.appStatus.Name = "appStatus";
-            this.appStatus.Size = new System.Drawing.Size(235, 20);
+            this.appStatus.Size = new System.Drawing.Size(295, 20);
             this.appStatus.TabIndex = 0;
             this.appStatus.Text = "Example";
             this.appStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -125,7 +125,7 @@ namespace AppsDownloader.Forms
             this.urlStatus.ForeColor = System.Drawing.Color.PaleTurquoise;
             this.urlStatus.Location = new System.Drawing.Point(128, 40);
             this.urlStatus.Name = "urlStatus";
-            this.urlStatus.Size = new System.Drawing.Size(235, 24);
+            this.urlStatus.Size = new System.Drawing.Size(295, 24);
             this.urlStatus.TabIndex = 0;
             this.urlStatus.Text = "example.com";
             this.urlStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -186,9 +186,9 @@ namespace AppsDownloader.Forms
             // 
             this.buttonAreaBorder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.buttonAreaBorder.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonAreaBorder.Location = new System.Drawing.Point(0, 529);
+            this.buttonAreaBorder.Location = new System.Drawing.Point(0, 629);
             this.buttonAreaBorder.Name = "buttonAreaBorder";
-            this.buttonAreaBorder.Size = new System.Drawing.Size(744, 1);
+            this.buttonAreaBorder.Size = new System.Drawing.Size(864, 1);
             this.buttonAreaBorder.TabIndex = 0;
             // 
             // urlStatusLabel
@@ -224,9 +224,9 @@ namespace AppsDownloader.Forms
             this.buttonAreaPanel.Controls.Add(this.startBtn);
             this.buttonAreaPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.buttonAreaPanel.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.buttonAreaPanel.Location = new System.Drawing.Point(0, 530);
+            this.buttonAreaPanel.Location = new System.Drawing.Point(0, 630);
             this.buttonAreaPanel.Name = "buttonAreaPanel";
-            this.buttonAreaPanel.Size = new System.Drawing.Size(744, 52);
+            this.buttonAreaPanel.Size = new System.Drawing.Size(864, 52);
             this.buttonAreaPanel.TabIndex = 0;
             // 
             // cancelBtn
@@ -235,7 +235,7 @@ namespace AppsDownloader.Forms
             this.cancelBtn.BackColor = System.Drawing.SystemColors.Control;
             this.cancelBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cancelBtn.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.cancelBtn.Location = new System.Drawing.Point(644, 12);
+            this.cancelBtn.Location = new System.Drawing.Point(764, 12);
             this.cancelBtn.Name = "cancelBtn";
             this.cancelBtn.Size = new System.Drawing.Size(75, 28);
             this.cancelBtn.TabIndex = 101;
@@ -250,7 +250,7 @@ namespace AppsDownloader.Forms
             this.startBtn.Enabled = false;
             this.startBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.startBtn.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.startBtn.Location = new System.Drawing.Point(548, 12);
+            this.startBtn.Location = new System.Drawing.Point(668, 12);
             this.startBtn.Name = "startBtn";
             this.startBtn.Size = new System.Drawing.Size(75, 28);
             this.startBtn.TabIndex = 100;
@@ -265,7 +265,7 @@ namespace AppsDownloader.Forms
             this.timeStatus.ForeColor = System.Drawing.Color.PaleTurquoise;
             this.timeStatus.Location = new System.Drawing.Point(128, 40);
             this.timeStatus.Name = "timeStatus";
-            this.timeStatus.Size = new System.Drawing.Size(235, 24);
+            this.timeStatus.Size = new System.Drawing.Size(295, 24);
             this.timeStatus.TabIndex = 0;
             this.timeStatus.Text = "00:00.000";
             this.timeStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -283,7 +283,7 @@ namespace AppsDownloader.Forms
             this.statusAreaLayoutPanel.Name = "statusAreaLayoutPanel";
             this.statusAreaLayoutPanel.RowCount = 1;
             this.statusAreaLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.statusAreaLayoutPanel.Size = new System.Drawing.Size(744, 70);
+            this.statusAreaLayoutPanel.Size = new System.Drawing.Size(864, 70);
             this.statusAreaLayoutPanel.TabIndex = 0;
             // 
             // statusAreaRightPanel
@@ -299,13 +299,13 @@ namespace AppsDownloader.Forms
             this.statusAreaRightPanel.Controls.Add(this.downloadReceivedLabel, 0, 0);
             this.statusAreaRightPanel.Controls.Add(this.downloadSpeedLabel, 0, 1);
             this.statusAreaRightPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.statusAreaRightPanel.Location = new System.Drawing.Point(375, 3);
+            this.statusAreaRightPanel.Location = new System.Drawing.Point(435, 3);
             this.statusAreaRightPanel.Name = "statusAreaRightPanel";
             this.statusAreaRightPanel.RowCount = 3;
             this.statusAreaRightPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.statusAreaRightPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.statusAreaRightPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.statusAreaRightPanel.Size = new System.Drawing.Size(366, 64);
+            this.statusAreaRightPanel.Size = new System.Drawing.Size(426, 64);
             this.statusAreaRightPanel.TabIndex = 0;
             // 
             // downloadReceived
@@ -315,7 +315,7 @@ namespace AppsDownloader.Forms
             this.downloadReceived.ForeColor = System.Drawing.Color.PaleTurquoise;
             this.downloadReceived.Location = new System.Drawing.Point(128, 0);
             this.downloadReceived.Name = "downloadReceived";
-            this.downloadReceived.Size = new System.Drawing.Size(235, 20);
+            this.downloadReceived.Size = new System.Drawing.Size(295, 20);
             this.downloadReceived.TabIndex = 0;
             this.downloadReceived.Text = "0.00 bytes / 0.00 bytes";
             this.downloadReceived.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -327,7 +327,7 @@ namespace AppsDownloader.Forms
             this.downloadSpeed.ForeColor = System.Drawing.Color.PaleTurquoise;
             this.downloadSpeed.Location = new System.Drawing.Point(128, 20);
             this.downloadSpeed.Name = "downloadSpeed";
-            this.downloadSpeed.Size = new System.Drawing.Size(235, 20);
+            this.downloadSpeed.Size = new System.Drawing.Size(295, 20);
             this.downloadSpeed.TabIndex = 0;
             this.downloadSpeed.Text = "0.00 bit/s";
             this.downloadSpeed.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -363,7 +363,7 @@ namespace AppsDownloader.Forms
             this.statusAreaLeftPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.statusAreaLeftPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.statusAreaLeftPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.statusAreaLeftPanel.Size = new System.Drawing.Size(366, 64);
+            this.statusAreaLeftPanel.Size = new System.Drawing.Size(426, 64);
             this.statusAreaLeftPanel.TabIndex = 0;
             // 
             // fileStatus
@@ -373,7 +373,7 @@ namespace AppsDownloader.Forms
             this.fileStatus.ForeColor = System.Drawing.Color.PaleTurquoise;
             this.fileStatus.Location = new System.Drawing.Point(128, 20);
             this.fileStatus.Name = "fileStatus";
-            this.fileStatus.Size = new System.Drawing.Size(235, 20);
+            this.fileStatus.Size = new System.Drawing.Size(295, 20);
             this.fileStatus.TabIndex = 0;
             this.fileStatus.Text = "example.7z";
             this.fileStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -382,9 +382,9 @@ namespace AppsDownloader.Forms
             // 
             this.statusAreaBorder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.statusAreaBorder.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.statusAreaBorder.Location = new System.Drawing.Point(0, 582);
+            this.statusAreaBorder.Location = new System.Drawing.Point(0, 682);
             this.statusAreaBorder.Name = "statusAreaBorder";
-            this.statusAreaBorder.Size = new System.Drawing.Size(744, 1);
+            this.statusAreaBorder.Size = new System.Drawing.Size(864, 1);
             this.statusAreaBorder.TabIndex = 0;
             // 
             // downloadProgress
@@ -394,7 +394,7 @@ namespace AppsDownloader.Forms
             this.downloadProgress.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.downloadProgress.Location = new System.Drawing.Point(-2, -1);
             this.downloadProgress.Name = "downloadProgress";
-            this.downloadProgress.Size = new System.Drawing.Size(748, 10);
+            this.downloadProgress.Size = new System.Drawing.Size(868, 10);
             this.downloadProgress.TabIndex = 0;
             // 
             // downloadHandler
@@ -413,9 +413,9 @@ namespace AppsDownloader.Forms
             this.statusAreaPanel.Controls.Add(this.statusAreaLayoutPanel);
             this.statusAreaPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.statusAreaPanel.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.statusAreaPanel.Location = new System.Drawing.Point(0, 583);
+            this.statusAreaPanel.Location = new System.Drawing.Point(0, 683);
             this.statusAreaPanel.Name = "statusAreaPanel";
-            this.statusAreaPanel.Size = new System.Drawing.Size(744, 78);
+            this.statusAreaPanel.Size = new System.Drawing.Size(864, 78);
             this.statusAreaPanel.TabIndex = 0;
             this.statusAreaPanel.Visible = false;
             // 
@@ -478,7 +478,7 @@ namespace AppsDownloader.Forms
             this.appsList.Location = new System.Drawing.Point(0, 0);
             this.appsList.MultiSelect = false;
             this.appsList.Name = "appsList";
-            this.appsList.Size = new System.Drawing.Size(744, 661);
+            this.appsList.Size = new System.Drawing.Size(864, 761);
             this.appsList.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.appsList.TabIndex = 0;
             this.appsList.TabStop = false;
@@ -491,17 +491,17 @@ namespace AppsDownloader.Forms
             // columnHeader1
             // 
             this.columnHeader1.Text = "Application";
-            this.columnHeader1.Width = 189;
+            this.columnHeader1.Width = 214;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "Description";
-            this.columnHeader2.Width = 265;
+            this.columnHeader2.Width = 234;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "Version";
-            this.columnHeader3.Width = 81;
+            this.columnHeader3.Width = 86;
             // 
             // columnHeader4
             // 
@@ -616,7 +616,7 @@ namespace AppsDownloader.Forms
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(744, 661);
+            this.ClientSize = new System.Drawing.Size(864, 761);
             this.Controls.Add(this.buttonAreaBorder);
             this.Controls.Add(this.buttonAreaPanel);
             this.Controls.Add(this.statusAreaBorder);

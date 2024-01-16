@@ -8,7 +8,7 @@ using System.Resources;
 using System.Windows.Forms;
 using AppsLauncher.Libraries;
 using SilDev;
-using SilDev.Legacy;
+using SilDev.Ini.Legacy;
 
 internal static class Language
 {

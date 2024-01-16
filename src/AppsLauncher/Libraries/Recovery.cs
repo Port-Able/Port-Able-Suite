@@ -7,10 +7,11 @@
     using System.Windows.Forms;
     using LangResources;
     using Microsoft.Win32;
+    using PortAble;
     using Properties;
     using SilDev;
     using SilDev.Forms;
-    using SilDev.Legacy;
+    using SilDev.Ini.Legacy;
 
     internal static class Recovery
     {
@@ -57,8 +58,8 @@
 
                 try
                 {
-                    var envDir = EnvironmentEx.GetVariableValue(Settings.EnvironmentVariable);
-                    if (!Settings.DeveloperVersion && !string.IsNullOrWhiteSpace(envDir) && !envDir.EqualsEx(PathEx.LocalDir))
+                    var envDir = EnvironmentEx.GetVariableValue(_Settings.EnvironmentVariable);
+                    if (!_Settings.DeveloperVersion && !string.IsNullOrWhiteSpace(envDir) && !envDir.EqualsEx(PathEx.LocalDir))
                         throw new ArgumentInvalidException(nameof(envDir));
                 }
                 catch (ArgumentInvalidException ex)
@@ -97,7 +98,15 @@
             if (!Elevation.WritableLocation())
                 Elevation.RestartAsAdministrator(ActionGuid.RepairDirs);
 
-            if (new[] { CorePaths.AppDirs.ToArray(), CorePaths.UserDirs }.Any(dirs => !dirs.All(DirectoryEx.Create)))
+            var userDirs = new[]
+            {
+                CorePaths.UserDir,
+                CorePaths.UserDocumentsDir,
+                CorePaths.UserPicturesDir,
+                CorePaths.UserMusicDir,
+                CorePaths.UserVideosDir
+            };
+            if (new[] { CorePaths.AppDirs.ToArray(), userDirs }.Any(dirs => !dirs.All(DirectoryEx.Create)))
                 Elevation.RestartAsAdministrator(ActionGuid.RepairDirs);
 
             var iniMap = new[]
@@ -109,24 +118,24 @@
                 },
                 new[]
                 {
-                    CorePaths.AppDirs.First(),
+                    CorePaths.AppDirs[0],
                     "IconResource=..\\Assets\\FolderIcons.dll,3"
                 },
                 new[]
                 {
-                    CorePaths.AppDirs.Second(),
+                    CorePaths.AppDirs[1],
                     "LocalizedResourceName=\"Port-Able\" - Freeware",
                     "IconResource=..\\..\\Assets\\FolderIcons.dll,4"
                 },
                 new[]
                 {
-                    CorePaths.AppDirs.Third(),
+                    CorePaths.AppDirs[2],
                     "LocalizedResourceName=\"PortableApps\" - Repacks",
                     "IconResource=..\\..\\Assets\\FolderIcons.dll,2"
                 },
                 new[]
                 {
-                    CorePaths.AppDirs.Last(),
+                    CorePaths.AppDirs[3],
                     "LocalizedResourceName=\"Custom\" - Shareware",
                     "IconResource=..\\..\\Assets\\FolderIcons.dll,1"
                 },
@@ -142,7 +151,7 @@
                 },
                 new[]
                 {
-                    CorePaths.UserDirs.First(),
+                    CorePaths.UserDir,
                     "LocalizedResourceName=Profile",
                     "IconResource=..\\Assets\\FolderIcons.dll,0"
                 },
@@ -153,7 +162,7 @@
                 },
                 new[]
                 {
-                    CorePaths.UserDirs.Second(),
+                    CorePaths.UserDocumentsDir,
                     "LocalizedResourceName=@%SystemRoot%\\system32\\shell32.dll,-21770",
                     "IconResource=%SystemRoot%\\system32\\imageres.dll,-112",
                     "IconFile=%SystemRoot%\\system32\\shell32.dll",
@@ -161,16 +170,7 @@
                 },
                 new[]
                 {
-                    CorePaths.UserDirs.Third(),
-                    "LocalizedResourceName=@%SystemRoot%\\system32\\shell32.dll,-21790",
-                    "IconResource=%SystemRoot%\\system32\\imageres.dll,-108",
-                    "IconFile=%SystemRoot%\\system32\\shell32.dll",
-                    "IconIndex=-237",
-                    "InfoTip=@%SystemRoot%\\system32\\shell32.dll,-12689"
-                },
-                new[]
-                {
-                    CorePaths.UserDirs.Fourth(),
+                    CorePaths.UserPicturesDir,
                     "LocalizedResourceName=@%SystemRoot%\\system32\\shell32.dll,-21779",
                     "IconResource=%SystemRoot%\\system32\\imageres.dll,-113",
                     "IconFile=%SystemRoot%\\system32\\shell32.dll",
@@ -179,7 +179,16 @@
                 },
                 new[]
                 {
-                    CorePaths.UserDirs.Last(),
+                    CorePaths.UserMusicDir,
+                    "LocalizedResourceName=@%SystemRoot%\\system32\\shell32.dll,-21790",
+                    "IconResource=%SystemRoot%\\system32\\imageres.dll,-108",
+                    "IconFile=%SystemRoot%\\system32\\shell32.dll",
+                    "IconIndex=-237",
+                    "InfoTip=@%SystemRoot%\\system32\\shell32.dll,-12689"
+                },
+                new[]
+                {
+                    CorePaths.UserVideosDir,
                     "LocalizedResourceName=@%SystemRoot%\\system32\\shell32.dll,-21791",
                     "IconResource=%SystemRoot%\\system32\\imageres.dll,-189",
                     "IconFile=%SystemRoot%\\system32\\shell32.dll",
@@ -229,16 +238,16 @@
                 return;
             }
             if (!SystemIntegration.IsAccurate)
-                SystemIntegration.Enable(true, true);
+                SystemIntegration.Apply(true);
         }
 
         internal static void VersionValidation()
         {
-            if (Settings.DeveloperVersion || Settings.LastUpdateCheck == DateTime.MinValue || Settings.VersionValidation == AssemblyInfo.Version)
+            if (_Settings.DeveloperVersion || _Settings.LastUpdateCheck == DateTime.MinValue || _Settings.VersionValidation == AssemblyInfo.Version)
                 return;
 
-            Settings.VersionValidation = AssemblyInfo.Version;
-            Settings.WriteToFile();
+            _Settings.VersionValidation = AssemblyInfo.Version;
+            _Settings.WriteToFile();
 
             RepairAppsSuiteDirs();
 
@@ -250,7 +259,7 @@
                     "Folder"
                 };
                 if (subKeys.Select(x => Path.Combine(x, "shell\\portableapps")).Any(varKey => Reg.SubKeyExists(Registry.ClassesRoot, varKey)))
-                    SystemIntegration.Enable(true, true);
+                    SystemIntegration.Apply(true);
             }
             catch (Exception ex) when (ex.IsCaught())
             {

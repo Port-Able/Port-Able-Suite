@@ -199,6 +199,7 @@ In some cases, it's just a little synchronization problem in the online database
     <value>App servers have been updated.
 
 Please note that these changes may not take effect until you restart this application.</value>
+    <comment>Message</comment>
   </data>
   <data name="DatabaseAccessMsg" xml:space="preserve">
     <value>Database is being accessed . . .</value>
@@ -302,6 +303,10 @@ You must free up at least {1} more space.</value>
   <data name="Password" xml:space="preserve">
     <value>Password</value>
     <comment>DataGridViewRowColumn</comment>
+  </data>
+  <data name="RemoveAppSettingsQuestionMsg" xml:space="preserve">
+    <value>Do you also want to remove the settings file of this app?</value>
+    <comment>Message</comment>
   </data>
   <data name="RequirementsErrorMsg" xml:space="preserve">
     <value>This program is incomplete. Would you like to download it again?</value>

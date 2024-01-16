@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.IO;
     using LangResources;
-    using Properties;
     using SilDev;
     using SilDev.Compression.Archiver;
     using SilDev.Forms;

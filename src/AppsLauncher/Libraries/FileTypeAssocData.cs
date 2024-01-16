@@ -8,6 +8,7 @@
     using System.Windows.Forms;
     using LangResources;
     using Microsoft.Win32;
+    using PortAble;
     using Properties;
     using SilDev;
     using SilDev.Forms;
@@ -81,7 +82,7 @@
                 if (_parent?.AppKey == null || _parent.IconId?.All(char.IsDigit) != true || !FileEx.Exists(_parent.IconPath) || !FileEx.Exists(_parent.StarterPath))
                     goto Abort;
 
-                var appData = CacheData.FindAppData(_parent.AppKey);
+                var appData = CacheData.FindInCurrentAppInfo(_parent.AppKey);
                 if (appData == default)
                     goto Abort;
 
@@ -101,7 +102,7 @@
                         SystemRestore.Create(string.Format(CultureInfo.InvariantCulture, en_US.AssociateRestPointLabel, appData.Name), RestoreEventType.BeginSystemChange, RestorePointType.ModifySettings);
                 }
 
-                var restPointDir = Path.Combine(CorePaths.RestorePointDir, appData.Key);
+                var restPointDir = Path.Combine(CorePaths.FileTypeAssocDir, appData.Key);
                 var restPointCount = -1;
                 if (restPointEnabled)
                     if (Directory.Exists(restPointDir))
@@ -162,7 +163,7 @@
                             var lines = FileEx.ReadAllLines(keyPath);
                             if (lines?.Length > 0)
                                 lines = FileEx.ReadAllLines(keyPath)?.Skip(1).Where(Comparison.IsNotEmpty).ToArray();
-                            if (restPointEnabled && restPoint.ContainsKey(type) && lines?.Any() == true)
+                            if (restPointEnabled && restPoint.ContainsKey(type) && lines?.Length is > 0)
                                 restPoint[type].AddRange(lines);
                             File.Delete(keyPath);
                         }
@@ -182,7 +183,8 @@
                 return;
 
                 Cancel:
-                appData.Settings.FileTypeAssoc = default;
+
+                //appData.Settings.FileTypeAssoc = default;
 
                 Abort:
                 if (!quiet)
@@ -194,7 +196,7 @@
                 if (_parent?.AppKey == null)
                     goto Cancel;
 
-                var appData = CacheData.FindAppData(_parent.AppKey);
+                var appData = CacheData.FindInCurrentAppInfo(_parent.AppKey);
                 if (appData == default)
                     goto Cancel;
 
@@ -213,22 +215,22 @@
                     return;
                 }
 
-                var restPointDir = Path.Combine(CorePaths.RestorePointDir, appData.Key);
+                var restPointDir = Path.Combine(CorePaths.FileTypeAssocDir, appData.Key);
                 if (Directory.Exists(restPointDir))
                 {
                     var files = DirectoryEx.EnumerateFiles(restPointDir, "*.dat")?.Reverse().ToArray();
-                    if (files?.Any() == true)
+                    if (files?.Length > 0)
                         foreach (var file in files)
                         {
                             var restPoint = FileEx.Deserialize<Dictionary<string, List<string>>>(file);
-                            if (restPoint?.Values.Any() == true)
+                            if (restPoint?.Values.Count is > 0)
                                 Reg.ImportFile(restPoint.Values.SelectMany(x => x.ToArray()).ToArray());
                             FileEx.TryDelete(file);
                         }
                     DirectoryEx.TryDelete(restPointDir);
                 }
 
-                appData.Settings.FileTypeAssoc = default;
+                //appData.Settings.FileTypeAssoc = default;
                 if (quiet)
                     return;
 
@@ -236,7 +238,7 @@
                 {
                     var result = MessageBoxEx.Show(Language.GetText(nameof(en_US.RestorePointMsg3)), Resources.GlobalTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result == DialogResult.Yes)
-                        using (var process = ProcessEx.Start(CorePaths.SystemRestore, false))
+                        using (var process = ProcessEx.Start("%WinDir%\\System32\\rstrui.exe", false))
                             if (!process?.HasExited == true)
                                 process.WaitForExit();
                 }

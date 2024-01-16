@@ -448,6 +448,15 @@ namespace PortAble.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you also want to remove the settings file of this app?.
+        /// </summary>
+        public static string RemoveAppSettingsQuestionMsg {
+            get {
+                return ResourceManager.GetString("RemoveAppSettingsQuestionMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This program is incomplete. Would you like to download it again?.
         /// </summary>
         public static string RequirementsErrorMsg {

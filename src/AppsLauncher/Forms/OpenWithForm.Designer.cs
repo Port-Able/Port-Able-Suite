@@ -1,4 +1,4 @@
-namespace AppsLauncher.Windows
+namespace AppsLauncher.Forms
 {
     partial class OpenWithForm
     {
@@ -143,12 +143,12 @@ namespace AppsLauncher.Windows
             this.searchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.searchBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.searchBox.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.searchBox.Font = new System.Drawing.Font("Segoe UI", 11.25F);
             this.searchBox.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.searchBox.Location = new System.Drawing.Point(11, 44);
+            this.searchBox.Location = new System.Drawing.Point(11, 45);
             this.searchBox.Multiline = true;
             this.searchBox.Name = "searchBox";
-            this.searchBox.Size = new System.Drawing.Size(282, 21);
+            this.searchBox.Size = new System.Drawing.Size(282, 22);
             this.searchBox.TabIndex = 2;
             this.searchBox.TextChanged += new System.EventHandler(this.SearchBox_TextChanged);
             this.searchBox.Enter += new System.EventHandler(this.SearchBox_Enter);
