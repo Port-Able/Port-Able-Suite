@@ -78,7 +78,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="App.config" />
     <None Include="app.manifest" />
     <None Include="packages.config" />
   </ItemGroup>
