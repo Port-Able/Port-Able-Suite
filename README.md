@@ -13,14 +13,10 @@ A portable app is a software that will not take an effect to your running system
 To be honest, my focus isn't only to get applications for my portable devices. It's also nice that it doesn't matter how many applications you have installed, it has absolutely no negative effect on your system performance. Your system is always fast and clean. Plus, it's easier to back up your personal stuff when it's all in one place instead of scattered across the entire system.
 
 <h1 align="center">Over 500 Applications</h1>
-<p align="center"><img src="https://user-images.githubusercontent.com/6128966/42115936-608a9970-7bf5-11e8-9eb8-7f985680b1c9.png"></p>
+<p align="center"><img src="https://github.com/Port-Able/Port-Able-Suite/assets/6128966/de46e86f-78d9-445d-8d3e-34de3b0938c3"></p>
 
 <h1 align="center">Native Theme Style</h1>
-<p align="center"><img  src="https://user-images.githubusercontent.com/6128966/41601026-a95a8956-73d7-11e8-9569-666d64f51ae7.png"> <img src="https://user-images.githubusercontent.com/6128966/41601061-c0e758ec-73d7-11e8-89f9-5d46ed468e49.png">
-<img src="https://user-images.githubusercontent.com/6128966/41601062-c10cdf86-73d7-11e8-8a87-b6aa7c6e6609.png"> <img src="https://user-images.githubusercontent.com/6128966/41601060-c0c4fc48-73d7-11e8-9ac2-f49993a0861e.png"></p>
-
-<h1 align="center">Layout Customization</h1>
-<p align="center"><img src="https://user-images.githubusercontent.com/6128966/41601063-c12ddd12-73d7-11e8-91f3-96a4bd325cae.png"></p>
+<p align="center"><img src="https://github.com/Port-Able/Port-Able-Suite/assets/6128966/ca31c40a-e93d-4c54-ae15-55b67e0256c3"> <img src="https://github.com/Port-Able/Port-Able-Suite/assets/6128966/41bb6b09-8185-4399-8717-59480099bcbf"></p>
 
 <h1 align="center">System Integration</h1>
 <p align="center"><img src="https://user-images.githubusercontent.com/6128966/41601064-c16e0efa-73d7-11e8-8db2-26ddd5d967e8.png"></p>
@@ -30,10 +26,18 @@ To be honest, my focus isn't only to get applications for my portable devices. I
 - Microsoft Windows 7 or higher
 - [Microsoft .NET Framework Version 4.8.1+](https://dotnet.microsoft.com/download/dotnet-framework/net481)
 
-### Requirements (Developer):
+### Development Requirements:
 - Microsoft Windows 10 or higher (64-bit)
-- [Microsoft Visual Studio 2022 + .NET Framework 4.8.1 SDK](https://www.visualstudio.com/downloads/)
-- [Si13n7 Dev.™ CSharp Library Binaries](https://github.com/Si13n7/SilDev.CSharpLib/)
+- [Microsoft Visual Studio 2022](https://www.visualstudio.com/downloads)
+  - Workloads:
+    - .NET desktop development _(needed)_
+  - Individual components:
+    - .NET Framework 4.8.1 SDK _(needed)_
+    - .NET Framework 4.8.1 targeting pack _(needed)_
+    - Git for Windows _(recommended)_
+    - NuGet package manager _(needed)_
+  - Extensions:
+    - [ReSharper Ultimate](https://www.jetbrains.com/resharper) _(recommended)_
 
 #### Install Developer Environment:
 ```cmd
