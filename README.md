@@ -1,6 +1,6 @@
-# From [*Port-Able Suite*](/) to [*Apportia*](https://github.com/Apportia/Apportia)
+# From *Port-Able Suite* to [*Apportia*](https://github.com/Apportia/Apportia)
 
-[*Port-Able Suite*](/) has been discontinued in favor of [*Apportia*](https://github.com/Apportia/Apportia). The last state of the codebase is preserved in the [21.4.30 branch](https://github.com/Port-Able/Port-Able-Suite/tree/21.4.30).
+*Port-Able Suite* has been discontinued in favor of [*Apportia*](https://github.com/Apportia/Apportia). The last state of the codebase is preserved in the [21.4.30 branch](https://github.com/Port-Able/Port-Able-Suite/tree/21.4.30).
 
 **TL;DR** — *Port-Able Suite* grew without a plan, accumulated technical debt over the years, and was deeply tied to .NET Framework — a platform Microsoft eventually discontinued. Continuing it was no longer viable. *Apportia* is the rebuild: a single binary, modern .NET, support for both Windows and Linux, built for performance, with a feature-rich interface designed to keep everything fast and accessible.
 
@@ -8,7 +8,7 @@
 
 ## Why
 
-[*Port-Able Suite*](/) never started with a clear vision. The first version was little more than a small window with a dropdown box listing applications — essentially an "Open With" dialog, nothing more. Apps had to be added manually. Features were added gradually over time, each one building on the last without an overarching plan. The project was never designed; it accumulated.
+*Port-Able Suite* never started with a clear vision. The first version was little more than a small window with a dropdown box listing applications — essentially an "Open With" dialog, nothing more. Apps had to be added manually. Features were added gradually over time, each one building on the last without an overarching plan. The project was never designed; it accumulated.
 
 That showed. The codebase reflected years of shifting ideas rather than deliberate architecture, and some of those early decisions created permanent maintenance burdens.
 
@@ -24,17 +24,17 @@ So that is exactly what happened: a complete restart, built on the right foundat
 
 ## What is [*Apportia*](https://github.com/Apportia/Apportia)
 
-[*Apportia*](https://github.com/Apportia/Apportia) follows a similar concept to [*Port-Able Suite*](/), but the implementation and architecture are fundamentally different. It is built on modern .NET and supports both Windows and Linux.
+[*Apportia*](https://github.com/Apportia/Apportia) follows a similar concept to *Port-Able Suite*, but the implementation and architecture are fundamentally different. It is built on modern .NET and supports both Windows and Linux.
 
-[*Port-Able Suite*](/) consisted of several separate programs: a Launcher that displayed and managed installed applications, a Downloader that handled installation and updates, and an Updater responsible solely for keeping the suite itself up to date. On top of that, it carried additional dependencies such as a bundled 7-Zip and other external components.
+*Port-Able Suite* consisted of several separate programs: a Launcher that displayed and managed installed applications, a Downloader that handled installation and updates, and an Updater responsible solely for keeping the suite itself up to date. On top of that, it carried additional dependencies such as a bundled 7-Zip and other external components.
 
 [*Apportia*](https://github.com/Apportia/Apportia) replaces all of that with a single binary — `Apportia` on Linux, `Apportia.exe` on Windows. No separate tools, no bundled dependencies. It is faster, more secure, and designed to be more intuitive to use.
 
-## Migrating from [*Port-Able Suite*](/)
+## Migrating from *Port-Able Suite*
 
 > **Note:** The *Port-Able Suite* servers will be shut down soon. If you are still using *Port-Able Suite*, now is a good time to switch.
 
-Most applications can be copied directly from your [*Port-Able Suite*](/) Apps folder and will work without any additional steps. The only exceptions are applications located in the `.free`, `.repack`, and `.share` folders — those need to be added through the **Import App** feature instead.
+Most applications can be copied directly from your *Port-Able Suite* Apps folder and will work without any additional steps. The only exceptions are applications located in the `.free`, `.repack`, and `.share` folders — those need to be added through the **Import App** feature instead.
 
 ## Suggestions and Feedback
 
