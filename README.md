@@ -1,59 +1,45 @@
-<p align="center"><a href="https://github.com/Port-Able/Port-Able-Suite/releases/latest"><img src="https://img.shields.io/github/tag/Port-Able/Port-Able-Suite.svg?style=flat&label=release&logoWidth=14&logo=data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAH%2BSURBVDhPfZJLaBNRFIaPSibFILaWlGhkbFypIbNxVhElvghtsnLhRosIPhpsYixSSrAFrQqGaCrpWKzNOC5aiC5cCg64ErEEXEgj1tA2EESE4CS6sNGS33szWVQd%2FeAwzLnff%2B5c5tKf2O32Cz6f76nT6UyzV7fZ%2FT%2FrA4HAh0KhgHq9Dk4ikQDrB8zlf%2BByuR5wmYfy%2BTySySQymQwkSaq0FGvY9AoPlstl6LoOQRAQDocRDAb5rgdNy4LRkZEvPDjPPrVUKiGXy0HTNKRSKR48YloWiK7O2c%2Fzc%2Fi%2BsoJq9SsbscrnYGwottxSLJFof%2FTHpt5BzEym8TA7jWODYzgcvwWbKL9j6%2FtYhVmJ5NgyQIKwh4dEknpe0ROA%2Bl%2Bg%2F3wE0TNnQUcfgca%2FgW5%2BAm3escC8l9QpvqZzGqh77wT7CbY%2BOpEG3f0Iiui4MjmLZzNTaJd7QdsP4NRVBcOXL%2FFznmTVRra24%2BzZTbR1920aes6ml0E33nIB8YFI83yODYT7E%2BMwqgbvy6zW0O5O0WkFdP096NA1bOtwIH4xhqyqQlWziMWiPNRnyr%2BzjlVXh3vn3J17U0DjJxaXlqAoSnPXYrHIgz1N04rRxLDBRcMwUKvV0Gg0UKk07wRCodCblvYXu7xery7L8jS7Yura8vv9msfjecycjabKIfoFb%2BgFPFUv%2BL8AAAAASUVORK5CYII%3D" alt="release"></a> &nbsp; <a href="https://dotnet.microsoft.com/download/dotnet-framework/net481"><img src="https://img.shields.io/badge/platform->=%20v4.8.1-lightgrey.svg?style=flat&logo=.net&logoColor=white" alt="platform"></a> &nbsp; <a href="https://github.com/Port-Able/Port-Able-Suite/blob/master/LICENSE.txt"><img src="https://img.shields.io/github/license/Port-Able/Port-Able-Suite.svg?style=flat" alt="license"></a></p>
-<p align="center"><a href="https://github.com/Port-Able/Port-Able-Suite/commits/master"><img src="https://img.shields.io/github/last-commit/Port-Able/Port-Able-Suite.svg?style=flat&logo=github&logoColor=white" alt="last-commit"></a> &nbsp; <a href="https://github.com/Port-Able/Port-Able-Suite/commits/master"><img src="https://img.shields.io/github/commits-since/Port-Able/Port-Able-Suite/latest.svg?style=flat&logo=github&logoColor=white" alt="commits-since"></a> &nbsp; <a href="https://github.com/Port-Able/Port-Able-Suite/issues"><img src="https://img.shields.io/github/issues/Port-Able/Port-Able-Suite.svg?style=flat&logo=github&logoColor=white" alt="issues-open"></a> &nbsp; <a href="https://github.com/Port-Able/Port-Able-Suite/issues?q=is%3Aissue+is%3Aclosed"><img src="https://img.shields.io/github/issues-closed/Port-Able/Port-Able-Suite.svg?style=flat&logo=github&logoColor=white" alt="issues-closed"></a></p>
-<p align="center"><a href="https://port-a.de"><img src="https://img.shields.io/website/https/port-a.de.svg?style=flat&down_color=red&down_message=offline&up_color=limegreen&up_message=online&logo=data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEwSURBVDhPxZJNSgNBEIXnCp5AcCO4CmaTRRaKBhdCFkGCCKLgz2Y2RiQgCiqZzmi3CG4COj0X8ApewSt4Ba%2FQ9leZGpyVG8GComtq3qv3qmeS%2Fw9nikHMd5sVn3bqLx7zom1NcW8z%2F6G9CjoPm722rPEv45EJ21vD0O30AvX12IWDvTRsrPXrnjPlUYO0u3McVpZXhch5cnguZ7vVDWfpjRAZgPqc%2BIMEgKQe9Pfr0xn%2FBqZJjAUNQKilp5cC1gHYYz8Usc3OQsTz9HZWK5BMJwFDwrbWbuIXhfhg%2FDpWuE2mK5lEgQtiz4baU14u3V09i5peiipy6qVAxFWtZiflJiq8AAiIZx1CnxpStGmEpEHDZf4r2pUd%2BMjYxomoxJofo4L%2FHqyR57OF6vEvIkm%2BAYRc%2BWd4P97CAAAAAElFTkSuQmCC" alt="website"></a> &nbsp; <a href="https://p-able.de"><img src="https://img.shields.io/website/https/p-able.de.svg?style=flat&down_color=red&down_message=offline&label=mirror&up_color=limegreen&up_message=online&logo=data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEwSURBVDhPxZJNSgNBEIXnCp5AcCO4CmaTRRaKBhdCFkGCCKLgz2Y2RiQgCiqZzmi3CG4COj0X8ApewSt4Ba%2FQ9leZGpyVG8GComtq3qv3qmeS%2Fw9nikHMd5sVn3bqLx7zom1NcW8z%2F6G9CjoPm722rPEv45EJ21vD0O30AvX12IWDvTRsrPXrnjPlUYO0u3McVpZXhch5cnguZ7vVDWfpjRAZgPqc%2BIMEgKQe9Pfr0xn%2FBqZJjAUNQKilp5cC1gHYYz8Usc3OQsTz9HZWK5BMJwFDwrbWbuIXhfhg%2FDpWuE2mK5lEgQtiz4baU14u3V09i5peiipy6qVAxFWtZiflJiq8AAiIZx1CnxpStGmEpEHDZf4r2pUd%2BMjYxomoxJofo4L%2FHqyR57OF6vEvIkm%2BAYRc%2BWd4P97CAAAAAElFTkSuQmCC" alt="mirror"></a></p>
+# From [*Port-Able Suite*](.) to [*Apportia*](https://github.com/Apportia/Apportia)
 
-# [Port-Able Suite](https://dl.si13n7.de/Port-Able/)
+[*Port-Able Suite*](.) has been discontinued in favor of [*Apportia*](https://github.com/Apportia/Apportia). The last state of the codebase is preserved in the [21.4.30 branch](https://github.com/Port-Able/Port-Able-Suite/tree/21.4.30).
 
-The Port-Able Suite helps you manage a collection of portable apps. It lets you easily download new apps, automatically searches for app updates, and more.
+**TL;DR** — *Port-Able Suite* grew without a plan, accumulated technical debt over the years, and was deeply tied to .NET Framework — a platform Microsoft eventually discontinued. Continuing it was no longer viable. *Apportia* is the rebuild: a single binary, modern .NET, support for both Windows and Linux, built for performance, with a feature-rich interface designed to keep everything fast and accessible.
 
-#### What the hell is a portable app?
+<p align="center"><img src="https://raw.githubusercontent.com/Apportia/Apportia/refs/heads/main/preview.png"></p>
 
-A portable app is a software that will not take an effect to your running system. What happens in a portable app stays in a portable app. That means that you can carry around your applications on a portable device and use it on any computer with your personal settings and all.
+## Why
 
-To be honest, my focus isn't only to get applications for my portable devices. It's also nice that it doesn't matter how many applications you have installed, it has absolutely no negative effect on your system performance. Your system is always fast and clean. Plus, it's easier to back up your personal stuff when it's all in one place instead of scattered across the entire system.
+[*Port-Able Suite*](.) never started with a clear vision. The first version was little more than a small window with a dropdown box listing applications — essentially an "Open With" dialog, nothing more. Apps had to be added manually. Features were added gradually over time, each one building on the last without an overarching plan. The project was never designed; it accumulated.
 
-<h1 align="center">Over 500 Applications</h1>
-<p align="center"><img src="https://github.com/Port-Able/Port-Able-Suite/assets/6128966/de46e86f-78d9-445d-8d3e-34de3b0938c3"></p>
+That showed. The codebase reflected years of shifting ideas rather than deliberate architecture, and some of those early decisions created permanent maintenance burdens.
 
-<h1 align="center">Native Theme Style</h1>
-<p align="center"><img src="https://github.com/Port-Able/Port-Able-Suite/assets/6128966/ca31c40a-e93d-4c54-ae15-55b67e0256c3"> <img src="https://github.com/Port-Able/Port-Able-Suite/assets/6128966/41bb6b09-8185-4399-8717-59480099bcbf"></p>
+One example: due to the unreliability of PortableApps.com and SourceForge at the time, a significant portion of the infrastructure ran through self-managed servers. The idea was sound in principle, but it created a constant operational overhead that never really went away.
 
-<h1 align="center">System Integration</h1>
-<p align="center"><img src="https://user-images.githubusercontent.com/6128966/41601064-c16e0efa-73d7-11e8-8db2-26ddd5d967e8.png"></p>
-<p align="center"><img src="https://user-images.githubusercontent.com/6128966/41601065-c18f5a7e-73d7-11e8-8add-5d4f6bdd4a5b.png"></p>
+Another example: app icons were stored directly inside a precompiled data block and read from there at runtime. It made sense for performance at the time, but maintaining it was anything but comfortable. Every icon had to be added or removed manually, and while internal tooling made it somewhat manageable, it was a self-inflicted construction site that never went away. There were other decisions of the same kind — each one reasonable in isolation, but together they added up to a foundation that was increasingly difficult to work with.
 
-### Requirements:
-- Microsoft Windows 7 or higher
-- [Microsoft .NET Framework Version 4.8.1+](https://dotnet.microsoft.com/download/dotnet-framework/net481)
+And then there was .NET Framework.
 
-### Development Requirements:
-- Microsoft Windows 10 or higher (64-bit)
-- [Microsoft Visual Studio 2022](https://www.visualstudio.com/downloads)
-  - Workloads:
-    - .NET desktop development _(needed)_
-  - Individual components:
-    - .NET Framework 4.8.1 SDK _(needed)_
-    - .NET Framework 4.8.1 targeting pack _(needed)_
-    - Git for Windows _(recommended)_
-    - NuGet package manager _(needed)_
-  - Extensions:
-    - [ReSharper Ultimate](https://www.jetbrains.com/resharper) _(recommended)_
+When it became clear that .NET Framework had no future, motivation hit rock bottom. It felt like standing in a house you built yourself after a natural disaster — wanting to save it, but realizing the only real option is to tear it down and start over.
 
-#### Install Developer Environment:
-```cmd
-git clone https://github.com/Port-Able/Port-Able-Suite.git Port-Able-Suite
-git clone https://github.com/Si13n7/SilDev.CSharpLib.git Port-Able-Suite/refs/SilDev/CSharpLib
-md Port-Able-Suite\bin
-cd Port-Able-Suite\bin
-tar -xf ..\bin-template.zip
-start __CREATE_FAKE_APPS__.bat
-```
-_Begin by launching cmd.exe in a location of your choice, copy and paste the provided code into your shell, then confirm by pressing Enter if required._
+So that is exactly what happened: a complete restart, built on the right foundation from day one.
 
-## Would you like to help?
+## What is [*Apportia*](https://github.com/Apportia/Apportia)
 
-- [Star this Project](https://github.com/Port-Able/Port-Able-Suite/stargazers) :star: and show me that this project interests you :hugs:
-- [Open an Issue](https://github.com/Port-Able/Port-Able-Suite/issues/new) :coffee: to give me your feedback and tell me your ideas and wishes for the future :sunglasses:
-- [Open a Ticket](https://support.si13n7.de/) :mailbox: if you don't have a GitHub account, you can contact me directly on my website :wink:
-- [Donate by PayPal](http://donate.si13n7.com/) :money_with_wings: to buy me a cake :cake:
+[*Apportia*](https://github.com/Apportia/Apportia) follows a similar concept to [*Port-Able Suite*](.), but the implementation and architecture are fundamentally different. It is built on modern .NET and supports both Windows and Linux.
 
+[*Port-Able Suite*](.) consisted of several separate programs: a Launcher that displayed and managed installed applications, a Downloader that handled installation and updates, and an Updater responsible solely for keeping the suite itself up to date. On top of that, it carried additional dependencies such as a bundled 7-Zip and other external components.
+
+[*Apportia*](https://github.com/Apportia/Apportia) replaces all of that with a single binary — `Apportia` on Linux, `Apportia.exe` on Windows. No separate tools, no bundled dependencies. It is faster, more secure, and designed to be more intuitive to use.
+
+## Migrating from [*Port-Able Suite*](.)
+
+> **Note:** The *Port-Able Suite* servers will be shut down soon. If you are still using *Port-Able Suite*, now is a good time to switch.
+
+Most applications can be copied directly from your [*Port-Able Suite*](.) Apps folder and will work without any additional steps. The only exceptions are applications located in the `.free`, `.repack`, and `.share` folders — those need to be added through the **Import App** feature instead.
+
+## Suggestions and Feedback
+
+If you have suggestions or feature requests for [*Apportia*](https://github.com/Apportia/Apportia), feel free to open an issue on the [*Apportia* repository](https://github.com/Apportia/Apportia).
+
+Please note that requests related to creating or packaging portable applications are out of scope. [*Apportia*](https://github.com/Apportia/Apportia) manages and deploys apps from an existing source — it is not responsible for building or providing the apps themselves.
+
+That said, dedicated tooling for creating portable applications is planned under the  [*Apportia* organization](https://github.com/Apportia), including Linux support. It will happen — it is just a matter of finding the time.
