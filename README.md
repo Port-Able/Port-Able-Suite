@@ -4,7 +4,7 @@
 
 **TL;DR** — *Port-Able Suite* grew without a plan, accumulated technical debt over the years, and was deeply tied to .NET Framework — a platform Microsoft eventually discontinued. Continuing it was no longer viable. *Apportia* is the rebuild: a single binary, modern .NET, support for both Windows and Linux, built for performance, with a feature-rich interface designed to keep everything fast and accessible.
 
-<p align="center"><img src="https://raw.githubusercontent.com/Apportia/Apportia/refs/heads/main/preview.png"></p>
+<p align="center"><a href="https://raw.githubusercontent.com/Apportia/Apportia/refs/heads/main/media/"><img src="https://raw.githubusercontent.com/Apportia/Apportia/refs/heads/main/media/preview.png"></a></p>
 
 ## Why
 
